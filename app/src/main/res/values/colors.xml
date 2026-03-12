@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="color_default">#E52468</color>
+    <color name="color_title">#0F172A</color>
+    <color name="color_hint">#94A3B8</color>
+    <color name="color_subtitle">#475569</color>
+    <color name="txt_warning">#EA580C</color>
+    <color name="bg_warning">#FFEDD5</color>
+    <color name="txt_success">#16A34A</color>
+    <color name="bg_success">#DCFCE7</color>
+    <color name="txt_cancel">#64748B</color>
+    <color name="bg_cancel">#F1F5F9</color>
 </resources>
