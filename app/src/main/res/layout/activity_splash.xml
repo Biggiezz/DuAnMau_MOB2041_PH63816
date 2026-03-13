@@ -9,24 +9,23 @@
     android:orientation="vertical"
     tools:context=".splash.SplashScreen">
 
+    <View
+        android:layout_width="100dp"
+        android:background="@color/color_default"
+        android:layout_height="100dp"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="100dp"
+        android:layout_weight="1"
         android:src="@drawable/logo" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="JP Mart"
-        android:textColor="@color/color_title"
-        android:textSize="26sp"
-        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_weight="1"
         android:letterSpacing="0.1"
         android:text="PREMIUM QUALITY MARKET"
         android:textColor="@color/color_subtitle" />

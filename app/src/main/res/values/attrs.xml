@@ -1,0 +1,19 @@
+<resources>
+    <declare-styleable name="CustomCardView">
+        <attr name="cardIcon" format="reference" />
+        <attr name="cardIcon2" format="reference" />
+        <attr name="cardTitle" format="string" />
+        <attr name="cardSubtitle" format="string" />
+        <attr name="cardTitleStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomMenuRow">
+        <attr name="menuTitle" format="string" />
+        <attr name="menuIcon" format="reference" />
+        <attr name="menuIconBg" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomBottomButton">
+        <attr name="btnIcon" format="reference" />
+    </declare-styleable>
+</resources>
