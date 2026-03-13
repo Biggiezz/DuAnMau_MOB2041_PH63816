@@ -14,12 +14,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.create_account.CreateAccountActivity;
+import com.example.DuAnMau_PH63816.forgot.ForgotPasswordScreen;
 import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
 
 public class LoginScreen extends AppCompatActivity {
     private ImageView icBack;
     private EditText edtEmail, edtPassword;
-    private TextView tvForgotPassword;
+    private TextView tvForgotPassword, tvSignUp;
     private Button btnLogin;
 
     @Override
@@ -48,11 +50,22 @@ public class LoginScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        tvForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginScreen.this, ForgotPasswordScreen.class);
+            startActivity(intent);
+            finish();
+        });
+        tvSignUp.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginScreen.this, CreateAccountActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void initUi() {
         edtEmail = findViewById(R.id.edtEmail);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        tvSignUp = findViewById(R.id.tvSignUp);
         edtPassword = findViewById(R.id.edtPassword);
         icBack = findViewById(R.id.icBack);
         btnLogin = findViewById(R.id.btnLogin);
