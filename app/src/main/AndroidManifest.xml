@@ -13,6 +13,18 @@
         android:theme="@style/Theme.DuAnMau_PH63816"
         tools:targetApi="31">
         <activity
+            android:name=".homepage.HomePageScreen"
+            android:exported="false" />
+        <activity
+            android:name=".forgot.ForgotPasswordScreen"
+            android:exported="false" />
+        <activity
+            android:name=".login.LoginScreen"
+            android:exported="false" />
+        <activity
+            android:name=".splash.SplashScreen"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
