@@ -3,6 +3,7 @@ package com.example.DuAnMau_PH63816.homepage;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.example.DuAnMau_PH63816.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomePageScreen extends AppCompatActivity {
+    private ImageView imgProduct, imgCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

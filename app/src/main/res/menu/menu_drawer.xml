@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
-            android:title="Trang chủ" />
+    <!--    <group android:checkableBehavior="single">-->
+    <!--        <item-->
+    <!--            android:id="@+id/nav_home"-->
+    <!--            android:icon="@drawable/ic_home"-->
+    <!--            android:title="Trang chủ" />-->
 
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_person"
-            android:title="Thông tin" />
+    <!--        <item-->
+    <!--            android:id="@+id/nav_profile"-->
+    <!--            android:icon="@drawable/ic_person"-->
+    <!--            android:title="Thông tin" />-->
 
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_setting"
-            android:title="Cài đặt" />
-    </group>
-    <item android:title="Comunicate">
+    <!--        <item-->
+    <!--            android:id="@+id/nav_settings"-->
+    <!--            android:icon="@drawable/ic_setting"-->
+    <!--            android:title="Cài đặt" />-->
+    <!--    </group>-->
+    <item android:title="@string/comunicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:title="Share" />
+                android:icon="@drawable/ic_share"
+                android:title="@string/share"
+                app:showAsAction="never" />
             <item
                 android:id="@+id/nav_rate"
-                android:title="Rate" />
+                android:icon="@drawable/ic_rate"
+                android:title="@string/rate"
+                app:showAsAction="never" />
         </menu>
     </item>
 
-    <item android:title="Profile">
+    <item android:title="@string/profile">
         <menu>
             <item
                 android:id="@+id/nav_log_out"
                 android:icon="@drawable/ic_logout"
-                android:title="Logout" />
+                android:title="@string/logout" />
         </menu>
     </item>
 
