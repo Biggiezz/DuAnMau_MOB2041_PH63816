@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="Welcome back to JP Mart"
+        android:text="@string/login_title"
         android:textColor="@color/color_title"
         android:textSize="26sp"
         android:textStyle="bold" />
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Log in to your account to continue shopping"
+        android:text="@string/login_subtitle"
         android:textColor="@color/color_subtitle" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="Email or Phone Number"
+        android:text="@string/label_email_or_phone"
         android:textColor="@color/color_title"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -52,7 +52,7 @@
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your email or phone"
+            android:hint="@string/hint_email_or_phone"
             android:textColor="@color/color_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="Password"
+            android:text="@string/label_password"
             android:textColor="@color/color_title"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:text="Forgot Password?"
+            android:text="@string/login_forgot_password"
             android:textAlignment="textEnd"
             android:textColor="@color/color_default"
             android:textSize="12sp"
@@ -95,7 +95,7 @@
             android:id="@+id/edtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your password"
+            android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:textColor="@color/color_hint" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -108,7 +108,7 @@
         android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/color_default"
-        android:text="Log In"
+        android:text="@string/action_log_in"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Don't have an account? "
+            android:text="@string/login_prompt_no_account"
             android:textColor="@color/color_title"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -134,7 +134,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="Sign Up"
+            android:text="@string/action_sign_up"
             android:textAlignment="textEnd"
             android:textColor="@color/color_default"
             android:textSize="12sp"

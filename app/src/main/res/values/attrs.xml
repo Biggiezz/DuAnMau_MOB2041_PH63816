@@ -4,6 +4,7 @@
         <attr name="cardIcon2" format="reference" />
         <attr name="cardTitle" format="string" />
         <attr name="cardSubtitle" format="string" />
+        <attr name="cardSubtitle2" format="string" />
         <attr name="cardTitleStyle" format="reference" />
     </declare-styleable>
 

@@ -1,5 +1,6 @@
 package com.example.DuAnMau_PH63816.homepage;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +17,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.custom.CustomBottomButton;
+import com.example.DuAnMau_PH63816.product.ProductScreen;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomePageScreen extends AppCompatActivity {
-    private ImageView imgProduct, imgCategory;
+    private ImageView imgProduct, imgCategory, imgCustomer, imgPersonnel, imgInvoice, imgTopCustomer, imgStatistical, imgBestSelling;
+    private CustomBottomButton btnHome, btnCart, btnNotification, btnSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,20 @@ public class HomePageScreen extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.main);
         NavigationView navigationView = findViewById(R.id.navigationView);
         Toolbar toolbarHomePage = findViewById(R.id.toolbarHomePage);
+        imgProduct = findViewById(R.id.imgProduct);
+        imgCategory = findViewById(R.id.imgCategory);
+        imgCustomer = findViewById(R.id.imgCustomer);
+        imgPersonnel = findViewById(R.id.imgPersonnel);
+        imgInvoice = findViewById(R.id.imgInvoice);
+        imgTopCustomer = findViewById(R.id.imgTopCustomer);
+        imgStatistical = findViewById(R.id.imgStatistical);
+        imgBestSelling = findViewById(R.id.imgBestSelling);
+        btnHome = findViewById(R.id.btnHome);
+        btnCart = findViewById(R.id.btnCart);
+        btnNotification = findViewById(R.id.btnNotification);
+        btnSetting = findViewById(R.id.btnProfile);
+
+        imgProduct.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProductScreen.class)));
 
         /// toolbar
         setSupportActionBar(toolbarHomePage);
@@ -66,7 +84,7 @@ public class HomePageScreen extends AppCompatActivity {
         /// lấy id của các item
         int id = item.getItemId();
         if (id == R.id.notification) {
-            Toast.makeText(this, "Thông báo", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.toast_notification), Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

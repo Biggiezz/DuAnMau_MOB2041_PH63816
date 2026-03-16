@@ -35,16 +35,14 @@ public class LoginScreen extends AppCompatActivity {
             return insets;
         });
         initUi();
-        icBack.setOnClickListener(v -> {
-            finish();
-        });
+        icBack.setOnClickListener(v -> finish());
         btnLogin.setOnClickListener(v -> {
             String email = edtEmail.getText().toString();
             String password = edtPassword.getText().toString();
             /// check trống
             if (email.isEmpty() || password.isEmpty()) {
-                edtEmail.setError("Vui lòng nhập email");
-                edtPassword.setError("Vui lòng nhập mật khẩu");
+                edtEmail.setError(getString(R.string.error_email_required));
+                edtPassword.setError(getString(R.string.error_password_required));
             } else {
                 Intent intent = new Intent(LoginScreen.this, HomePageScreen.class);
                 startActivity(intent);
