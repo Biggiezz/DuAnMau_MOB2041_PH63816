@@ -1,88 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".product.ProductScreen">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/icBack"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_back" />
 
-            <ImageView
-                android:id="@+id/icBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_back" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/work_sans_medium"
-                android:text="@string/title_product"
-                android:textColor="@color/color_title"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/btnAddProduct"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add" />
-        </LinearLayout>
-
-        <com.example.DuAnMau_PH63816.custom.CustomCardView
-            android:id="@+id/cardRamen"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_weight="1"
             android:fontFamily="@font/work_sans_medium"
-            app:cardCornerRadius="16dp"
-            app:cardIcon="@drawable/ic_ramen"
-            app:cardIcon2="@drawable/ic_edit"
-            app:cardSubtitle="@string/product_card_ramen_subtitle"
-            app:cardSubtitle2="@string/product_card_ramen_subtitle2"
-            app:cardTitle="@string/product_card_ramen_title" />
+            android:text="@string/title_product"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <com.example.DuAnMau_PH63816.custom.CustomCardView
-            android:id="@+id/cardIcream"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imgAddProduct"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/work_sans_medium"
-            app:cardCornerRadius="16dp"
-            app:cardIcon="@drawable/ic_icream_matcha"
-            app:cardIcon2="@drawable/ic_edit"
-            app:cardSubtitle="@string/product_card_icream_subtitle"
-            app:cardSubtitle2="@string/product_card_icream_subtitle2"
-            app:cardTitle="@string/product_card_icream_title" />
-
-        <com.example.DuAnMau_PH63816.custom.CustomCardView
-            android:id="@+id/cardSushi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/work_sans_medium"
-            app:cardCornerRadius="16dp"
-            app:cardIcon="@drawable/ic_set_sushi"
-            app:cardIcon2="@drawable/ic_edit"
-            app:cardSubtitle="@string/product_card_sushi_subtitle"
-            app:cardSubtitle2="@string/product_card_sushi_subtitle2"
-            app:cardTitle="@string/product_card_sushi_title" />
-
+            android:src="@drawable/ic_add" />
     </LinearLayout>
 
-</ScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProducts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_product_card" />
+
+</LinearLayout>

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F9FAFB"
+    android:orientation="vertical"
+    tools:context=".product.DetailProductScreen"
+    tools:ignore="HardcodedText,ContentDescription,UseCompoundDrawables">
+
+    <!-- TOOLBAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/icBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/color_default" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/work_sans_medium"
+            android:text="Chỉnh sửa sản phẩm"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A000000" />
+
+    <!-- CONTENT -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- COVER IMAGE -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginBottom="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:id="@+id/imgProductCover"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_set_sushi" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btnChangeImage"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="@color/color_default" />
+                </androidx.cardview.widget.CardView>
+            </FrameLayout>
+
+            <!-- FORM FIELDS -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/FormInputLayout"
+                android:hint="Mã sản phẩm">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtProductId"
+                    style="@style/FormEditText"
+                    android:text="JP-SUS-01" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/FormInputLayout"
+                android:hint="Tên sản phẩm">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtProductName"
+                    style="@style/FormEditText"
+                    android:text="Sushi Set Omakase" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/FormDropdown"
+                android:hint="Mã danh mục">
+
+                <AutoCompleteTextView
+                    android:id="@+id/spnCategory"
+                    style="@style/FormEditText"
+                    android:inputType="none"
+                    android:text="ẨM THỰC NHBT" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/FormInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:hint="Đơn giá (VNĐ)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtPrice"
+                        style="@style/FormEditText"
+                        android:inputType="numberDecimal"
+                        android:text="850.000" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/FormInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:hint="Số lượng tồn">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtStock"
+                        style="@style/FormEditText"
+                        android:inputType="number"
+                        android:text="45" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/FormDropdown"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:hint="Đơn vị tính">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spnUnit"
+                        style="@style/FormEditText"
+                        android:inputType="none"
+                        android:text="Khay" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/FormInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:hint="Ngày nhập">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtDate"
+                        style="@style/FormEditText"
+                        android:inputType="date"
+                        android:text="10/05/2026" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Trạng thái kinh doanh"
+                android:textColor="@color/color_subtitle"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/rgStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbSelling"
+                    style="@style/StatusRadio"
+                    android:layout_marginEnd="6dp"
+                    android:buttonTint="@color/color_default"
+                    android:checked="true"
+                    android:text="Đang bán"
+                    android:textColor="@color/color_default" />
+
+                <RadioButton
+                    android:id="@+id/rbOutOfStock"
+                    style="@style/StatusRadio"
+                    android:layout_marginStart="6dp"
+                    android:buttonTint="@color/color_subtitle"
+                    android:text="Hết hàng"
+                    android:textColor="@color/color_subtitle" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btnUpdateProduct"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@color/color_default"
+                android:text="Cập nhật sản phẩm"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTTOM MENU -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_home" />
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnCart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_product" />
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnNotification"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_notification" />
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_setting" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -13,8 +13,11 @@ import androidx.cardview.widget.CardView;
 import com.example.DuAnMau_PH63816.R;
 
 public class CustomCardView extends CardView {
-    private ImageView imgIcon, imgEdit;
-    private TextView txtTitle, txtSubTitle, txtSubTitle2;
+    private final ImageView imgIcon;
+    private final ImageView imgEdit;
+    private final TextView txtTitle;
+    private final TextView txtSubTitle;
+    private final TextView txtSubTitle2;
 
     public CustomCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,6 +73,12 @@ public class CustomCardView extends CardView {
 
     public void setSubtitle(String subtitle) {
         txtSubTitle.setText(subtitle);
+    }
+
+    public void setIcon(int resId) {
+        if (resId != 0) {
+            imgIcon.setImageResource(resId);
+        }
     }
 
     public void setSubtitle2(String subtitle2) {
