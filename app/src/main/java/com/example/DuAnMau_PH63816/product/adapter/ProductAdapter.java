@@ -2,6 +2,7 @@ package com.example.DuAnMau_PH63816.product.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomCardView;
 import com.example.DuAnMau_PH63816.product.model.Product;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -47,17 +49,25 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     class ProductViewHolder extends RecyclerView.ViewHolder {
         private final CustomCardView cardView;
+        private final ImageView imgIcon;
 
         ProductViewHolder(@NonNull CustomCardView itemView) {
             super(itemView);
             this.cardView = itemView;
+            this.imgIcon = itemView.findViewById(R.id.imgIcon);
         }
 
         void bind(Product product) {
             cardView.setTitle(product.getName());
             cardView.setSubtitle(product.getPriceLabel());
             cardView.setSubtitle2(product.getStockLabel());
-            cardView.setIcon(product.getImageRes());
+
+            Picasso.get()
+                    .load(product.getImage())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .fit()
+                    .into(imgIcon);
 
             cardView.setOnClickListener(v -> listener.onProductClick(product));
         }

@@ -63,7 +63,7 @@ public class ProductScreen extends AppCompatActivity {
             intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_NAME, product.getName());
             intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_PRICE, product.getPriceLabel());
             intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_STOCK, product.getStockLabel());
-            intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_IMAGE, product.getImageRes());
+            intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_IMAGE, product.getImage());
             startActivity(intent);
         });
 
@@ -71,6 +71,6 @@ public class ProductScreen extends AppCompatActivity {
         rvProducts.setAdapter(adapter);
 
         icBack.setOnClickListener(v -> finish());
-        imgAddProduct.setOnClickListener(v -> Toast.makeText(this, R.string.toast_notification, Toast.LENGTH_SHORT).show());
+        imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));
     }
 }

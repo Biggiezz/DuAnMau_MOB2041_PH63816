@@ -9,8 +9,10 @@ import android.widget.TextView;
 import android.text.TextUtils;
 
 import androidx.cardview.widget.CardView;
+import androidx.annotation.Nullable;
 
 import com.example.DuAnMau_PH63816.R;
+import com.squareup.picasso.Picasso;
 
 public class CustomCardView extends CardView {
     private final ImageView imgIcon;
@@ -78,6 +80,18 @@ public class CustomCardView extends CardView {
     public void setIcon(int resId) {
         if (resId != 0) {
             imgIcon.setImageResource(resId);
+        }
+    }
+
+    public void setIconUrl(@Nullable String url, int placeholderRes) {
+        if (!TextUtils.isEmpty(url)) {
+            Picasso.get()
+                    .load(url)
+                    .placeholder(placeholderRes)
+                    .error(placeholderRes)
+                    .fit()
+                    .centerCrop()
+                    .into(imgIcon);
         }
     }
 
