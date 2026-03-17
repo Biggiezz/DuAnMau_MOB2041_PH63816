@@ -65,4 +65,12 @@
     <string name="log_out">Đăng xuất</string>
     <string name="version">Phiên bản 2.4.0 (JP Mart Management)</string>
     <string name="hotline">Hotline hỗ trợ</string>
+    <string name="update_sercurity">Cập nhật bảo mật</string>
+    <string name="current_password">Mật khẩu hiện tại</string>
+    <string name="enter_current_password">Nhập mật khẩu hiện tại</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="enter_new_password">Nhập mật khẩu mới</string>
+    <string name="confirm_new_password">Xác nhận mật khẩu mới</string>
+    <string name="enter_confirm_password">Nhập lại mật khẩu mới</string>
+    <string name="update_password">Cập nhật mật khẩu</string>
 </resources>
