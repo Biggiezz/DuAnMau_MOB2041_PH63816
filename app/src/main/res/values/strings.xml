@@ -49,4 +49,5 @@
     <string name="product_card_sushi_title">Sushi Set Omakase</string>
     <string name="product_card_sushi_subtitle">850.000k</string>
     <string name="product_card_sushi_subtitle2"> · Tồn: 45</string>
+    <string name="customer_info_format">ID: %1$s • %2$s</string>
 </resources>

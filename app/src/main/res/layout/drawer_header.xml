@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo"
+        android:fontFamily="@font/work_sans_medium"
         android:text="@string/jpmart"
         android:textSize="24sp" />
 
@@ -23,6 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/https_jpmart_vn"
-        android:fontFamily="@font/baloo"
+        android:fontFamily="@font/work_sans"
         android:textColor="@color/color_subtitle" />
 </LinearLayout>
