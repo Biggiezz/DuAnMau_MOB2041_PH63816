@@ -13,6 +13,9 @@
         android:theme="@style/Theme.DuAnMau_PH63816"
         tools:targetApi="31">
         <activity
+            android:name=".profile.ProfileScreen"
+            android:exported="false" />
+        <activity
             android:name=".top_customer.TopCustomerBuyingProductsScreen"
             android:exported="false" />
         <activity
