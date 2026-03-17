@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#FAFAFA"> <!-- Light grey background similar to design -->
+        android:background="#FAFAFA">
 
         <!-- LIST CUSTOMER -->
         <androidx.recyclerview.widget.RecyclerView
@@ -74,7 +74,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- BOTTOM MENU (Reused structure from HomePage) -->
+    <!-- BOTTOM MENU (Reused from HomePage) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"

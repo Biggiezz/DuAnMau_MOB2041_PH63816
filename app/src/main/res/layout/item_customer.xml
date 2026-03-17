@@ -12,101 +12,105 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvCustomerName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_medium"
-            android:textColor="@color/color_title"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/tvCustomerType"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Nguyễn Thị Mai" />
-
-        <TextView
-            android:id="@+id/tvCustomerType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_badge_vip"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="4dp"
-            android:textColor="@color/color_default"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvCustomerName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
-            tools:text="VIP" />
-
-        <TextView
-            android:id="@+id/tvCustomerInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="12dp"
-            android:textColor="@color/color_hint"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@+id/tvCustomerName"
-            tools:text="ID: KH001 • 0901 234 567" />
-
-        <!-- Spending layout combining grey label and bold value -->
         <LinearLayout
-            android:id="@+id/layoutSpending"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imgDetail"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCustomerInfo">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/f"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvCustomerName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/work_sans"
-                android:text="CHI TIÊU: "
-                android:textColor="@color/color_hint"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tvCustomerSpending"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:fontFamily="@font/work_sans_medium"
                 android:textColor="@color/color_title"
-                android:textSize="14sp"
-                tools:text="12.450.000đ" />
+                android:textSize="16sp"
+                tools:text="Nguyễn Thị Mai" />
+
+            <TextView
+                android:id="@+id/tvCustomerType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_badge_vip"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="4dp"
+                android:textColor="@color/color_default"
+                android:textSize="12sp"
+                tools:text="VIP" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imgDetail"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_eye"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imgEdit"
-            app:layout_constraintTop_toTopOf="@+id/tvCustomerInfo"
-            app:tint="@color/color_hint" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imgEdit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_edit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvCustomerInfo"
-            app:tint="@color/color_hint" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tvCustomerInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_hint"
+                    android:textSize="14sp"
+                    tools:text="ID: KH001 • 0901 234 567" />
+
+                <LinearLayout
+                    android:id="@+id/layoutSpending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/f"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans"
+                        android:text="CHI TIÊU: "
+                        android:textColor="@color/color_hint"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvCustomerSpending"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans_medium"
+                        android:textColor="@color/color_title"
+                        android:textSize="14sp"
+                        tools:text="12.450.000đ" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imgDetail"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_eye"
+                app:tint="@color/color_hint" />
+
+            <ImageView
+                android:id="@+id/imgEdit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_edit"
+                app:tint="@color/color_hint" />
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
