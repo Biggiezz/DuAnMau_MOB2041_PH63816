@@ -1,6 +1,8 @@
 package com.example.DuAnMau_PH63816.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +24,15 @@ public class ProfileScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        bindDataFromIntent();
     }
+
+    private void bindDataFromIntent() {
+        Intent intent = getIntent();
+        if (intent == null) return;
+
+        ImageView icBack = findViewById(R.id.icBack);
+        icBack.setOnClickListener(v -> finish());
+    }
+
 }

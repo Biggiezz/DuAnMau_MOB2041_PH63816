@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/work_sans_medium"
             android:gravity="center"
-            android:text="Cài đặt"
+            android:text="@string/setting"
             android:textColor="@color/color_title"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -59,10 +59,12 @@
                 android:orientation="horizontal"
                 android:padding="24dp">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_delete" />
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/circleImage"
+                    android:src="@drawable/ph63816" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,7 +78,7 @@
                         android:id="@+id/tvNameLoginProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nguyễn Mạnh Phúc"
+                        android:text="@string/name"
                         android:textColor="@color/color_title"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -85,7 +87,7 @@
                         android:id="@+id/tvPower"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="QUẢN LÝ"
+                        android:text="@string/power"
                         android:textColor="@color/color_default"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -99,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Tài khoản"
+                android:text="@string/account"
                 android:textColor="@color/color_subtitle"
                 android:textStyle="bold" />
 
@@ -135,7 +137,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Thông tin cá nhân"
+                            android:text="@string/personal_information"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -163,13 +165,14 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="12dp"
                             android:src="@drawable/ic_chage_lock"
-                            app:tint="@color/color_title" />
+                            />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Đổi mật khẩu"
+
+                            android:text="@string/chage_password"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -202,7 +205,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Bảo mật"
+                            android:text="@string/sercurity"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -224,7 +227,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="Tùy chọn"
+                android:text="@string/option"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -260,7 +263,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ngôn ngữ"
+                            android:text="@string/laguage"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -293,7 +296,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Thông báo"
+                            android:text="@string/notification"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -315,7 +318,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="Hỗ trợ"
+                android:text="@string/help"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -342,8 +345,8 @@
                         android:paddingVertical="12dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_marginEnd="12dp"
                             android:src="@drawable/ic_phone" />
 
@@ -351,7 +354,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Hotline hỗ trợ"
+                            android:text="@string/hotline"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -384,7 +387,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Điều khoản &amp; Chính sách"
+                            android:text="@string/policy_terms"
                             android:textColor="@color/color_title"
                             android:textSize="14sp" />
 
@@ -405,7 +408,7 @@
                 android:layout_margin="16dp"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/color_button_logout"
-                android:text="Đăng xuất"
+                android:text="@string/log_out"
                 android:textAllCaps="false"
                 android:textColor="@color/color_txt_logout"
                 android:textSize="20sp"
@@ -416,7 +419,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Phiên bản 2.4.0 (JP Mart Management)"
+                android:text="@string/version"
                 android:textColor="@color/color_hint" />
         </LinearLayout>
 
