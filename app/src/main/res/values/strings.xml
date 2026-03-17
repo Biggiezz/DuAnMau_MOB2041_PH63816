@@ -50,4 +50,19 @@
     <string name="product_card_sushi_subtitle">850.000k</string>
     <string name="product_card_sushi_subtitle2"> · Tồn: 45</string>
     <string name="customer_info_format">ID: %1$s • %2$s</string>
+    <string name="setting">Cài đặt</string>
+    <string name="name">Nguyễn Mạnh Phúc</string>
+    <string name="power">QUẢN LÝ</string>
+    <string name="account">Tài khoản</string>
+    <string name="personal_information">Thông tin cá nhân</string>
+    <string name="chage_password">Đổi mật khẩu</string>
+    <string name="sercurity">Bảo mật</string>
+    <string name="option">Tùy chọn</string>
+    <string name="laguage">Ngôn ngữ</string>
+    <string name="notification">Thông báo</string>
+    <string name="help">Hỗ trợ</string>
+    <string name="policy_terms"><![CDATA[Điều khoản & Chính sách]]></string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="version">Phiên bản 2.4.0 (JP Mart Management)</string>
+    <string name="hotline">Hotline hỗ trợ</string>
 </resources>
