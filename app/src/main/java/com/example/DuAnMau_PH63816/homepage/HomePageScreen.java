@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomBottomButton;
+import com.example.DuAnMau_PH63816.customer.CustomerManagementScreen;
 import com.example.DuAnMau_PH63816.product.ProductScreen;
 import com.google.android.material.navigation.NavigationView;
 
@@ -57,6 +58,7 @@ public class HomePageScreen extends AppCompatActivity {
         btnSetting = findViewById(R.id.btnProfile);
 
         imgProduct.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProductScreen.class)));
+        imgCustomer.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, CustomerManagementScreen.class)));
 
         /// toolbar
         setSupportActionBar(toolbarHomePage);

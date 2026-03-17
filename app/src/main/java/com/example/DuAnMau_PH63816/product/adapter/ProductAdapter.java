@@ -1,4 +1,4 @@
-package com.example.DuAnMau_PH63816.product;
+package com.example.DuAnMau_PH63816.product.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomCardView;
+import com.example.DuAnMau_PH63816.product.model.Product;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.DuAnMau_PH63816.product;
+package com.example.DuAnMau_PH63816.product.model;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;

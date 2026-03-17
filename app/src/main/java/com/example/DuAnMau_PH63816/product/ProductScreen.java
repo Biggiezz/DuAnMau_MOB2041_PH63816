@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
+import com.example.DuAnMau_PH63816.product.model.Product;
 
 import java.util.Arrays;
 import java.util.List;
