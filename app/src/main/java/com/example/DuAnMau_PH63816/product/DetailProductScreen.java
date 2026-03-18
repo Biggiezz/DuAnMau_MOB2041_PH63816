@@ -15,10 +15,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class DetailProductScreen extends AppCompatActivity {
 
-    public static final String EXTRA_PRODUCT_NAME = "extra_product_name";
-    public static final String EXTRA_PRODUCT_PRICE = "extra_product_price";
-    public static final String EXTRA_PRODUCT_STOCK = "extra_product_stock";
-    public static final String EXTRA_PRODUCT_IMAGE = "extra_product_image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +38,12 @@ public class DetailProductScreen extends AppCompatActivity {
         ImageView imgProductCover = findViewById(R.id.imgProductCover);
         TextInputEditText edtProductName = findViewById(R.id.edtProductName);
 
-        String name = intent.getStringExtra(EXTRA_PRODUCT_NAME);
+        String name = intent.getStringExtra("extra_product_name");
         if (name != null && edtProductName != null) {
             edtProductName.setText(name);
         }
 
-        int imgRes = intent.getIntExtra(EXTRA_PRODUCT_IMAGE, 0);
+        int imgRes = intent.getIntExtra("extra_product_image", 0);
         if (imgRes != 0 && imgProductCover != null) {
             imgProductCover.setImageResource(imgRes);
         }

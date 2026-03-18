@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:layout_margin="16dp"
     tools:context=".product.ProductScreen">
 
     <LinearLayout
@@ -38,12 +38,14 @@
             android:src="@drawable/ic_add" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProducts"
+    <ListView
+        android:id="@+id/lvProducts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         tools:listitem="@layout/item_product_card" />

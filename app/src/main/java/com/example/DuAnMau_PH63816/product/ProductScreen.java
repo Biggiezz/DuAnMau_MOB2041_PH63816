@@ -3,22 +3,16 @@ package com.example.DuAnMau_PH63816.product;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.Toast;
-
+import android.widget.ListView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
 import com.example.DuAnMau_PH63816.product.model.Product;
-
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 public class ProductScreen extends AppCompatActivity {
 
@@ -38,37 +32,23 @@ public class ProductScreen extends AppCompatActivity {
     private void initUi() {
         ImageView icBack = findViewById(R.id.icBack);
         ImageView imgAddProduct = findViewById(R.id.imgAddProduct);
-        RecyclerView rvProducts = findViewById(R.id.rvProducts);
+        ListView lvProducts = findViewById(R.id.lvProducts);
 
-        List<Product> products = Arrays.asList(
-                new Product(
-                        getString(R.string.product_card_ramen_title),
-                        getString(R.string.product_card_ramen_subtitle),
-                        getString(R.string.product_card_ramen_subtitle2),
-                        R.drawable.ic_ramen),
-                new Product(
-                        getString(R.string.product_card_icream_title),
-                        getString(R.string.product_card_icream_subtitle),
-                        getString(R.string.product_card_icream_subtitle2),
-                        R.drawable.ic_icream_matcha),
-                new Product(
-                        getString(R.string.product_card_sushi_title),
-                        getString(R.string.product_card_sushi_subtitle),
-                        getString(R.string.product_card_sushi_subtitle2),
-                        R.drawable.ic_set_sushi)
-        );
+        ArrayList<Product> products = new ArrayList<>();
+        products.add(new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen));
+        products.add(new Product("Kem Matcha Premium", "45.000k", " · Tồn: 12", R.drawable.ic_icream_matcha));
+        products.add(new Product("Sushi Set Omakase", "850.000k", " · Tồn: 45", R.drawable.ic_set_sushi));
 
-        ProductAdapter adapter = new ProductAdapter(products, product -> {
+        ProductAdapter adapter = new ProductAdapter(this, products, product -> {
             Intent intent = new Intent(ProductScreen.this, DetailProductScreen.class);
-            intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_NAME, product.getName());
-            intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_PRICE, product.getPriceLabel());
-            intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_STOCK, product.getStockLabel());
-            intent.putExtra(DetailProductScreen.EXTRA_PRODUCT_IMAGE, product.getImage());
+            intent.putExtra("extra_product_name", product.getName());
+            intent.putExtra("extra_product_price", product.getPriceLabel());
+            intent.putExtra("extra_product_stock", product.getStockLabel());
+            intent.putExtra("extra_product_image", product.getImage());
             startActivity(intent);
         });
 
-        rvProducts.setLayoutManager(new LinearLayoutManager(this));
-        rvProducts.setAdapter(adapter);
+        lvProducts.setAdapter(adapter);
 
         icBack.setOnClickListener(v -> finish());
         imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));
