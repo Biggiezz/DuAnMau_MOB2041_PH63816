@@ -327,12 +327,12 @@
                     android:layout_weight="1"
                     android:background="@drawable/radio_bg_selector"
                     android:button="@null"
+                    android:checked="true"
                     android:gravity="center"
                     android:text="VIP"
                     android:textColor="@color/txt_radio_selector"
                     android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:checked="true" />
+                    android:textStyle="bold" />
 
                 <RadioButton
                     android:id="@+id/rbMember"
@@ -375,7 +375,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="8dp" />
 
         </LinearLayout>
     </ScrollView>
