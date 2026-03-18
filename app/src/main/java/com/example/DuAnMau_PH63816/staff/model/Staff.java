@@ -1,4 +1,4 @@
-package com.example.DuAnMau_PH63816.staff;
+package com.example.DuAnMau_PH63816.staff.model;
 
 public class Staff {
     private int staffCode;
@@ -7,19 +7,30 @@ public class Staff {
     private String password;
     private String phone;
     private String address;
+    private int image;
     private int role;
 
-    public Staff(int staffCode, String nameStaff, String nameLogin, String password, String phone, String address, int role) {
+    public Staff(int staffCode, String nameStaff, String nameLogin, String password, String phone, String address, int image, int role) {
         this.staffCode = staffCode;
         this.nameStaff = nameStaff;
         this.nameLogin = nameLogin;
         this.password = password;
         this.phone = phone;
         this.address = address;
+        this.image = image;
         this.role = role;
     }
 
     public Staff() {
+
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
     }
 
     public int getStaffCode() {

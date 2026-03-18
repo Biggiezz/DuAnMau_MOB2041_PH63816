@@ -3,14 +3,13 @@ package com.example.DuAnMau_PH63816.customer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.customer.adapter.CustomerAdapter;
@@ -18,8 +17,6 @@ import com.example.DuAnMau_PH63816.customer.model.Customer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class CustomerManagementScreen extends AppCompatActivity {
 
@@ -42,7 +39,7 @@ public class CustomerManagementScreen extends AppCompatActivity {
 
         ImageView icBack = findViewById(R.id.icBack);
         FloatingActionButton floatAddCustomer = findViewById(R.id.fabAddCustomer);
-        RecyclerView rvCustomer = findViewById(R.id.rcvCustomer);
+        ListView lvCustomer = findViewById(R.id.lvCustomer);
 
         ArrayList<Customer> customers = new ArrayList<>();
 
@@ -52,19 +49,18 @@ public class CustomerManagementScreen extends AppCompatActivity {
         customers.add(new Customer("KH004", "Phạm Minh Tuấn", "0933 111 222", "tuanpm.@gmail.com", "412 Hà Tu, Hạ Long, Quảng Ninh", "21.050.000", "VIP"));
         customers.add(new Customer("KH005", "Đặng Thu Thảo", "0944 555 666", "thaodt.@gmail.com", "16 Phạm Hùng, Nam Từ Liêm, TP.Hà Nội", "1.500.000", "VIP"));
 
-        CustomerAdapter adapter = new CustomerAdapter(customers, customer -> {
+        CustomerAdapter adapter = new CustomerAdapter(this, customers, customer -> {
             Intent intent1 = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_NAME, customer.getName());
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_NAME_BIG, customer.getName());
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_ID, customer.getId());
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_EMAIL, customer.getEmail());
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_PHONE, customer.getPhone());
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_PRICE, customer.getPrice());
-            intent1.putExtra(DetailCustomerScreen.EXTRA_CUSTOMER_STATUS, customer.getStatus());
+            intent1.putExtra("extra_customer_name", customer.getName());
+            intent1.putExtra("extra_customer_name_big", customer.getName());
+            intent1.putExtra("extra_customer_id", customer.getId());
+            intent1.putExtra("extra_customer_email", customer.getEmail());
+            intent1.putExtra("extra_customer_phone", customer.getPhone());
+            intent1.putExtra("extra_customer_price", customer.getPrice());
+            intent1.putExtra("extra_customer_status", customer.getStatus());
             startActivity(intent1);
         });
-        rvCustomer.setLayoutManager(new LinearLayoutManager(this));
-        rvCustomer.setAdapter(adapter);
+        lvCustomer.setAdapter(adapter);
 
         floatAddCustomer.setOnClickListener(v -> {
             startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class));

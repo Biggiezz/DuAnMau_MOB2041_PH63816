@@ -7,24 +7,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.DuAnMau_PH63816.R;
 
 public class DetailCustomerScreen extends AppCompatActivity {
-    public static final String EXTRA_CUSTOMER_NAME = "extra_customer_name";
-    public static final String EXTRA_CUSTOMER_NAME_BIG = "extra_customer_name_big";
-    public static final String EXTRA_CUSTOMER_ID = "extra_customer_id";
-    public static final String EXTRA_CUSTOMER_PHONE = "extra_customer_phone";
-    public static final String EXTRA_CUSTOMER_PRICE = "extra_customer_price";
-    public static final String EXTRA_CUSTOMER_EMAIL = "extra_customer_email";
-    public static final String EXTRA_CUSTOMER_STATUS = "extra_customer_status";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,33 +46,33 @@ public class DetailCustomerScreen extends AppCompatActivity {
         TextView tvCustomerNameBig = findViewById(R.id.tvCustomerNameBig);
 
 
-        String customerName = intent.getStringExtra(EXTRA_CUSTOMER_NAME_BIG);
+        String customerName = intent.getStringExtra("extra_customer_name_big");
         if (customerName != null && tvCustomerNameBig != null) {
             tvCustomerNameBig.setText(customerName);
         }
 
-        String name = intent.getStringExtra(EXTRA_CUSTOMER_NAME);
+        String name = intent.getStringExtra("extra_customer_name");
         if (name != null && edtCustomerName != null) {
             edtCustomerName.setText(name);
         }
-        String phone = intent.getStringExtra(EXTRA_CUSTOMER_PHONE);
+        String phone = intent.getStringExtra("extra_customer_phone");
         if (phone != null && edtPhone != null) {
             edtPhone.setText(phone);
         }
-        String email = intent.getStringExtra(EXTRA_CUSTOMER_EMAIL);
+        String email = intent.getStringExtra("extra_customer_email");
         if (email != null && edtEmail != null) {
             edtEmail.setText(email);
         }
-        String id = intent.getStringExtra(EXTRA_CUSTOMER_ID);
+        String id = intent.getStringExtra("extra_customer_id");
         if (id != null && edtCustomerCode != null) {
             edtCustomerCode.setText(id);
         }
 
-        String price = intent.getStringExtra(EXTRA_CUSTOMER_PRICE);
+        String price = intent.getStringExtra("extra_customer_price");
         if (price != null && edtAmount != null) {
             edtAmount.setText(price);
         }
-        String status = intent.getStringExtra(EXTRA_CUSTOMER_STATUS);
+        String status = intent.getStringExtra("extra_customer_status");
 
         if (status != null) {
             if (status.equals("VIP")) {

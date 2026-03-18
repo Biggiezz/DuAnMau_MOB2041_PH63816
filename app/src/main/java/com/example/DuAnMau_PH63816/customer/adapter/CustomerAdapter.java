@@ -1,97 +1,101 @@
 package com.example.DuAnMau_PH63816.customer.adapter;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
-
 import java.util.List;
 
-public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.CustomerViewHolder> {
-
+public class CustomerAdapter extends BaseAdapter {
 
     public interface OnCustomerClickListener {
-        void onCustomerClick(@NonNull Customer customer);
+        void onCustomerClick(Customer customer);
     }
 
+    private final Context context;
+    private final LayoutInflater inflater;
     private final List<Customer> items;
     private final OnCustomerClickListener listener;
 
-    public CustomerAdapter(List<Customer> items, OnCustomerClickListener listener) {
+    public CustomerAdapter(Context context, List<Customer> items, OnCustomerClickListener listener) {
+        this.context = context;
+        this.inflater = LayoutInflater.from(context);
         this.items = items;
         this.listener = listener;
     }
 
-
-    @NonNull
     @Override
-    public CustomerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_customer, parent, false);
-        return new CustomerViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull CustomerViewHolder holder, int position) {
-        Customer customer = items.get(position);
-        holder.bind(customer);
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         return items.size();
     }
 
-    class CustomerViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public Customer getItem(int position) {
+        return items.get(position);
+    }
 
-        private final TextView tvCustomerName;
-        private final TextView tvCustomerType;
-        private final TextView tvCustomerInfo;
-        private final TextView tvCustomerSpending;
-        private final ImageView imgDetail;
-        private final ImageView imgEdit;
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            View view = inflater.inflate(R.layout.item_customer, parent, false);
+            holder = new ViewHolder(view);
+            view.setTag(holder);
+            convertView = view;
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-        public CustomerViewHolder(@NonNull View itemView) {
-            super(itemView);
+        Customer customer = getItem(position);
+        holder.tvCustomerName.setText(customer.getName());
+        holder.tvCustomerType.setText(customer.getStatus());
+        holder.tvCustomerInfo.setText(
+                context.getString(
+                        R.string.customer_info_format,
+                        customer.getId(),
+                        customer.getPhone())
+        );
+        int statusColor = "VIP".equals(customer.getStatus())
+                ? R.drawable.bg_badge_vip
+                : R.drawable.bg_badge_member;
+
+        holder.tvCustomerType.setBackgroundResource(statusColor);
+
+        holder.tvCustomerSpending.setText(customer.getPrice());
+
+        View.OnClickListener clickListener = v -> listener.onCustomerClick(customer);
+        convertView.setOnClickListener(clickListener);
+        holder.imgDetail.setOnClickListener(clickListener);
+        holder.imgEdit.setOnClickListener(clickListener);
+
+        return convertView;
+    }
+
+    private static class ViewHolder {
+        final TextView tvCustomerName;
+        final TextView tvCustomerType;
+        final TextView tvCustomerInfo;
+        final TextView tvCustomerSpending;
+        final ImageView imgDetail;
+        final ImageView imgEdit;
+
+        ViewHolder(View itemView) {
             tvCustomerName = itemView.findViewById(R.id.tvCustomerName);
             tvCustomerType = itemView.findViewById(R.id.tvCustomerType);
             tvCustomerInfo = itemView.findViewById(R.id.tvCustomerInfo);
             tvCustomerSpending = itemView.findViewById(R.id.tvCustomerSpending);
             imgDetail = itemView.findViewById(R.id.imgDetail);
             imgEdit = itemView.findViewById(R.id.imgEdit);
-        }
-
-        void bind(Customer customer) {
-            tvCustomerName.setText(customer.getName());
-            tvCustomerType.setText(customer.getStatus());
-            tvCustomerInfo.setText(
-                    itemView.getContext().getString(
-                            R.string.customer_info_format,
-                            customer.getId(),
-                            customer.getPhone())
-            );
-            int statusColor = "VIP".equals(customer.getStatus())
-                    ? R.drawable.bg_badge_vip
-                    : R.drawable.bg_badge_member;
-
-            tvCustomerType.setBackgroundResource(statusColor);
-
-            tvCustomerSpending.setText(customer.getPrice());
-
-            // Keep click behaviour consistent across the card and action icons
-            View.OnClickListener clickListener = v -> listener.onCustomerClick(customer);
-            itemView.setOnClickListener(clickListener);
-            imgDetail.setOnClickListener(clickListener);
-            imgEdit.setOnClickListener(clickListener);
         }
     }
 }

@@ -49,13 +49,15 @@
         android:background="#FAFAFA">
 
         <!-- LIST CUSTOMER -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcvCustomer"
+        <ListView
+            android:id="@+id/lvCustomer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="12dp"
             android:paddingBottom="100dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
             tools:listitem="@layout/item_customer" />
 
         <!-- FAB ADD CUSTOMER -->

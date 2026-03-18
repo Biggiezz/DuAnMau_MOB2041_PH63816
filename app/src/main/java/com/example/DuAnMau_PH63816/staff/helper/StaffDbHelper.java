@@ -1,10 +1,8 @@
-package com.example.DuAnMau_PH63816.staff;
+package com.example.DuAnMau_PH63816.staff.helper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
 
 public class StaffDbHelper extends SQLiteOpenHelper {
     public StaffDbHelper(Context context) {
