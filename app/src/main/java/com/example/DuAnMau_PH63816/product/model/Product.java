@@ -1,22 +1,16 @@
 package com.example.DuAnMau_PH63816.product.model;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-
 public class Product {
 
     private int id;
     private String name;
     private String priceLabel;
     private String stockLabel;
-    // Lưu đường dẫn ảnh: có thể là URL hoặc chuỗi mã resource (String.valueOf(R.drawable.xxx))
     private String image;
 
     public Product() {
-        // Required empty constructor for SQLite/DAO operations
     }
 
-    public Product(int id, @NonNull String name, @NonNull String priceLabel, @NonNull String stockLabel, @NonNull String image) {
+    public Product(int id, String name, String priceLabel, String stockLabel, String image) {
         this.id = id;
         this.name = name;
         this.priceLabel = priceLabel;
@@ -24,15 +18,15 @@ public class Product {
         this.image = image;
     }
 
-    public Product(@NonNull String name, @NonNull String priceLabel, @NonNull String stockLabel, @NonNull String image) {
+    public Product(String name, String priceLabel, String stockLabel, String image) {
         this(0, name, priceLabel, stockLabel, image);
     }
 
-    public Product(int id, @NonNull String name, @NonNull String priceLabel, @NonNull String stockLabel, @DrawableRes int imageRes) {
+    public Product(int id, String name, String priceLabel, String stockLabel, int imageRes) {
         this(id, name, priceLabel, stockLabel, String.valueOf(imageRes));
     }
 
-    public Product(@NonNull String name, @NonNull String priceLabel, @NonNull String stockLabel, @DrawableRes int imageRes) {
+    public Product(String name, String priceLabel, String stockLabel, int imageRes) {
         this(0, name, priceLabel, stockLabel, String.valueOf(imageRes));
     }
 
