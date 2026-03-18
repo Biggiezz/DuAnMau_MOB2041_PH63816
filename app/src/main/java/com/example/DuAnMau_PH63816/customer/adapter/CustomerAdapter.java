@@ -4,24 +4,33 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
+
 import java.util.List;
 
-public class CustomerAdapter extends BaseAdapter {
+/// extend adapter cua recycler view vao class nay
+public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHolder> {
 
     public interface OnCustomerClickListener {
-        void onCustomerClick(Customer customer);
+        void onDetail(@NonNull Customer customer);
+
+        void onEdit(@NonNull Customer customer);
     }
 
+    /// khai bao context va list de lay du lieu
     private final Context context;
     private final LayoutInflater inflater;
     private final List<Customer> items;
     private final OnCustomerClickListener listener;
 
+    /// khoi tao context va list de lay du lieu
     public CustomerAdapter(Context context, List<Customer> items, OnCustomerClickListener listener) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -29,34 +38,19 @@ public class CustomerAdapter extends BaseAdapter {
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
-        return items.size();
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        /// lay layoutInflater de lay layout custom
+        View view = inflater.inflate(R.layout.item_customer, parent, false);
+        /// no se tra ve viewholder
+        return new ViewHolder(view);
     }
 
     @Override
-    public Customer getItem(int position) {
-        return items.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            View view = inflater.inflate(R.layout.item_customer, parent, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-            convertView = view;
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        Customer customer = getItem(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        /// lay du lieu tu list va gan vao viewholder de hien thi len giao dien
+        Customer customer = items.get(position);
         holder.tvCustomerName.setText(customer.getName());
         holder.tvCustomerType.setText(customer.getStatus());
         holder.tvCustomerInfo.setText(
@@ -73,15 +67,24 @@ public class CustomerAdapter extends BaseAdapter {
 
         holder.tvCustomerSpending.setText(customer.getPrice());
 
-        View.OnClickListener clickListener = v -> listener.onCustomerClick(customer);
-        convertView.setOnClickListener(clickListener);
-        holder.imgDetail.setOnClickListener(clickListener);
-        holder.imgEdit.setOnClickListener(clickListener);
-
-        return convertView;
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onDetail(customer);
+        });
+        holder.imgDetail.setOnClickListener(v -> {
+            if (listener != null) listener.onDetail(customer);
+        });
+        holder.imgEdit.setOnClickListener(v -> {
+            if (listener != null) listener.onEdit(customer);
+        });
     }
 
-    private static class ViewHolder {
+    @Override
+    public int getItemCount() {
+        return items != null ? items.size() : 0;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        /// lay du lieu tu layout custom
         final TextView tvCustomerName;
         final TextView tvCustomerType;
         final TextView tvCustomerInfo;
@@ -90,6 +93,7 @@ public class CustomerAdapter extends BaseAdapter {
         final ImageView imgEdit;
 
         ViewHolder(View itemView) {
+            super(itemView);
             tvCustomerName = itemView.findViewById(R.id.tvCustomerName);
             tvCustomerType = itemView.findViewById(R.id.tvCustomerType);
             tvCustomerInfo = itemView.findViewById(R.id.tvCustomerInfo);

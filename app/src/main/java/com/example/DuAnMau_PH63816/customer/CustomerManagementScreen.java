@@ -3,13 +3,15 @@ package com.example.DuAnMau_PH63816.customer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.customer.adapter.CustomerAdapter;
@@ -39,7 +41,7 @@ public class CustomerManagementScreen extends AppCompatActivity {
 
         ImageView icBack = findViewById(R.id.icBack);
         FloatingActionButton floatAddCustomer = findViewById(R.id.fabAddCustomer);
-        ListView lvCustomer = findViewById(R.id.lvCustomer);
+        RecyclerView rvCustomer = findViewById(R.id.rvCustomer);
 
         ArrayList<Customer> customers = new ArrayList<>();
 
@@ -49,18 +51,39 @@ public class CustomerManagementScreen extends AppCompatActivity {
         customers.add(new Customer("KH004", "Phạm Minh Tuấn", "0933 111 222", "tuanpm.@gmail.com", "412 Hà Tu, Hạ Long, Quảng Ninh", "21.050.000", "VIP"));
         customers.add(new Customer("KH005", "Đặng Thu Thảo", "0944 555 666", "thaodt.@gmail.com", "16 Phạm Hùng, Nam Từ Liêm, TP.Hà Nội", "1.500.000", "VIP"));
 
-        CustomerAdapter adapter = new CustomerAdapter(this, customers, customer -> {
-            Intent intent1 = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
-            intent1.putExtra("extra_customer_name", customer.getName());
-            intent1.putExtra("extra_customer_name_big", customer.getName());
-            intent1.putExtra("extra_customer_id", customer.getId());
-            intent1.putExtra("extra_customer_email", customer.getEmail());
-            intent1.putExtra("extra_customer_phone", customer.getPhone());
-            intent1.putExtra("extra_customer_price", customer.getPrice());
-            intent1.putExtra("extra_customer_status", customer.getStatus());
-            startActivity(intent1);
-        });
-        lvCustomer.setAdapter(adapter);
+        CustomerAdapter adapter = new CustomerAdapter(
+                this,
+                customers,
+                new CustomerAdapter.OnCustomerClickListener() {
+                    @Override
+                    public void onDetail(@NonNull Customer customer) {
+                        Intent intent1 = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
+                        intent1.putExtra("extra_customer_name", customer.getName());
+                        intent1.putExtra("extra_customer_name_big", customer.getName());
+                        intent1.putExtra("extra_customer_id", customer.getId());
+                        intent1.putExtra("extra_customer_email", customer.getEmail());
+                        intent1.putExtra("extra_customer_phone", customer.getPhone());
+                        intent1.putExtra("extra_customer_price", customer.getPrice());
+                        intent1.putExtra("extra_customer_status", customer.getStatus());
+                        startActivity(intent1);
+                    }
+
+                    @Override
+                    public void onEdit(@NonNull Customer customer) {
+                        Intent intent1 = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
+                        intent1.putExtra("extra_customer_name", customer.getName());
+                        intent1.putExtra("extra_customer_name_big", customer.getName());
+                        intent1.putExtra("extra_customer_id", customer.getId());
+                        intent1.putExtra("extra_customer_email", customer.getEmail());
+                        intent1.putExtra("extra_customer_phone", customer.getPhone());
+                        intent1.putExtra("extra_customer_price", customer.getPrice());
+                        intent1.putExtra("extra_customer_status", customer.getStatus());
+                        startActivity(intent1);
+                    }
+                }
+        );
+        rvCustomer.setLayoutManager(new LinearLayoutManager(this));
+        rvCustomer.setAdapter(adapter);
 
         floatAddCustomer.setOnClickListener(v -> {
             startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class));

@@ -3,15 +3,19 @@ package com.example.DuAnMau_PH63816.product;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.ListView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
 import com.example.DuAnMau_PH63816.product.model.Product;
+
 import java.util.ArrayList;
 
 public class ProductScreen extends AppCompatActivity {
@@ -32,7 +36,7 @@ public class ProductScreen extends AppCompatActivity {
     private void initUi() {
         ImageView icBack = findViewById(R.id.icBack);
         ImageView imgAddProduct = findViewById(R.id.imgAddProduct);
-        ListView lvProducts = findViewById(R.id.lvProducts);
+        RecyclerView rvProducts = findViewById(R.id.rvProducts);
 
         ArrayList<Product> products = new ArrayList<>();
         products.add(new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen));
@@ -48,7 +52,8 @@ public class ProductScreen extends AppCompatActivity {
             startActivity(intent);
         });
 
-        lvProducts.setAdapter(adapter);
+        rvProducts.setLayoutManager(new LinearLayoutManager(this));
+        rvProducts.setAdapter(adapter);
 
         icBack.setOnClickListener(v -> finish());
         imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));

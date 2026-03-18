@@ -2,12 +2,11 @@ package com.example.DuAnMau_PH63816.product.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomCardView;
@@ -16,83 +15,81 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ProductAdapter extends BaseAdapter {
+/// extend adapter cua recycler view vao class nay
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     public interface OnProductClickListener {
         void onProductClick(@NonNull Product product);
     }
 
+    /// khai bao context va list de lay du lieu
     private final LayoutInflater inflater;
     private final List<Product> items;
     private final OnProductClickListener listener;
 
+    /// khoi tao context va list de lay du lieu
     public ProductAdapter(Context context, List<Product> items, OnProductClickListener listener) {
         this.inflater = LayoutInflater.from(context);
         this.items = items;
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
-        return items.size();
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        /// lay layoutInflater de lay layout custom
+        CustomCardView cardView = (CustomCardView) inflater.inflate(R.layout.item_product_card, parent, false);
+
+        /// no se tra ve viewholder
+        return new ViewHolder(cardView);
     }
 
     @Override
-    public Product getItem(int position) {
-        return items.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            CustomCardView cardView = (CustomCardView) inflater.inflate(R.layout.item_product_card, parent, false);
-            holder = new ViewHolder(cardView);
-            cardView.setTag(holder);
-            convertView = cardView;
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        Product product = getItem(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        /// lay du lieu tu list va gan vao viewholder de hien thi len giao dien
+        Product product = items.get(position);
 
         holder.cardView.setTitle(product.getName());
         holder.cardView.setSubtitle(product.getPriceLabel());
         holder.cardView.setSubtitle2(product.getStockLabel());
 
         String image = product.getImage();
-        try {
-            int resId = Integer.parseInt(image);
-            Picasso.get()
-                    .load(resId)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
-                    .fit()
-                    .into(holder.imgIcon);
-        } catch (NumberFormatException ex) {
-            Picasso.get()
-                    .load(image)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
-                    .fit()
-                    .into(holder.imgIcon);
+        if (image != null) {
+            try {
+                int resId = Integer.parseInt(image);
+                Picasso.get()
+                        .load(resId)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_background)
+                        .fit()
+                        .into(holder.imgIcon);
+            } catch (NumberFormatException ex) {
+                Picasso.get()
+                        .load(image)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_background)
+                        .fit()
+                        .into(holder.imgIcon);
+            }
+        } else {
+            holder.imgIcon.setImageResource(R.drawable.ic_launcher_background);
         }
 
         holder.cardView.setOnClickListener(v -> listener.onProductClick(product));
-
-        return convertView;
     }
 
-    private static class ViewHolder {
+    @Override
+    public int getItemCount() {
+        return items != null ? items.size() : 0;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        /// lay du lieu tu layout custom
         final CustomCardView cardView;
         final ImageView imgIcon;
 
         ViewHolder(@NonNull CustomCardView cardView) {
+            super(cardView);
             this.cardView = cardView;
             this.imgIcon = cardView.findViewById(R.id.imgIcon);
         }

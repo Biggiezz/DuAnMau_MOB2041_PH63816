@@ -1,67 +1,66 @@
 <resources>
-    <string name="app_name">DuAnMau_PH63816</string>
-    <string name="bottom_icon">bottom_ic\n</string>
-    <string name="jpmart">JPMart</string>
-    <string name="https_jpmart_vn">https://jpmart.vn</string>
-    <string name="comunicate">Comunicate</string>
-    <string name="share">Share</string>
-    <string name="rate">Rate</string>
-    <string name="profile">Profile</string>
-    <string name="logout">Logout</string>
-    <string name="create_account_title">Create Account</string>
-    <string name="create_account_subtitle">Join JP Mart to discover authentic Japanese goods.</string>
-    <string name="label_full_name">Full name</string>
-    <string name="label_email_or_phone">Email or Phone Number</string>
-    <string name="label_password">Password</string>
-    <string name="action_sign_up">Sign Up</string>
-    <string name="prompt_already_have_account">Already have an account? </string>
-    <string name="action_log_in">Log In</string>
-    <string name="hint_full_name">Enter your full name</string>
-    <string name="hint_email_or_phone">Enter your email or phone number</string>
-    <string name="hint_create_password">Create your password</string>
-    <string name="hint_password">Enter your password</string>
-    <string name="hello_world">Hello World!</string>
-    <string name="splash_tagline">PREMIUM QUALITY MARKET</string>
-    <string name="title_product">Sản phẩm</string>
-    <string name="home_label_product">Sản phẩm</string>
-    <string name="home_label_category">Danh mục</string>
-    <string name="home_label_customer">Khách hàng</string>
-    <string name="home_label_staff">Nhân viên</string>
-    <string name="home_label_invoice">Hóa đơn</string>
-    <string name="home_label_top_customer">Top khách hàng</string>
-    <string name="home_label_revenue">Thống kê\nDoanh thu</string>
-    <string name="home_label_best_selling">Sản phẩm\nBán chạy</string>
-    <string name="home_toolbar_title">Quản trị</string>
-    <string name="login_title">Welcome back to JP Mart</string>
-    <string name="login_subtitle">Log in to your account to continue shopping</string>
-    <string name="login_forgot_password">Forgot Password?</string>
-    <string name="login_prompt_no_account">Don\'t have an account?</string>
-    <string name="toast_notification">Thông báo</string>
-    <string name="error_email_required">Vui lòng nhập email</string>
-    <string name="error_password_required">Vui lòng nhập mật khẩu</string>
-    <string name="toast_edit_product">Edit sản phẩm: %1$s</string>
-    <string name="customer_info_format">ID: %1$s • %2$s</string>
-    <string name="setting">Cài đặt</string>
-    <string name="name">Nguyễn Mạnh Phúc</string>
-    <string name="power">QUẢN LÝ</string>
-    <string name="account">Tài khoản</string>
-    <string name="personal_information">Thông tin cá nhân</string>
-    <string name="chage_password">Đổi mật khẩu</string>
-    <string name="sercurity">Bảo mật</string>
-    <string name="option">Tùy chọn</string>
-    <string name="laguage">Ngôn ngữ</string>
-    <string name="notification">Thông báo</string>
-    <string name="help">Hỗ trợ</string>
-    <string name="policy_terms"><![CDATA[Điều khoản & Chính sách]]></string>
-    <string name="log_out">Đăng xuất</string>
-    <string name="version">Phiên bản 2.4.0 (JP Mart Management)</string>
-    <string name="hotline">Hotline hỗ trợ</string>
-    <string name="update_sercurity">Cập nhật bảo mật</string>
-    <string name="current_password">Mật khẩu hiện tại</string>
-    <string name="enter_current_password">Nhập mật khẩu hiện tại</string>
-    <string name="new_password">Mật khẩu mới</string>
-    <string name="enter_new_password">Nhập mật khẩu mới</string>
-    <string name="confirm_new_password">Xác nhận mật khẩu mới</string>
-    <string name="enter_confirm_password">Nhập lại mật khẩu mới</string>
+    <string name="app_name" translatable="false">DuAnMau_PH63816</string>
+    <string name="bottom_icon" translatable="false">bottom_ic\n</string>
+    <string name="jpmart" translatable="false">JPMart</string>
+    <string name="https_jpmart_vn" translatable="false">https://jpmart.vn</string>
+    <string name="share" translatable="false">Chia sẻ</string>
+    <string name="rate" translatable="false">Tỷ lệ</string>
+    <string name="profile" translatable="false">Hồ sơ</string>
+    <string name="logout" translatable="false">Đăng xuất</string>
+    <string name="create_account_subtitle" translatable="false">Hãy tham gia cùng JP Mart để khám phá những sản phẩm chính hãng của Nhật Bản.</string>
+    <string name="label_full_name" translatable="false">Full name</string>
+    <string name="label_password" translatable="false">Password</string>
+    <string name="action_sign_up" translatable="false">"Đăng ký "</string>
+    <string name="action_log_in" translatable="false">Đăng nhập</string>
+    <string name="hint_password" translatable="false">Nhập mật khẩu của bạn</string>
+    <string name="splash_tagline" translatable="false">PREMIUM QUALITY MARKET</string>
+    <string name="title_product" translatable="false">Sản phẩm</string>
+    <string name="home_label_product" translatable="false">Sản phẩm</string>
+    <string name="home_label_customer" translatable="false">Khách hàng</string>
+    <string name="home_label_staff" translatable="false">Nhân viên</string>
+    <string name="home_label_invoice" translatable="false">Hóa đơn</string>
+    <string name="home_label_top_customer" translatable="false">Top khách hàng</string>
+    <string name="home_label_revenue" translatable="false">Thống kê Doanh thu</string>
+    <string name="home_label_best_selling" translatable="false">Sản phẩm Bán chạy</string>
+    <string name="home_toolbar_title" translatable="false">Quản trị</string>
+    <string name="login_title" translatable="false">Chào mừng bạn trở lại JP Mart</string>
+    <string name="login_subtitle" translatable="false">Đăng nhập vào tài khoản của bạn để tiếp tục mua sắm.</string>
+    <string name="login_forgot_password" translatable="false">Quên mật khẩu?</string>
+    <string name="toast_notification" translatable="false">Thông báo</string>
+    <string name="error_email_required" translatable="false">Vui lòng nhập email</string>
+    <string name="error_password_required" translatable="false">Vui lòng nhập mật khẩu</string>
+    <string name="toast_edit_product" translatable="false">Edit sản phẩm: %1$s</string>
+    <string name="customer_info_format" translatable="false">ID: %1$s • %2$s</string>
+    <string name="setting" translatable="false">Cài đặt</string>
+    <string name="name" translatable="false">Nguyễn Mạnh Phúc</string>
+    <string name="power" translatable="false">QUẢN LÝ</string>
+    <string name="account" translatable="false">Tài khoản</string>
+    <string name="personal_information" translatable="false">Thông tin cá nhân</string>
+    <string name="chage_password" translatable="false">Đổi mật khẩu</string>
+    <string name="sercurity" translatable="false">Bảo mật</string>
+    <string name="option" translatable="false">Tùy chọn</string>
+    <string name="laguage" translatable="false">Ngôn ngữ</string>
+    <string name="notification" translatable="false">Thông báo</string>
+    <string name="help" translatable="false">Hỗ trợ</string>
+    <string name="policy_terms" translatable="false"><![CDATA[Điều khoản & Chính sách]]></string>
+    <string name="log_out" translatable="false">Đăng xuất</string>
+    <string name="version" translatable="false">Phiên bản 2.4.0 (JP Mart Management)</string>
+    <string name="hotline" translatable="false">Hotline hỗ trợ</string>
+    <string name="update_sercurity" translatable="false">Cập nhật bảo mật</string>
+    <string name="current_password" translatable="false">Mật khẩu hiện tại</string>
+    <string name="enter_current_password" translatable="false">Nhập mật khẩu hiện tại</string>
+    <string name="new_password" translatable="false">Mật khẩu mới</string>
+    <string name="enter_new_password" translatable="false">Nhập mật khẩu mới</string>
+    <string name="confirm_new_password" translatable="false">Xác nhận mật khẩu mới</string>
+    <string name="enter_confirm_password" translatable="false">Nhập lại mật khẩu mới</string>
     <string name="update_password">Cập nhật mật khẩu</string>
+    <string name="hint_full_name" translatable="false">Nhập tên đầy đủ của bạn</string>
+    <string name="hint_email_or_phone" translatable="false">Nhập địa chỉ email hoặc số điện thoại của bạn.</string>
+    <string name="label_email_or_phone" translatable="false">Email hoặc số điện thoại</string>
+    <string name="login_prompt_no_account" translatable="false">Bạn chưa có tài khoản?</string>
+    <string name="home_label_category" translatable="false">Danh mục</string>
+    <string name="hint_create_password" translatable="false">Tạo mật khẩu của bạn</string>
+    <string name="create_account_title" translatable="false">Tạo tài khoản</string>
+    <string name="comunicate" translatable="false">giao tiếp</string>
+    <string name="prompt_already_have_account" translatable="false">Bạn đã có tài khoản chưa?</string>
 </resources>
