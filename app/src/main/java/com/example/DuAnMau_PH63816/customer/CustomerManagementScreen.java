@@ -45,11 +45,11 @@ public class CustomerManagementScreen extends AppCompatActivity {
 
         ArrayList<Customer> customers = new ArrayList<>();
 
-        customers.add(new Customer("KH001", "Nguyễn Thị Mai", "0987 654 321", "maint.@gmail.com", "123 Đường Lê Lợi, Quận 1, TP.HCM", "12.450.000", "VIP"));
-        customers.add(new Customer("KH002", "Trần Thị Bích", "0912 345 678", "bichtt.@gmail.com", "456 Nam Từ Liêm, TP. Hà Nội", "3.240.000", "Member"));
-        customers.add(new Customer("KH003", "Lê Hoàng Nam", "0987 654 321", "namlh.@gmail.com", "461 Dang Chau Tue, Quang Hanh, Quang Ninh", "8.900.000", "Member"));
-        customers.add(new Customer("KH004", "Phạm Minh Tuấn", "0933 111 222", "tuanpm.@gmail.com", "412 Hà Tu, Hạ Long, Quảng Ninh", "21.050.000", "VIP"));
-        customers.add(new Customer("KH005", "Đặng Thu Thảo", "0944 555 666", "thaodt.@gmail.com", "16 Phạm Hùng, Nam Từ Liêm, TP.Hà Nội", "1.500.000", "VIP"));
+        customers.add(new Customer("KH001", "Nguyễn Thị Mai", "0987 654 321", "maint.@gmail.com", "123 Đường Lê Lợi, Quận 1, TP.HCM", "12.450.000", 0));
+        customers.add(new Customer("KH002", "Trần Thị Bích", "0912 345 678", "bichtt.@gmail.com", "456 Nam Từ Liêm, TP. Hà Nội", "3.240.000", 1));
+        customers.add(new Customer("KH003", "Lê Hoàng Nam", "0987 654 321", "namlh.@gmail.com", "461 Dang Chau Tue, Quang Hanh, Quang Ninh", "8.900.000", 1));
+        customers.add(new Customer("KH004", "Phạm Minh Tuấn", "0933 111 222", "tuanpm.@gmail.com", "412 Hà Tu, Hạ Long, Quảng Ninh", "21.050.000", 0));
+        customers.add(new Customer("KH005", "Đặng Thu Thảo", "0944 555 666", "thaodt.@gmail.com", "16 Phạm Hùng, Nam Từ Liêm, TP.Hà Nội", "1.500.000", 0));
 
         CustomerAdapter adapter = new CustomerAdapter(
                 this,
@@ -85,9 +85,7 @@ public class CustomerManagementScreen extends AppCompatActivity {
         rvCustomer.setLayoutManager(new LinearLayoutManager(this));
         rvCustomer.setAdapter(adapter);
 
-        floatAddCustomer.setOnClickListener(v -> {
-            startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class));
-        });
+        floatAddCustomer.setOnClickListener(v -> startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class)));
         icBack.setOnClickListener(v -> finish());
     }
 }

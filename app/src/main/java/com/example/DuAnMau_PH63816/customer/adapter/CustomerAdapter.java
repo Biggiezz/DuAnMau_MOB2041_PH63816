@@ -52,16 +52,15 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         /// lay du lieu tu list va gan vao viewholder de hien thi len giao dien
         Customer customer = items.get(position);
         holder.tvCustomerName.setText(customer.getName());
-        holder.tvCustomerType.setText(customer.getStatus());
+        boolean isVip = customer.getStatus() == 0;
+        holder.tvCustomerType.setText(isVip ? "VIP" : "Member");
         holder.tvCustomerInfo.setText(
                 context.getString(
                         R.string.customer_info_format,
                         customer.getId(),
                         customer.getPhone())
         );
-        int statusColor = "VIP".equals(customer.getStatus())
-                ? R.drawable.bg_badge_vip
-                : R.drawable.bg_badge_member;
+        int statusColor = isVip ? R.drawable.bg_badge_vip : R.drawable.bg_badge_member;
 
         holder.tvCustomerType.setBackgroundResource(statusColor);
 

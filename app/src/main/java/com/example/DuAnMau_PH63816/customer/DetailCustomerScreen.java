@@ -72,14 +72,11 @@ public class DetailCustomerScreen extends AppCompatActivity {
         if (price != null && edtAmount != null) {
             edtAmount.setText(price);
         }
-        String status = intent.getStringExtra("extra_customer_status");
-
-        if (status != null) {
-            if (status.equals("VIP")) {
-                rbVip.setChecked(true);
-            } else {
-                rbMember.setChecked(true);
-            }
+        int status = intent.getIntExtra("extra_customer_status", 1);
+        if (status == 0) {
+            rbVip.setChecked(true);
+        } else {
+            rbMember.setChecked(true);
         }
 
         icBack.setOnClickListener(v -> finish());
