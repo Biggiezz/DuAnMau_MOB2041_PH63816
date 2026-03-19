@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <!-- TOOLBAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/icBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/color_default" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_medium"
+            android:text="Chỉnh sửa nhân viên"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A000000" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="64dp">
+
+            <!-- Top white background part for Avatar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp">
+
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgAvatarEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_home"/>
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/bg_badge_vip" 
+                        android:backgroundTint="@color/color_default"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_home"
+                        app:tint="@color/white" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tvEditName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:text="Nguyễn Văn An"
+                    android:textColor="@color/color_title"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvEditRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:text="Quản lý cửa hàng"
+                    android:textColor="@color/color_default"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Bottom Gray part for form -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FAFAFA"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="24dp">
+
+                <EditText
+                    android:id="@+id/edtEditStaffName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:hint="Họ và tên"
+                    android:inputType="textPersonName"
+                    android:text="Nguyễn Văn An"
+                    android:textColor="@color/color_title"
+                    android:textColorHint="@color/color_hint"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtEditStaffId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:hint="Mã nhân viên"
+                    android:inputType="text"
+                    android:text="EMP-2024-001"
+                    android:textColor="@color/color_title"
+                    android:textColorHint="@color/color_hint"
+                    android:textSize="14sp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvEditRole"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:drawableEnd="@android:drawable/arrow_down_float"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:hint="Chức vụ"
+                    android:inputType="none"
+                    android:text="Quản lý"
+                    android:textColor="@color/color_title"
+                    android:textColorHint="@color/color_hint"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtEditStaffPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:hint="Số điện thoại"
+                    android:inputType="phone"
+                    android:text="0905 123 456"
+                    android:textColor="@color/color_title"
+                    android:textColorHint="@color/color_hint"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtEditStaffEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:text="an.nguyen@jpmart.vn"
+                    android:textColor="@color/color_title"
+                    android:textColorHint="@color/color_hint"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtEditStaffAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:gravity="top|start"
+                    android:hint="Địa chỉ"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:text="123 Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM"
+                    android:textColor="@color/color_title"
+                    android:textColorHint="@color/color_hint"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpdateStaff"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:backgroundTint="@color/color_default"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:letterSpacing="0"
+                    android:text="Cập nhật thông tin"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:cornerRadius="8dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTTOM MENU -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_home" />
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnCart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_product" />
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnNotification"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_notification" />
+
+        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:btnIcon="@drawable/ic_setting" />
+
+    </LinearLayout>
+
+</LinearLayout>

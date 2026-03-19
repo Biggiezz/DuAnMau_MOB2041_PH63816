@@ -34,7 +34,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
             
-        <!-- Dummy view to balance the center alignment with the back button -->
         <View
             android:layout_width="24dp"
             android:layout_height="24dp" />
@@ -58,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:background="@drawable/bg_btn_pink_rounded"
+                android:background="@drawable/bg_date_picker"
                 android:elevation="4dp"
                 android:stateListAnimator="@null"
                 android:text="Thêm danh mục mới"
@@ -89,7 +88,7 @@
                     android:id="@+id/tvCategoryCountBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_badge_pink_rounded"
+                    android:background="@drawable/bg_date_picker"
                     android:text="5 Danh mục"
                     android:textColor="@color/color_default"
                     android:textSize="12sp"

@@ -70,7 +70,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".staff.StaffManagementScreen"
+            android:exported="false" />
+        <activity
+            android:name=".staff.AddStaffScreen"
+            android:exported="false" />
+        <activity
+            android:name=".staff.EditStaffScreen"
             android:exported="false" />
 
         <meta-data
