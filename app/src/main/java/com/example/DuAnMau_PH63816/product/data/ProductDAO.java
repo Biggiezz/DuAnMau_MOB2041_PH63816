@@ -5,18 +5,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
 import java.util.ArrayList;
 
 public class ProductDAO {
 
-    private ProductDbHelper dbHelper;
-    private SQLiteDatabase sqLiteDatabase;
+    private final ProductDbHelper dbHelper;
+    private final SQLiteDatabase sqLiteDatabase;
 
     public ProductDAO(Context context) {
         dbHelper = new ProductDbHelper(context);
         sqLiteDatabase = dbHelper.getWritableDatabase();
+        ensureSeedData();
     }
 
     public ArrayList<Product> getAllProducts() {
@@ -72,5 +74,25 @@ public class ProductDAO {
         long kq = sqLiteDatabase.delete("Product", "id = ?", new String[]{String.valueOf(product.getId())});
         return kq != -1;
     }
+    private void ensureSeedData() {
+        if (getAllProducts().isEmpty()) {
+            for (Product seed : getSeedProducts()) {
+                insertProduct(seed);
+            }
+        }
+    }
 
+    private ArrayList<Product> getSeedProducts() {
+        ArrayList<Product> seeds = new ArrayList<>();
+        seeds.add(new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen));
+        seeds.add(new Product("Kem Matcha Premium", "45.000k", " · Tồn: 12", R.drawable.ic_icream_matcha));
+        seeds.add(new Product("Sushi Set Omakase", "850.000k", " · Tồn: 45", R.drawable.ic_set_sushi));
+        return seeds;
+    }
+
+    public void close() {
+        if (dbHelper != null) {
+            dbHelper.close();
+        }
+    }
 }

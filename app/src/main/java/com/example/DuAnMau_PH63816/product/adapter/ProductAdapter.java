@@ -53,27 +53,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.cardView.setSubtitle(product.getPriceLabel());
         holder.cardView.setSubtitle2(product.getStockLabel());
 
-        String image = product.getImage();
-        if (image != null) {
-            try {
-                int resId = Integer.parseInt(image);
-                Picasso.get()
-                        .load(resId)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_background)
-                        .fit()
-                        .into(holder.imgIcon);
-            } catch (NumberFormatException ex) {
-                Picasso.get()
-                        .load(image)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_background)
-                        .fit()
-                        .into(holder.imgIcon);
-            }
-        } else {
-            holder.imgIcon.setImageResource(R.drawable.ic_launcher_background);
-        }
+        bindProductImage(holder.imgIcon, product.getImage());
 
         holder.cardView.setOnClickListener(v -> listener.onProductClick(product));
     }
@@ -92,6 +72,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             super(cardView);
             this.cardView = cardView;
             this.imgIcon = cardView.findViewById(R.id.imgIcon);
+        }
+    }
+
+    public static void bindProductImage(@NonNull ImageView target, String image) {
+        if (image != null) {
+            try {
+                int resId = Integer.parseInt(image);
+                Picasso.get()
+                        .load(resId)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_background)
+                        .fit()
+                        .into(target);
+            } catch (NumberFormatException ex) {
+                Picasso.get()
+                        .load(image)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_background)
+                        .fit()
+                        .into(target);
+            }
+        } else {
+            target.setImageResource(R.drawable.ic_launcher_background);
         }
     }
 }

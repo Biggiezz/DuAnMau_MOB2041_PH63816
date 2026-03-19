@@ -14,11 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
+import com.example.DuAnMau_PH63816.product.data.ProductDAO;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
 import java.util.ArrayList;
 
 public class ProductScreen extends AppCompatActivity {
+
+    private ProductDAO productDAO;
+    private final ArrayList<Product> products = new ArrayList<>();
+    private ProductAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,7 @@ public class ProductScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        productDAO = new ProductDAO(this);
         initUi();
     }
 
@@ -38,24 +44,42 @@ public class ProductScreen extends AppCompatActivity {
         ImageView imgAddProduct = findViewById(R.id.imgAddProduct);
         RecyclerView rvProducts = findViewById(R.id.rvProducts);
 
-        ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen));
-        products.add(new Product("Kem Matcha Premium", "45.000k", " · Tồn: 12", R.drawable.ic_icream_matcha));
-        products.add(new Product("Sushi Set Omakase", "850.000k", " · Tồn: 45", R.drawable.ic_set_sushi));
-
-        ProductAdapter adapter = new ProductAdapter(this, products, product -> {
+        adapter = new ProductAdapter(this, products, product -> {
             Intent intent = new Intent(ProductScreen.this, DetailProductScreen.class);
             intent.putExtra("extra_product_name", product.getName());
             intent.putExtra("extra_product_price", product.getPriceLabel());
             intent.putExtra("extra_product_stock", product.getStockLabel());
             intent.putExtra("extra_product_image", product.getImage());
+            intent.putExtra("extra_product_id", product.getId());
             startActivity(intent);
         });
 
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
         rvProducts.setAdapter(adapter);
-
         icBack.setOnClickListener(v -> finish());
         imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));
+
+        loadProducts();
+    }
+
+    private void loadProducts() {
+        if (productDAO == null || adapter == null) return;
+        products.clear();
+        products.addAll(productDAO.getAllProducts());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (productDAO != null) {
+            productDAO.close();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProducts();
     }
 }

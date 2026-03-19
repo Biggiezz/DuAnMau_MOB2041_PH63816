@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -13,9 +14,11 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomBottomButton;
 import com.example.DuAnMau_PH63816.customer.CustomerManagementScreen;
+import com.example.DuAnMau_PH63816.invoice.InvoiceActivity;
 import com.example.DuAnMau_PH63816.product.ProductScreen;
 import com.example.DuAnMau_PH63816.profile.ProfileScreen;
 import com.example.DuAnMau_PH63816.staff.StaffManagementScreen;
@@ -37,6 +40,7 @@ public class HomePageScreen extends AppCompatActivity {
         });
         initUi();
     }
+
     private void initUi() {
         DrawerLayout drawerLayout = findViewById(R.id.main);
         NavigationView navigationView = findViewById(R.id.navigationView);
@@ -59,6 +63,7 @@ public class HomePageScreen extends AppCompatActivity {
         imgBestSelling.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, TopSellingProductsScreen.class)));
         imgTopCustomer.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, TopCustomerBuyingProductsScreen.class)));
         imgPersonnel.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, StaffManagementScreen.class)));
+        imgInvoice.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, InvoiceActivity.class)));
         btnSetting.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProfileScreen.class)));
         /// toolbar
         setSupportActionBar(toolbarHomePage);
@@ -73,12 +78,14 @@ public class HomePageScreen extends AppCompatActivity {
             });
         }
     }
+
     /// Cách sử dụng Toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         /// lấy id của các item
