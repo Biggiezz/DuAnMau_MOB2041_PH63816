@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.category.CategoryManagementScreen;
 import com.example.DuAnMau_PH63816.custom.CustomBottomButton;
 import com.example.DuAnMau_PH63816.customer.CustomerManagementScreen;
 import com.example.DuAnMau_PH63816.invoice.InvoiceActivity;
@@ -64,6 +65,7 @@ public class HomePageScreen extends AppCompatActivity {
         imgTopCustomer.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, TopCustomerBuyingProductsScreen.class)));
         imgPersonnel.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, StaffManagementScreen.class)));
         imgInvoice.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, InvoiceActivity.class)));
+        imgCategory.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, CategoryManagementScreen.class)));
         btnSetting.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProfileScreen.class)));
         /// toolbar
         setSupportActionBar(toolbarHomePage);

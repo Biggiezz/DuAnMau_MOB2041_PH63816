@@ -58,6 +58,9 @@
             android:name=".login.LoginScreen"
             android:exported="false" />
         <activity
+            android:name=".category.CategoryManagementScreen"
+            android:exported="false" />
+        <activity
             android:name=".splash.SplashScreen"
             android:exported="true">
             <intent-filter>
