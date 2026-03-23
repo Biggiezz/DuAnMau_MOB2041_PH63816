@@ -15,12 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.customer.adapter.CustomerAdapter;
+import com.example.DuAnMau_PH63816.customer.data.CustomerDAO;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class CustomerManagementScreen extends AppCompatActivity {
+
+    private final ArrayList<Customer> customers = new ArrayList<>();
+    private CustomerAdapter adapter;
+    private CustomerDAO customerDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,26 +37,16 @@ public class CustomerManagementScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        bindDataFromIntent();
+        customerDAO = new CustomerDAO(this);
+        setupUi();
     }
 
-    private void bindDataFromIntent() {
-        Intent intent = getIntent();
-        if (intent == null) return;
-
+    private void setupUi() {
         ImageView icBack = findViewById(R.id.icBack);
         FloatingActionButton floatAddCustomer = findViewById(R.id.fabAddCustomer);
         RecyclerView rvCustomer = findViewById(R.id.rvCustomer);
 
-        ArrayList<Customer> customers = new ArrayList<>();
-
-        customers.add(new Customer("KH001", "Nguyễn Thị Mai", "0987 654 321", "maint.@gmail.com", "123 Đường Lê Lợi, Quận 1, TP.HCM", "12.450.000", 0));
-        customers.add(new Customer("KH002", "Trần Thị Bích", "0912 345 678", "bichtt.@gmail.com", "456 Nam Từ Liêm, TP. Hà Nội", "3.240.000", 1));
-        customers.add(new Customer("KH003", "Lê Hoàng Nam", "0987 654 321", "namlh.@gmail.com", "461 Dang Chau Tue, Quang Hanh, Quang Ninh", "8.900.000", 1));
-        customers.add(new Customer("KH004", "Phạm Minh Tuấn", "0933 111 222", "tuanpm.@gmail.com", "412 Hà Tu, Hạ Long, Quảng Ninh", "21.050.000", 0));
-        customers.add(new Customer("KH005", "Đặng Thu Thảo", "0944 555 666", "thaodt.@gmail.com", "16 Phạm Hùng, Nam Từ Liêm, TP.Hà Nội", "1.500.000", 0));
-
-        CustomerAdapter adapter = new CustomerAdapter(
+        adapter = new CustomerAdapter(
                 this,
                 customers,
                 new CustomerAdapter.OnCustomerClickListener() {
@@ -63,6 +58,7 @@ public class CustomerManagementScreen extends AppCompatActivity {
                         intent1.putExtra("extra_customer_id", customer.getId());
                         intent1.putExtra("extra_customer_email", customer.getEmail());
                         intent1.putExtra("extra_customer_phone", customer.getPhone());
+                        intent1.putExtra("extra_customer_address", customer.getAddress());
                         intent1.putExtra("extra_customer_price", customer.getPrice());
                         intent1.putExtra("extra_customer_status", customer.getStatus());
                         startActivity(intent1);
@@ -76,6 +72,7 @@ public class CustomerManagementScreen extends AppCompatActivity {
                         intent1.putExtra("extra_customer_id", customer.getId());
                         intent1.putExtra("extra_customer_email", customer.getEmail());
                         intent1.putExtra("extra_customer_phone", customer.getPhone());
+                        intent1.putExtra("extra_customer_address", customer.getAddress());
                         intent1.putExtra("extra_customer_price", customer.getPrice());
                         intent1.putExtra("extra_customer_status", customer.getStatus());
                         startActivity(intent1);
@@ -84,8 +81,31 @@ public class CustomerManagementScreen extends AppCompatActivity {
         );
         rvCustomer.setLayoutManager(new LinearLayoutManager(this));
         rvCustomer.setAdapter(adapter);
+        loadCustomers();
 
         floatAddCustomer.setOnClickListener(v -> startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class)));
         icBack.setOnClickListener(v -> finish());
+    }
+
+    private void loadCustomers() {
+        customers.clear();
+        customers.addAll(customerDAO.getAllCustomer());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter != null && customerDAO != null) {
+            loadCustomers();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (customerDAO != null) {
+            customerDAO.close();
+        }
+        super.onDestroy();
     }
 }

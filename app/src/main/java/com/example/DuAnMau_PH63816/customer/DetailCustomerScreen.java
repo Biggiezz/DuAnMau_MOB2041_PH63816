@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.example.DuAnMau_PH63816.R;
 
 public class DetailCustomerScreen extends AppCompatActivity {
@@ -39,11 +40,11 @@ public class DetailCustomerScreen extends AppCompatActivity {
         EditText edtEmail = findViewById(R.id.edtEmail);
         EditText edtAddress = findViewById(R.id.edtAddress);
         EditText edtAmount = findViewById(R.id.edtAmount);
-        RadioGroup rdBtn = findViewById(R.id.rgCustomerType);
         RadioButton rbVip = findViewById(R.id.rbVIP);
         RadioButton rbMember = findViewById(R.id.rbMember);
         TextView edtCustomerCode = findViewById(R.id.tvCustomerCode);
         TextView tvCustomerNameBig = findViewById(R.id.tvCustomerNameBig);
+        TextView tvCustomerTypeBig = findViewById(R.id.tvCustomerTypeBig);
 
 
         String customerName = intent.getStringExtra("extra_customer_name_big");
@@ -63,6 +64,10 @@ public class DetailCustomerScreen extends AppCompatActivity {
         if (email != null && edtEmail != null) {
             edtEmail.setText(email);
         }
+        String address = intent.getStringExtra("extra_customer_address");
+        if (address != null && edtAddress != null) {
+            edtAddress.setText(address);
+        }
         String id = intent.getStringExtra("extra_customer_id");
         if (id != null && edtCustomerCode != null) {
             edtCustomerCode.setText(id);
@@ -75,8 +80,10 @@ public class DetailCustomerScreen extends AppCompatActivity {
         int status = intent.getIntExtra("extra_customer_status", 1);
         if (status == 0) {
             rbVip.setChecked(true);
+            tvCustomerTypeBig.setText("Khách hàng VIP");
         } else {
             rbMember.setChecked(true);
+            tvCustomerTypeBig.setText("Khách hàng Member");
         }
 
         icBack.setOnClickListener(v -> finish());
