@@ -1,33 +1,78 @@
 package com.example.DuAnMau_PH63816.invoice;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
+import com.example.DuAnMau_PH63816.invoice.adapter.InvoiceAdapter;
+import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
+import com.example.DuAnMau_PH63816.invoice.model.Invoice;
+
+import java.util.ArrayList;
 
 public class InvoiceActivity extends AppCompatActivity {
+
+    private final ArrayList<Invoice> invoices = new ArrayList<>();
+    private InvoiceDAO invoiceDAO;
+    private InvoiceAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_invoice);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
         ImageView icBack = findViewById(R.id.icBack);
-        Button btnShowListInvoice = findViewById(R.id.btnShowListInvoice);
-        icBack.setOnClickListener(v -> finish());
+        RecyclerView rvInvoices = findViewById(R.id.rvInvoices);
+        invoiceDAO = new InvoiceDAO(this);
+        adapter = new InvoiceAdapter(this, invoices, this::openDetail);
 
+        icBack.setOnClickListener(v -> navigateBack());
+        rvInvoices.setLayoutManager(new LinearLayoutManager(this));
+        rvInvoices.setAdapter(adapter);
+        loadInvoices();
+    }
 
+    private void navigateBack() {
+        if (!isTaskRoot()) {
+            getOnBackPressedDispatcher().onBackPressed();
+            return;
+        }
+
+        Intent intent = new Intent(this, HomePageScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadInvoices() {
+        invoices.clear();
+        invoices.addAll(invoiceDAO.getAllInvoices());
+        adapter.notifyDataSetChanged();
+    }
+
+    private void openDetail(Invoice invoice) {
+        Intent intent = new Intent(this, DetailInvoiceActivity.class);
+        intent.putExtra("invoice_id", invoice.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadInvoices();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (invoiceDAO != null) {
+            invoiceDAO.close();
+        }
+        super.onDestroy();
     }
 }
