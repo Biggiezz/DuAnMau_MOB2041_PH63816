@@ -12,7 +12,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.category.data.CategoryDAO;
+
 import java.util.ArrayList;
 
 public class CategoryManagementScreen extends AppCompatActivity {
@@ -21,6 +24,9 @@ public class CategoryManagementScreen extends AppCompatActivity {
     private AppCompatButton btnAddCategory;
     private ImageView icBack;
     private TextView tvCategoryCountBadge;
+    private final ArrayList<Category> categoryList = new ArrayList<>();
+    private CategoryAdapter categoryAdapter;
+    private CategoryDAO categoryDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,7 @@ public class CategoryManagementScreen extends AppCompatActivity {
             return insets;
         });
 
+        categoryDAO = new CategoryDAO(this);
         initViews();
         setupRecyclerView();
         setListeners();
@@ -47,27 +54,53 @@ public class CategoryManagementScreen extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        ArrayList<Category> categoryList = new ArrayList<>();
-        // Mock data from the UI mockup
-        categoryList.add(new Category(1, "Thời trang nam", 120, R.drawable.btn_category));
-        categoryList.add(new Category(2, "Thời trang nữ", 85, R.drawable.btn_category));
-        categoryList.add(new Category(3, "Phụ kiện", 42, R.drawable.btn_category));
-        categoryList.add(new Category(4, "Điện tử", 15, R.drawable.btn_category));
-        categoryList.add(new Category(5, "Gia dụng", 67, R.drawable.btn_category));
+        categoryAdapter = new CategoryAdapter(this, categoryList, new CategoryAdapter.OnCategoryActionListener() {
+            @Override
+            public void onEdit(Category category) {
+                category.setName(category.getName() + " (Sửa)");
+                if (categoryDAO.updateCategory(category)) {
+                    Toast.makeText(CategoryManagementScreen.this, "Đã sửa " + category.getName(), Toast.LENGTH_SHORT).show();
+                    loadCategories();
+                }
+            }
 
-        tvCategoryCountBadge.setText(categoryList.size() + " Danh mục");
-
-        CategoryAdapter categoryAdapter = new CategoryAdapter(this, categoryList);
+            @Override
+            public void onDelete(Category category) {
+                if (categoryDAO.deleteCategory(category)) {
+                    Toast.makeText(CategoryManagementScreen.this, "Đã xóa " + category.getName(), Toast.LENGTH_SHORT).show();
+                    loadCategories();
+                }
+            }
+        });
         rvCategories.setLayoutManager(new LinearLayoutManager(this));
         rvCategories.setAdapter(categoryAdapter);
+        loadCategories();
+    }
+
+    private void loadCategories() {
+        categoryList.clear();
+        categoryList.addAll(categoryDAO.getAllCategories());
+        tvCategoryCountBadge.setText(categoryList.size() + " Danh mục");
+        categoryAdapter.notifyDataSetChanged();
     }
 
     private void setListeners() {
         icBack.setOnClickListener(v -> finish());
 
         btnAddCategory.setOnClickListener(v -> {
-            Toast.makeText(this, "Thêm danh mục mới", Toast.LENGTH_SHORT).show();
-            // Start Add Category Activity here
+            Category newCategory = new Category("Danh mục mới", 0, R.drawable.btn_category);
+            if (categoryDAO.insertCategory(newCategory)) {
+                Toast.makeText(this, "Thêm danh mục mới", Toast.LENGTH_SHORT).show();
+                loadCategories();
+            }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (categoryDAO != null) {
+            categoryDAO.close();
+        }
+        super.onDestroy();
     }
 }

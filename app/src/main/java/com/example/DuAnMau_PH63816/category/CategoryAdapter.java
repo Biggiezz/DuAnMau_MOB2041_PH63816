@@ -14,12 +14,19 @@ import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
+    public interface OnCategoryActionListener {
+        void onEdit(Category category);
+        void onDelete(Category category);
+    }
+
     private final Context context;
     private final List<Category> categoryList;
+    private final OnCategoryActionListener listener;
 
-    public CategoryAdapter(Context context, List<Category> categoryList) {
+    public CategoryAdapter(Context context, List<Category> categoryList, OnCategoryActionListener listener) {
         this.context = context;
         this.categoryList = categoryList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -36,9 +43,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.tvProductCount.setText(category.getProductCount() + " sản phẩm");
         holder.imgCategoryIcon.setImageResource(category.getIconResId());
 
-        holder.imgEdit.setOnClickListener(v -> Toast.makeText(context, "Sửa " + category.getName(), Toast.LENGTH_SHORT).show());
+        holder.imgEdit.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEdit(category);
+            } else {
+                Toast.makeText(context, "Sửa " + category.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        holder.imgDelete.setOnClickListener(v -> Toast.makeText(context, "Xóa " + category.getName(), Toast.LENGTH_SHORT).show());
+        holder.imgDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDelete(category);
+            } else {
+                Toast.makeText(context, "Xóa " + category.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

@@ -24,16 +24,15 @@
             android:src="@drawable/ic_back" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
             android:fontFamily="@font/work_sans_medium"
+            android:gravity="center"
             android:text="Quản lý danh mục"
             android:textColor="@color/color_title"
             android:textSize="20sp"
             android:textStyle="bold" />
-            
+
         <View
             android:layout_width="24dp"
             android:layout_height="24dp" />
@@ -52,18 +51,17 @@
             android:orientation="vertical">
 
             <!-- ADD BUTTON -->
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:background="@drawable/bg_date_picker"
-                android:elevation="4dp"
-                android:stateListAnimator="@null"
+                android:backgroundTint="@color/color_default"
                 android:text="Thêm danh mục mới"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
 
             <!-- HEADER ROW -->
             <LinearLayout
@@ -72,7 +70,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="12dp"
-                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
