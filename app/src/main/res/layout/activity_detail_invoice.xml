@@ -2,41 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="16dp"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".invoice.DetailInvoiceActivity">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarDetailInvoiceActivity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Chi tiết hóa đơn"
+        app:titleTextColor="@android:color/black" />
 
-        <ImageView
-            android:id="@+id/icBack"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_back"
-            app:tint="@color/color_default" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/work_sans_medium"
-            android:text="Chi tiết hóa đơn"
-            android:textColor="@color/color_title"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A000000" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -48,10 +33,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:orientation="vertical"
             android:paddingStart="16dp"
-            android:paddingTop="4dp"
+            android:paddingTop="24dp"
             android:paddingEnd="16dp"
             android:paddingBottom="24dp">
 

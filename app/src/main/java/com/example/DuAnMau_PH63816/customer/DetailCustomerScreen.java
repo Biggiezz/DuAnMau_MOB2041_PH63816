@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,7 +42,7 @@ public class DetailCustomerScreen extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent == null) return;
 
-        ImageView icBack = findViewById(R.id.icBack);
+        Toolbar toolbarDetailCustomerScreen = findViewById(R.id.toolbarDetailCustomerScreen);
         EditText edtCustomerName = findViewById(R.id.edtCustomerName);
         EditText edtPhone = findViewById(R.id.edtPhone);
         EditText edtEmail = findViewById(R.id.edtEmail);
@@ -96,7 +96,10 @@ public class DetailCustomerScreen extends AppCompatActivity {
             tvCustomerTypeBig.setText("Khách hàng Member");
         }
 
-        icBack.setOnClickListener(v -> finish());
+        if (toolbarDetailCustomerScreen != null) {
+            setSupportActionBar(toolbarDetailCustomerScreen);
+            toolbarDetailCustomerScreen.setNavigationOnClickListener(v -> finish());
+        }
         btnUpdate.setOnClickListener(v -> {
             String updatedId = edtCustomerCode.getText().toString().trim();
             String updatedName = edtCustomerName.getText().toString().trim();

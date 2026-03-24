@@ -2,36 +2,21 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootProfile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <!--    TOOL BAR-->
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarProfileScreen"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp">
-
-        <ImageView
-            android:id="@+id/icBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_medium"
-            android:gravity="center"
-            android:text="@string/setting"
-            android:textColor="@color/color_title"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/setting"
+        app:titleTextColor="@android:color/black" />
 
     <View
         android:layout_width="match_parent"
@@ -48,6 +33,7 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical"
             android:paddingBottom="24dp">
 
@@ -63,8 +49,8 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/circleImage"
-                    android:src="@drawable/ph63816" />
+                    android:src="@drawable/ph63816"
+                    app:shapeAppearanceOverlay="@style/circleImage" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -165,8 +151,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginEnd="12dp"
-                            android:src="@drawable/ic_chage_lock"
-                            />
+                            android:src="@drawable/ic_chage_lock" />
 
                         <TextView
                             android:layout_width="0dp"

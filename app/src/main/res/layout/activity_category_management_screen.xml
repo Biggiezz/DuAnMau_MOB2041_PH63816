@@ -5,38 +5,25 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".category.CategoryManagementScreen">
 
     <!-- TOP APP BAR -->
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarCategoryManagementScreen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/label_category"
+        app:titleTextColor="@android:color/black" />
 
-        <ImageView
-            android:id="@+id/icBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_back" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A000000" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_medium"
-            android:gravity="center"
-            android:text="Quản lý danh mục"
-            android:textColor="@color/color_title"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="24dp"
-            android:layout_height="24dp" />
-    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -48,7 +35,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="16dp">
 
             <!-- ADD BUTTON -->
             <com.google.android.material.button.MaterialButton
@@ -57,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:backgroundTint="@color/color_default"
+                android:padding="16dp"
                 android:text="Thêm danh mục mới"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

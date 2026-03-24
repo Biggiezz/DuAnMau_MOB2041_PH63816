@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/white"
     tools:context=".homepage.HomePageScreen"
     tools:ignore="HardcodedText,ContentDescription,UseCompoundDrawables"
     tools:openDrawer="start">
@@ -20,7 +21,7 @@
 
         <!-- TOOLBAR -->
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarHomePage"
+            android:id="@+id/toolbarHomePageScreen"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"

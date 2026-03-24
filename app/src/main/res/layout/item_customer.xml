@@ -98,8 +98,8 @@
 
             <ImageView
                 android:id="@+id/imgDetail"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_eye"
                 app:tint="@color/color_hint" />

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -44,7 +45,6 @@ public class DetailProductScreen extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent == null) return;
 
-        ImageView icBack = findViewById(R.id.icBack);
         ImageView imgProductCover = findViewById(R.id.imgProductCover);
         TextInputEditText edtProductName = findViewById(R.id.edtProductName);
         TextInputEditText edtProductId = findViewById(R.id.edtProductId);
@@ -52,6 +52,13 @@ public class DetailProductScreen extends AppCompatActivity {
         TextInputEditText edtStock = findViewById(R.id.edtStock);
         Button btnUpdateProduct = findViewById(R.id.btnUpdateProduct);
         Button btnDeleteProduct = findViewById(R.id.btnDeleteProduct);
+        Toolbar toolbarDetailProductScreen = findViewById(R.id.toolbarDetailProductScreen);
+
+        if (toolbarDetailProductScreen != null) {
+            setSupportActionBar(toolbarDetailProductScreen);
+            toolbarDetailProductScreen.setNavigationOnClickListener(v -> finish());
+
+        }
 
         String name = intent.getStringExtra("extra_product_name");
         if (name != null && edtProductName != null) {
@@ -83,8 +90,6 @@ public class DetailProductScreen extends AppCompatActivity {
         if (btnDeleteProduct != null) {
             btnDeleteProduct.setOnClickListener(v -> handleDelete());
         }
-
-        icBack.setOnClickListener(v -> finish());
     }
 
     private void handleUpdate(TextInputEditText nameView, TextInputEditText priceView, TextInputEditText stockView) {

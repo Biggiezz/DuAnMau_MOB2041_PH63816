@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +28,6 @@ public class AddCustomerScreen extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add_customer_screen);
         customerDAO = new CustomerDAO(this);
-        ImageView icBack = findViewById(R.id.icBack);
         EditText edtCode = findViewById(R.id.edtAddCustomerCode);
         EditText edtName = findViewById(R.id.edtAddCustomerName);
         EditText edtPhone = findViewById(R.id.edtAddCustomerPhone);
@@ -38,9 +37,13 @@ public class AddCustomerScreen extends AppCompatActivity {
         RadioButton rbVip = findViewById(R.id.rbAddVIP);
         RadioButton rbMember = findViewById(R.id.rbAddMember);
         Button btnAddCustomer = findViewById(R.id.btnAddCustomer);
-        if (icBack != null) {
-            icBack.setOnClickListener(v -> finish());
+        Toolbar toolbarAddCustomerScreen = findViewById(R.id.toolbarAddCustomerScreen);
+
+        if (toolbarAddCustomerScreen != null) {
+            setSupportActionBar(toolbarAddCustomerScreen);
+            toolbarAddCustomerScreen.setNavigationOnClickListener(v -> finish());
         }
+
         btnAddCustomer.setOnClickListener(v -> {
             String id = edtCode.getText().toString().trim();
             String name = edtName.getText().toString().trim();

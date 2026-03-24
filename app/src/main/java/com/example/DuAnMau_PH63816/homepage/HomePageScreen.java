@@ -45,7 +45,7 @@ public class HomePageScreen extends AppCompatActivity {
     private void initUi() {
         DrawerLayout drawerLayout = findViewById(R.id.main);
         NavigationView navigationView = findViewById(R.id.navigationView);
-        Toolbar toolbarHomePage = findViewById(R.id.toolbarHomePage);
+        Toolbar toolbarHomePageScreen = findViewById(R.id.toolbarHomePageScreen);
         ImageView imgProduct = findViewById(R.id.imgProduct);
         ImageView imgCategory = findViewById(R.id.imgCategory);
         ImageView imgCustomer = findViewById(R.id.imgCustomer);
@@ -68,10 +68,9 @@ public class HomePageScreen extends AppCompatActivity {
         imgCategory.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, CategoryManagementScreen.class)));
         btnSetting.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProfileScreen.class)));
         /// toolbar
-        setSupportActionBar(toolbarHomePage);
-        toolbarHomePage.setNavigationIcon(R.drawable.btn_menu);
-
-        toolbarHomePage.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+        setSupportActionBar(toolbarHomePageScreen);
+        toolbarHomePageScreen.setNavigationIcon(R.drawable.ic_back);
+        toolbarHomePageScreen.setNavigationOnClickListener(v -> finish());
 
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(item -> {

@@ -61,18 +61,18 @@
         <!-- ACTION BUTTONS -->
         <ImageView
             android:id="@+id/imgEdit"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginEnd="16dp"
             android:src="@drawable/ic_edit"
-            app:tint="@color/color_subtitle" />
+            app:tint="@color/color_hint" />
 
         <ImageView
             android:id="@+id/imgDelete"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:src="@drawable/ic_delete"
-            app:tint="@color/color_subtitle" />
+            app:tint="@color/color_hint" />
 
     </LinearLayout>
 

@@ -2,9 +2,9 @@ package com.example.DuAnMau_PH63816.staff;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -16,13 +16,11 @@ import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 import com.example.DuAnMau_PH63816.staff.model.Staff;
 import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
-import java.util.List;
 
 public class StaffManagementScreen extends AppCompatActivity {
 
     private RecyclerView rvStaff;
     private MaterialButton btnAddStaff;
-    private ImageView icBack;
     private StaffDAO staffDAO;
 
     @Override
@@ -30,8 +28,7 @@ public class StaffManagementScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_staff_management_screen);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rvStaff), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -45,7 +42,11 @@ public class StaffManagementScreen extends AppCompatActivity {
     private void initViews() {
         rvStaff = findViewById(R.id.rvStaff);
         btnAddStaff = findViewById(R.id.btnAddStaff);
-        icBack = findViewById(R.id.icBack);
+        Toolbar toolbarStaffManagementScreen = findViewById(R.id.toolbarStaffManagementScreen);
+        if (toolbarStaffManagementScreen != null) {
+            setSupportActionBar(toolbarStaffManagementScreen);
+            toolbarStaffManagementScreen.setNavigationOnClickListener(v -> finish());
+        }
         staffDAO = new StaffDAO(this);
     }
 
@@ -75,8 +76,6 @@ public class StaffManagementScreen extends AppCompatActivity {
     }
 
     private void setListeners() {
-        icBack.setOnClickListener(v -> finish());
-
         btnAddStaff.setOnClickListener(v -> {
             Intent intent = new Intent(StaffManagementScreen.this, AddStaffScreen.class);
             startActivity(intent);

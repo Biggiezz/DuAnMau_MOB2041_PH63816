@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -40,9 +41,14 @@ public class ProductScreen extends AppCompatActivity {
     }
 
     private void initUi() {
-        ImageView icBack = findViewById(R.id.icBack);
+        Toolbar toolbarProductScreen = findViewById(R.id.toolbarProductScreen);
         ImageView imgAddProduct = findViewById(R.id.imgAddProduct);
         RecyclerView rvProducts = findViewById(R.id.rvProducts);
+
+        if (toolbarProductScreen != null) {
+            setSupportActionBar(toolbarProductScreen);
+            toolbarProductScreen.setNavigationOnClickListener(v -> finish());
+        }
 
         adapter = new ProductAdapter(this, products, product -> {
             Intent intent = new Intent(ProductScreen.this, DetailProductScreen.class);
@@ -56,7 +62,6 @@ public class ProductScreen extends AppCompatActivity {
 
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
         rvProducts.setAdapter(adapter);
-        icBack.setOnClickListener(v -> finish());
         imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));
 
         loadProducts();

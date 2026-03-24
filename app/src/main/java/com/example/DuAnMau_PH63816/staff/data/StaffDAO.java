@@ -52,7 +52,7 @@ public class StaffDAO {
         ContentValues contentValues = new ContentValues();
         contentValues.put("nameStaff", staff.getNameStaff());
         contentValues.put("nameLogin", staff.getNameLogin());
-        contentValues.put("pass", staff.getPassword());
+        contentValues.put("password", staff.getPassword());
         contentValues.put("phone", staff.getPhone());
         contentValues.put("address", staff.getAddress());
         contentValues.put("role", staff.getRole());
@@ -66,7 +66,7 @@ public class StaffDAO {
         ContentValues contentValues = new ContentValues();
         contentValues.put("nameStaff", staff.getNameStaff());
         contentValues.put("nameLogin", staff.getNameLogin());
-        contentValues.put("pass", staff.getPassword());
+        contentValues.put("password", staff.getPassword());
         contentValues.put("phone", staff.getPhone());
         contentValues.put("address", staff.getAddress());
         contentValues.put("role", staff.getRole());

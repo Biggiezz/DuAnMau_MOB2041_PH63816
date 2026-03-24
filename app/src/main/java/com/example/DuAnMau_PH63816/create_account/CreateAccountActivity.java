@@ -2,10 +2,11 @@ package com.example.DuAnMau_PH63816.create_account;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -14,7 +15,7 @@ import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.login.LoginScreen;
 
 public class CreateAccountActivity extends AppCompatActivity {
-    private ImageView icBack;
+    private TextView tvLogIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +28,15 @@ public class CreateAccountActivity extends AppCompatActivity {
             return insets;
         });
         initUi();
-        icBack.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateAccountActivity.this, LoginScreen.class);
-            startActivity(intent);
-            finish();
-        });
+        Toolbar toolbarCreateAccountScreen = findViewById(R.id.toolbarCreateAccountScreen);
+        if (toolbarCreateAccountScreen != null) {
+            setSupportActionBar(toolbarCreateAccountScreen);
+            toolbarCreateAccountScreen.setNavigationOnClickListener(v -> finish());
+        }
+        tvLogIn.setOnClickListener(v -> startActivity(new Intent(CreateAccountActivity.this, LoginScreen.class)));
     }
 
     private void initUi() {
-        icBack = findViewById(R.id.icBack);
+        tvLogIn = findViewById(R.id.tvLogIn);
     }
 }

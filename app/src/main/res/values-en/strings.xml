@@ -59,8 +59,11 @@
     <string name="toast_edit_product">Edit product: %1$s</string>
     <string name="login_prompt_no_account">Don\'t have an account?</string>
     <string name="home_label_category">Category</string>
+    <string name="label_edit_customer">Edit customer</string>
     <string name="hint_create_password">Create your password</string>
     <string name="create_account_title">Create Account</string>
     <string name="comunicate">Comunicate</string>
     <string name="prompt_already_have_account">"Already have an account? "</string>
+    <string name="label_category">Category management</string>
+    <string name="label_customer">Customer management</string>
 </resources>

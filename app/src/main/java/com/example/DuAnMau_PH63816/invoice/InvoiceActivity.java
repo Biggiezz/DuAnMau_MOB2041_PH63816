@@ -2,7 +2,7 @@ package com.example.DuAnMau_PH63816.invoice;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,12 +27,16 @@ public class InvoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
 
-        ImageView icBack = findViewById(R.id.icBack);
+//        ImageView icBack = findViewById(R.id.icBack);
         RecyclerView rvInvoices = findViewById(R.id.rvInvoices);
+        Toolbar toolbarInvoiceScreen = findViewById(R.id.toolbarInvoice);
         invoiceDAO = new InvoiceDAO(this);
         adapter = new InvoiceAdapter(this, invoices, this::openDetail);
 
-        icBack.setOnClickListener(v -> navigateBack());
+//        icBack.setOnClickListener(v -> navigateBack());
+        setSupportActionBar(toolbarInvoiceScreen);
+        toolbarInvoiceScreen.setNavigationIcon(R.drawable.ic_back);
+        toolbarInvoiceScreen.setNavigationOnClickListener(v -> navigateBack());
         rvInvoices.setLayoutManager(new LinearLayoutManager(this));
         rvInvoices.setAdapter(adapter);
         loadInvoices();

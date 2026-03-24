@@ -1,12 +1,13 @@
 package com.example.DuAnMau_PH63816.category;
 
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,7 +23,6 @@ public class CategoryManagementScreen extends AppCompatActivity {
 
     private RecyclerView rvCategories;
     private AppCompatButton btnAddCategory;
-    private ImageView icBack;
     private TextView tvCategoryCountBadge;
     private final ArrayList<Category> categoryList = new ArrayList<>();
     private CategoryAdapter categoryAdapter;
@@ -49,8 +49,13 @@ public class CategoryManagementScreen extends AppCompatActivity {
     private void initViews() {
         rvCategories = findViewById(R.id.rvCategories);
         btnAddCategory = findViewById(R.id.btnAddCategory);
-        icBack = findViewById(R.id.icBack);
         tvCategoryCountBadge = findViewById(R.id.tvCategoryCountBadge);
+        Toolbar toolbarCategoryManagementScreen = findViewById(R.id.toolbarCategoryManagementScreen);
+
+        if (toolbarCategoryManagementScreen != null) {
+            setSupportActionBar(toolbarCategoryManagementScreen);
+            toolbarCategoryManagementScreen.setNavigationOnClickListener(v -> finish());
+        }
     }
 
     private void setupRecyclerView() {
@@ -85,7 +90,6 @@ public class CategoryManagementScreen extends AppCompatActivity {
     }
 
     private void setListeners() {
-        icBack.setOnClickListener(v -> finish());
 
         btnAddCategory.setOnClickListener(v -> {
             Category newCategory = new Category("Danh mục mới", 0, R.drawable.btn_category);

@@ -2,11 +2,10 @@ package com.example.DuAnMau_PH63816.customer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,9 +41,14 @@ public class CustomerManagementScreen extends AppCompatActivity {
     }
 
     private void setupUi() {
-        ImageView icBack = findViewById(R.id.icBack);
         FloatingActionButton floatAddCustomer = findViewById(R.id.fabAddCustomer);
         RecyclerView rvCustomer = findViewById(R.id.rvCustomer);
+        Toolbar toolbarCustomerManagementScreen = findViewById(R.id.toolbarCustomerManagementScreen);
+
+        if (toolbarCustomerManagementScreen != null) {
+            setSupportActionBar(toolbarCustomerManagementScreen);
+            toolbarCustomerManagementScreen.setNavigationOnClickListener(v -> finish());
+        }
 
         adapter = new CustomerAdapter(
                 this,
@@ -84,7 +88,6 @@ public class CustomerManagementScreen extends AppCompatActivity {
         loadCustomers();
 
         floatAddCustomer.setOnClickListener(v -> startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class)));
-        icBack.setOnClickListener(v -> finish());
     }
 
     private void loadCustomers() {

@@ -7,41 +7,21 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:layout_marginTop="16dp"
+    android:paddingTop="32dp"
     tools:context=".invoice.InvoiceActivity">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarInvoice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:fontFamily="@font/work_sans_medium"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Quản lý hóa đơn"
+        app:titleTextColor="@android:color/black" />
 
-        <ImageView
-            android:id="@+id/icBack"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_back"
-            app:tint="@color/color_default" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/work_sans_medium"
-            android:gravity="center"
-            android:text="Quản lý hóa đơn"
-            android:textColor="@color/color_title"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
-    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"

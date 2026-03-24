@@ -11,29 +11,14 @@
     tools:context=".top_customer.TopCustomerBuyingProductsScreen">
 
     <!-- TOOLBAR -->
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarTopCustomerBuyingProductsScreen"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp">
-
-        <ImageView
-            android:id="@+id/icBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_medium"
-            android:text="Thống kê Top khách hàng"
-            android:textColor="@color/color_title"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Thống kê Top khách hàng"
+        app:titleTextColor="@android:color/black" />
 
     <View
         android:layout_width="match_parent"

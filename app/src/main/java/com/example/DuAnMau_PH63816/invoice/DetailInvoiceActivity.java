@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
@@ -32,7 +33,7 @@ public class DetailInvoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_invoice);
 
-        ImageView icBack = findViewById(R.id.icBack);
+        Toolbar toolbarDetailInvoiceActivity = findViewById(R.id.toolbarDetailInvoiceActivity);
         TextView tvInvoiceCode = findViewById(R.id.tvInvoiceCode);
         TextView tvStatus = findViewById(R.id.tvStatus);
         TextView tvSubtotal = findViewById(R.id.tvSubtotal);
@@ -45,6 +46,10 @@ public class DetailInvoiceActivity extends AppCompatActivity {
         MaterialCardView cardStatus = findViewById(R.id.cardStatus);
         invoiceDAO = new InvoiceDAO(this);
         invoiceDetailDAO = new InvoiceDetailDAO(this);
+        if (toolbarDetailInvoiceActivity != null) {
+            setSupportActionBar(toolbarDetailInvoiceActivity);
+            toolbarDetailInvoiceActivity.setNavigationOnClickListener(v -> navigateBack());
+        }
 
         Intent intent = getIntent();
         int invoiceId = intent.getIntExtra("invoice_id", -1);
@@ -78,7 +83,6 @@ public class DetailInvoiceActivity extends AppCompatActivity {
             tvTotal.setTextColor(getColor(R.color.color_default));
         }
 
-        icBack.setOnClickListener(v -> navigateBack());
     }
 
     private void navigateBack() {

@@ -1,10 +1,10 @@
 package com.example.DuAnMau_PH63816.product;
 
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.DuAnMau_PH63816.R;
 
 public class AddProductScreen extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +24,11 @@ public class AddProductScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        ImageView icBack = findViewById(R.id.icBack);
-        if (icBack != null) {
-            icBack.setOnClickListener(v -> finish());
-        }
+        Toolbar toolbarAddProductScreen = findViewById(R.id.toolbarAddProductScreen);
 
+        if (toolbarAddProductScreen != null) {
+            setSupportActionBar(toolbarAddProductScreen);
+            toolbarAddProductScreen.setNavigationOnClickListener(v -> finish());
+        }
     }
 }

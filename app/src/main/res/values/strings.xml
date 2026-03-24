@@ -53,12 +53,15 @@
     <string name="enter_new_password" translatable="false">Nhập mật khẩu mới</string>
     <string name="confirm_new_password" translatable="false">Xác nhận mật khẩu mới</string>
     <string name="enter_confirm_password" translatable="false">Nhập lại mật khẩu mới</string>
-    <string name="update_password">Cập nhật mật khẩu</string>
+    <string name="update_password" translatable="false">Cập nhật mật khẩu</string>
     <string name="hint_full_name" translatable="false">Nhập tên đầy đủ của bạn</string>
     <string name="hint_email_or_phone" translatable="false">Nhập địa chỉ email hoặc số điện thoại của bạn.</string>
     <string name="label_email_or_phone" translatable="false">Email hoặc số điện thoại</string>
     <string name="login_prompt_no_account" translatable="false">Bạn chưa có tài khoản?</string>
     <string name="home_label_category" translatable="false">Danh mục</string>
+    <string name="label_category" translatable="false">Quản lý danh mục</string>
+    <string name="label_customer" translatable="false">Quản lý khách hàng</string>
+    <string name="label_edit_customer" translatable="false">Chỉnh sửa khách hàng</string>
     <string name="hint_create_password" translatable="false">Tạo mật khẩu của bạn</string>
     <string name="create_account_title" translatable="false">Tạo tài khoản</string>
     <string name="comunicate" translatable="false">giao tiếp</string>

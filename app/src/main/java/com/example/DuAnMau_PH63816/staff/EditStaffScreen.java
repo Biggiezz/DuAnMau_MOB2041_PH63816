@@ -3,11 +3,11 @@ package com.example.DuAnMau_PH63816.staff;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,7 +18,6 @@ import android.widget.EditText;
 
 public class EditStaffScreen extends AppCompatActivity {
 
-    private ImageView icBack;
     private MaterialButton btnUpdateStaff;
     private EditText edtEditStaffId, edtEditStaffName, edtEditStaffPhone, edtEditStaffEmail, edtEditStaffAddress;
     private AutoCompleteTextView actvEditRole;
@@ -31,7 +30,7 @@ public class EditStaffScreen extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_staff_screen);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.btnUpdateStaff), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -44,7 +43,7 @@ public class EditStaffScreen extends AppCompatActivity {
     }
 
     private void initViews() {
-        icBack = findViewById(R.id.icBack);
+        Toolbar toolbarEditStaffScreen = findViewById(R.id.toolbarEditStaffScreen);
         btnUpdateStaff = findViewById(R.id.btnUpdateStaff);
         edtEditStaffId = findViewById(R.id.edtEditStaffId);
         edtEditStaffName = findViewById(R.id.edtEditStaffName);
@@ -55,6 +54,10 @@ public class EditStaffScreen extends AppCompatActivity {
         actvEditRole = findViewById(R.id.actvEditRole);
         tvEditName = findViewById(R.id.tvEditName);
         tvEditRole = findViewById(R.id.tvEditRole);
+        if (toolbarEditStaffScreen != null) {
+            setSupportActionBar(toolbarEditStaffScreen);
+            toolbarEditStaffScreen.setNavigationOnClickListener(v -> finish());
+        }
     }
 
     private void setupDropdown() {
@@ -98,8 +101,6 @@ public class EditStaffScreen extends AppCompatActivity {
     }
 
     private void setListeners() {
-        icBack.setOnClickListener(v -> finish());
-
         btnUpdateStaff.setOnClickListener(v -> {
             Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
             finish();

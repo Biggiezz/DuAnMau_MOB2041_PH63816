@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -17,12 +18,13 @@ import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.create_account.CreateAccountActivity;
 import com.example.DuAnMau_PH63816.forgot.ForgotPasswordScreen;
 import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
+import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 
 public class LoginScreen extends AppCompatActivity {
-    private ImageView icBack;
     private EditText edtEmail, edtPassword;
     private TextView tvForgotPassword, tvSignUp;
     private Button btnLogin;
+    private StaffDAO staffDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +37,41 @@ public class LoginScreen extends AppCompatActivity {
             return insets;
         });
         initUi();
-        icBack.setOnClickListener(v -> finish());
+        staffDAO = new StaffDAO(this);
+        Toolbar toolbarLoginScreen = findViewById(R.id.toolbarLoginScreen);
+        if (toolbarLoginScreen != null) {
+            setSupportActionBar(toolbarLoginScreen);
+            toolbarLoginScreen.setNavigationOnClickListener(v -> finish());
+        }
         btnLogin.setOnClickListener(v -> {
-            String email = edtEmail.getText().toString();
-            String password = edtPassword.getText().toString();
-            /// check trống
-            if (email.isEmpty() || password.isEmpty()) {
-                edtEmail.setError(getString(R.string.error_email_required));
-                edtPassword.setError(getString(R.string.error_password_required));
-            } else {
-                Intent intent = new Intent(LoginScreen.this, HomePageScreen.class);
-                startActivity(intent);
+            String userName = edtEmail.getText().toString().trim();
+            String password = edtPassword.getText().toString().trim();
+
+            edtEmail.setError(null);
+            edtPassword.setError(null);
+
+            boolean hasError = false;
+            if (userName.isEmpty()) {
+                edtEmail.setError("Vui lòng nhập tên đăng nhập");
+                hasError = true;
             }
+            if (password.isEmpty()) {
+                edtPassword.setError("Vui lòng nhập mật khẩu");
+                hasError = true;
+            }
+            if (hasError) {
+                return;
+            }
+
+            if (!staffDAO.KiemTraDangNhap(userName, password)) {
+                Toast.makeText(LoginScreen.this, "Sai tên đăng nhập hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Toast.makeText(LoginScreen.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginScreen.this, HomePageScreen.class);
+            startActivity(intent);
+            finish();
         });
         tvForgotPassword.setOnClickListener(v -> {
             Intent intent = new Intent(LoginScreen.this, ForgotPasswordScreen.class);
@@ -65,7 +90,6 @@ public class LoginScreen extends AppCompatActivity {
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvSignUp = findViewById(R.id.tvSignUp);
         edtPassword = findViewById(R.id.edtPassword);
-        icBack = findViewById(R.id.icBack);
         btnLogin = findViewById(R.id.btnLogin);
     }
 }
