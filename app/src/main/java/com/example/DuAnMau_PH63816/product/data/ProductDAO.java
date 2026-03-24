@@ -34,6 +34,10 @@ public class ProductDAO {
                 product.setPriceLabel(cursor.getString(2));
                 product.setStockLabel(cursor.getString(3));
                 product.setImage(cursor.getString(4));
+                product.setCategory(cursor.getString(5));
+                product.setUnit(cursor.getString(6));
+                product.setDate(cursor.getString(7));
+                product.setStatus(cursor.getInt(8));
                 list.add(product);
                 cursor.moveToNext();
             }
@@ -51,6 +55,10 @@ public class ProductDAO {
         contentValues.put("priceLabel", product.getPriceLabel());
         contentValues.put("stockLabel", product.getStockLabel());
         contentValues.put("image", product.getImage());
+        contentValues.put("category", product.getCategory());
+        contentValues.put("unit", product.getUnit());
+        contentValues.put("date", product.getDate());
+        contentValues.put("status", product.getStatus());
 
         /// b2: gọi câu lệnh insert
         long kq = sqLiteDatabase.insert("Product", null, contentValues);
@@ -64,6 +72,10 @@ public class ProductDAO {
         contentValues.put("priceLabel", product.getPriceLabel());
         contentValues.put("stockLabel", product.getStockLabel());
         contentValues.put("image", product.getImage());
+        contentValues.put("category", product.getCategory());
+        contentValues.put("unit", product.getUnit());
+        contentValues.put("date", product.getDate());
+        contentValues.put("status", product.getStatus());
 
         long kq = sqLiteDatabase.update("Product", contentValues, "id=?", new String[]{String.valueOf(product.getId())});
         return kq != -1;
@@ -74,6 +86,7 @@ public class ProductDAO {
         long kq = sqLiteDatabase.delete("Product", "id = ?", new String[]{String.valueOf(product.getId())});
         return kq != -1;
     }
+
     private void ensureSeedData() {
         if (getAllProducts().isEmpty()) {
             for (Product seed : getSeedProducts()) {
@@ -82,11 +95,53 @@ public class ProductDAO {
         }
     }
 
+    /// Hàm kiểm tra có trùng mã với ô nhập không
+//    private Product getProductById(String productId) {
+//        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Product WHERE id = ?", new String[]{productId});
+//        if (cursor.moveToFirst()) {
+//            Product product = new Product();
+//            product.setId(cursor.getInt(0));
+//            product.setName(cursor.getString(1));
+//            product.setPriceLabel(cursor.getString(2));
+//            product.setStockLabel(cursor.getString(3));
+//            product.setImage(cursor.getString(4));
+//            product.setCategory(cursor.getString(5));
+//            product.setUnit(cursor.getString(6));
+//            product.setDate(cursor.getString(7));
+//            product.setStatus(cursor.getInt(8));
+//            cursor.close();
+//            return product;
+//        }
+//        cursor.close();
+//        return null;
+//    }
+//
+//    public boolean isProductIdExists(String productId) {
+//        return getProductById(productId) != null;
+//    }
+//
     private ArrayList<Product> getSeedProducts() {
         ArrayList<Product> seeds = new ArrayList<>();
-        seeds.add(new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen));
-        seeds.add(new Product("Kem Matcha Premium", "45.000k", " · Tồn: 12", R.drawable.ic_icream_matcha));
-        seeds.add(new Product("Sushi Set Omakase", "850.000k", " · Tồn: 45", R.drawable.ic_set_sushi));
+        Product ramen = new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen);
+        ramen.setCategory("Ẩm thực");
+        ramen.setUnit("Tô");
+        ramen.setDate("10-05-2026");
+        ramen.setStatus(1);
+        seeds.add(ramen);
+
+        Product matcha = new Product("Kem Matcha Premium", "45.000k", " · Tồn: 12", R.drawable.ic_icream_matcha);
+        matcha.setCategory("Tráng miệng");
+        matcha.setUnit("Ly");
+        matcha.setDate("11-05-2026");
+        matcha.setStatus(1);
+        seeds.add(matcha);
+
+        Product sushi = new Product("Sushi Set Omakase", "850.000k", " · Tồn: 45", R.drawable.ic_set_sushi);
+        sushi.setCategory("Ẩm thực");
+        sushi.setUnit("Khay");
+        sushi.setDate("12-05-2026");
+        sushi.setStatus(1);
+        seeds.add(sushi);
         return seeds;
     }
 

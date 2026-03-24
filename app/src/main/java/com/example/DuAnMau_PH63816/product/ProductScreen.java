@@ -57,6 +57,10 @@ public class ProductScreen extends AppCompatActivity {
             intent.putExtra("extra_product_stock", product.getStockLabel());
             intent.putExtra("extra_product_image", product.getImage());
             intent.putExtra("extra_product_id", product.getId());
+            intent.putExtra("extra_product_category", product.getCategory());
+            intent.putExtra("extra_product_unit", product.getUnit());
+            intent.putExtra("extra_product_date", product.getDate());
+            intent.putExtra("extra_product_status", product.getStatus());
             startActivity(intent);
         });
 

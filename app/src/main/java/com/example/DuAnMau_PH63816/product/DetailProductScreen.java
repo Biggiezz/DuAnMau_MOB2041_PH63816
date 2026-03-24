@@ -2,8 +2,10 @@ package com.example.DuAnMau_PH63816.product;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -50,6 +52,11 @@ public class DetailProductScreen extends AppCompatActivity {
         TextInputEditText edtProductId = findViewById(R.id.edtProductId);
         TextInputEditText edtPrice = findViewById(R.id.edtPrice);
         TextInputEditText edtStock = findViewById(R.id.edtStock);
+        TextInputEditText edtDate = findViewById(R.id.edtDate);
+        AutoCompleteTextView spnCategory = findViewById(R.id.spnCategory);
+        AutoCompleteTextView spnUnit = findViewById(R.id.spnUnit);
+        RadioButton rbSelling = findViewById(R.id.rbSelling);
+        RadioButton rbOutOfStock = findViewById(R.id.rbOutOfStock);
         Button btnUpdateProduct = findViewById(R.id.btnUpdateProduct);
         Button btnDeleteProduct = findViewById(R.id.btnDeleteProduct);
         Toolbar toolbarDetailProductScreen = findViewById(R.id.toolbarDetailProductScreen);
@@ -80,19 +87,53 @@ public class DetailProductScreen extends AppCompatActivity {
         if (stockLabel != null && edtStock != null) {
             edtStock.setText(stripStockLabel(stockLabel));
         }
+        String category = intent.getStringExtra("extra_product_category");
+        if (category != null && spnCategory != null) {
+            spnCategory.setText(category, false);
+        }
+        String unit = intent.getStringExtra("extra_product_unit");
+        if (unit != null && spnUnit != null) {
+            spnUnit.setText(unit, false);
+        }
+        String date = intent.getStringExtra("extra_product_date");
+        if (date != null && edtDate != null) {
+            edtDate.setText(date);
+        }
+        int status = intent.getIntExtra("extra_product_status", 1);
+        if (status == 1 && rbSelling != null) {
+            rbSelling.setChecked(true);
+        } else if (rbOutOfStock != null) {
+            rbOutOfStock.setChecked(true);
+        }
 
         currentImage = intent.getStringExtra("extra_product_image");
         ProductAdapter.bindProductImage(imgProductCover, currentImage);
 
         if (btnUpdateProduct != null) {
-            btnUpdateProduct.setOnClickListener(v -> handleUpdate(edtProductName, edtPrice, edtStock));
+            btnUpdateProduct.setOnClickListener(v -> handleUpdate(
+                    edtProductName,
+                    edtPrice,
+                    edtStock,
+                    spnCategory,
+                    spnUnit,
+                    edtDate,
+                    rbSelling
+            ));
         }
         if (btnDeleteProduct != null) {
             btnDeleteProduct.setOnClickListener(v -> handleDelete());
         }
     }
 
-    private void handleUpdate(TextInputEditText nameView, TextInputEditText priceView, TextInputEditText stockView) {
+    private void handleUpdate(
+            TextInputEditText nameView,
+            TextInputEditText priceView,
+            TextInputEditText stockView,
+            AutoCompleteTextView categoryView,
+            AutoCompleteTextView unitView,
+            TextInputEditText dateView,
+            RadioButton sellingView
+    ) {
         if (productId == -1 || productDAO == null) {
             showToast("Không tìm thấy sản phẩm");
             return;
@@ -100,8 +141,11 @@ public class DetailProductScreen extends AppCompatActivity {
         String name = getTextValue(nameView);
         String price = getTextValue(priceView);
         String stock = getTextValue(stockView);
-        if (name.isEmpty() || price.isEmpty() || stock.isEmpty()) {
-            showToast("Vui lòng điền tên, giá và tồn");
+        String category = getTextValue(categoryView);
+        String unit = getTextValue(unitView);
+        String date = getTextValue(dateView);
+        if (name.isEmpty() || price.isEmpty() || stock.isEmpty() || category.isEmpty() || unit.isEmpty() || date.isEmpty()) {
+            showToast("Vui lòng điền đầy đủ thông tin sản phẩm");
             return;
         }
         Product product = new Product();
@@ -110,6 +154,10 @@ public class DetailProductScreen extends AppCompatActivity {
         product.setPriceLabel(price);
         product.setStockLabel(STOCK_PREFIX + stock);
         product.setImage(currentImage != null ? currentImage : "");
+        product.setCategory(category);
+        product.setUnit(unit);
+        product.setDate(date);
+        product.setStatus(sellingView != null && sellingView.isChecked() ? 1 : 0);
         boolean updated = productDAO.updateProduct(product);
         if (updated) {
             showToast("Cập nhật thành công");
@@ -143,6 +191,11 @@ public class DetailProductScreen extends AppCompatActivity {
     }
 
     private String getTextValue(TextInputEditText editText) {
+        if (editText == null || editText.getText() == null) return "";
+        return editText.getText().toString().trim();
+    }
+
+    private String getTextValue(AutoCompleteTextView editText) {
         if (editText == null || editText.getText() == null) return "";
         return editText.getText().toString().trim();
     }

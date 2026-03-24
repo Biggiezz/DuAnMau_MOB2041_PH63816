@@ -6,6 +6,10 @@ public class Product {
     private String priceLabel;
     private String stockLabel;
     private String image;
+    private String category;
+    private String unit;
+    private String date;
+    private int status;
 
     public Product() {
     }
@@ -16,6 +20,10 @@ public class Product {
         this.priceLabel = priceLabel;
         this.stockLabel = stockLabel;
         this.image = image;
+        this.category = "";
+        this.unit = "";
+        this.date = "";
+        this.status = 1;
     }
 
     public Product(String name, String priceLabel, String stockLabel, String image) {
@@ -28,6 +36,38 @@ public class Product {
 
     public Product(String name, String priceLabel, String stockLabel, int imageRes) {
         this(0, name, priceLabel, stockLabel, String.valueOf(imageRes));
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getName() {

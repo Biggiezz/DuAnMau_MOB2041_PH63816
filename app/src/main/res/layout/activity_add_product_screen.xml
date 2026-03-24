@@ -89,14 +89,6 @@
             </androidx.cardview.widget.CardView>
 
             <!-- FORM FIELDS -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/FormInputLayout"
-                android:hint="Mã sản phẩm">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtProductId"
-                    style="@style/FormEditText" />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/FormInputLayout"
@@ -179,14 +171,17 @@
                     style="@style/FormInputLayout"
                     android:layout_width="0dp"
                     android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:hint="Ngày nhập">
+                    android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtDate"
                         style="@style/FormEditText"
-                        android:inputType="date"
-                        android:text="mm/dd/yyyy" />
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/ic_calendar"
+                        android:focusable="false"
+                        android:hint="mm/dd/yyyy"
+                        android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -225,12 +220,12 @@
             </RadioGroup>
 
             <Button
-                android:id="@+id/btnUpdateProduct"
+                android:id="@+id/btnAddProduct"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/color_default"
-                android:text="Cập nhật sản phẩm"
+                android:text="Thêm sản phẩm"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"
