@@ -117,6 +117,27 @@ public class StaffDAO {
         return check != -1;
     }
 
+    public boolean kiemTraMatKhauCu(String maNhanVien, String matKhauCu) {
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT password FROM Staff WHERE staffCode = ?", new String[]{maNhanVien});
+        if (cursor.moveToFirst()) {
+            String matKhauHienTai = cursor.getString(0);
+            cursor.close();
+            sqLiteDatabase.close();
+            return matKhauHienTai.equals(matKhauCu);
+        }
+        cursor.close();
+        sqLiteDatabase.close();
+        return false;
+    }
+
+    public boolean capNhatMatKhauMoi(String maNhanVien, String matKhauMoi) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("password", matKhauMoi);
+        int row = sqLiteDatabase.update("Staff", contentValues, "staffCode = ?", new String[]{maNhanVien});
+        sqLiteDatabase.close();
+        return row > 0;
+    }
+
     public boolean isUsernameExists(String userName) {
         SQLiteDatabase sqLiteDatabase = staffDbHelper.getReadableDatabase();
 
