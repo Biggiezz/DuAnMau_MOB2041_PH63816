@@ -118,7 +118,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mã khách hàng"
+                            android:text="@string/customer_code"
                             android:textColor="@color/color_hint"
                             android:textSize="11sp" />
 
@@ -174,7 +174,7 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_phone"
+                        android:src="@drawable/ic_phone2"
                         app:tint="@color/color_hint" />
 
                     <EditText
@@ -183,7 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:background="@null"
-                        android:hint="Số điện thoại"
+                        android:hint="@string/customer_phone"
                         android:inputType="phone"
                         android:text="0987 654 321"
                         android:textColor="@color/color_title"
@@ -212,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:background="@null"
-                        android:hint="Email"
+                        android:hint="@string/customer_email"
                         android:inputType="textEmailAddress"
                         android:text="mai.nt@gmail.com"
                         android:textColor="@color/color_title"

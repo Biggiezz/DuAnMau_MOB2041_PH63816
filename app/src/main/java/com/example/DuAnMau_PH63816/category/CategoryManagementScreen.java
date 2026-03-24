@@ -1,5 +1,6 @@
 package com.example.DuAnMau_PH63816.category;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,18 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
-import com.example.DuAnMau_PH63816.category.data.CategoryDAO;
+import com.example.DuAnMau_PH63816.category.adapter.CategoryAdapter;
+import com.example.DuAnMau_PH63816.category.dao.CategoryDAO;
+import com.example.DuAnMau_PH63816.category.model.Category;
 
 import java.util.ArrayList;
 
 public class CategoryManagementScreen extends AppCompatActivity {
 
     private RecyclerView rvCategories;
-    private AppCompatButton btnAddCategory;
-    private TextView tvCategoryCountBadge;
     private final ArrayList<Category> categoryList = new ArrayList<>();
     private CategoryAdapter categoryAdapter;
-    private CategoryDAO categoryDAO;
+    CategoryDAO categoryDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,30 +44,31 @@ public class CategoryManagementScreen extends AppCompatActivity {
         categoryDAO = new CategoryDAO(this);
         initViews();
         setupRecyclerView();
-        setListeners();
     }
 
     private void initViews() {
         rvCategories = findViewById(R.id.rvCategories);
-        btnAddCategory = findViewById(R.id.btnAddCategory);
-        tvCategoryCountBadge = findViewById(R.id.tvCategoryCountBadge);
+        AppCompatButton btnAddCategory = findViewById(R.id.btnAddCategory);
+        TextView tvCategoryCountBadge = findViewById(R.id.tvCategoryCountBadge);
         Toolbar toolbarCategoryManagementScreen = findViewById(R.id.toolbarCategoryManagementScreen);
-
         if (toolbarCategoryManagementScreen != null) {
             setSupportActionBar(toolbarCategoryManagementScreen);
             toolbarCategoryManagementScreen.setNavigationOnClickListener(v -> finish());
         }
+        btnAddCategory.setOnClickListener(v -> startActivity(new Intent(CategoryManagementScreen.this, AddCategoryManagementScreen.class)));
     }
 
     private void setupRecyclerView() {
         categoryAdapter = new CategoryAdapter(this, categoryList, new CategoryAdapter.OnCategoryActionListener() {
             @Override
             public void onEdit(Category category) {
-                category.setName(category.getName() + " (Sửa)");
-                if (categoryDAO.updateCategory(category)) {
-                    Toast.makeText(CategoryManagementScreen.this, "Đã sửa " + category.getName(), Toast.LENGTH_SHORT).show();
-                    loadCategories();
-                }
+                Intent intent = new Intent(CategoryManagementScreen.this, EditCategoryManagementScreen.class);
+                intent.putExtra("extra_category_name", category.getName());
+                intent.putExtra("extra_category_code", category.getId());
+                intent.putExtra("extra_category_count", category.getProductCount());
+                intent.putExtra("extra_category_icon", category.getIconResId());
+                intent.putExtra("extra_category_describe", category.getDescribe());
+                startActivity(intent);
             }
 
             @Override
@@ -77,6 +79,7 @@ public class CategoryManagementScreen extends AppCompatActivity {
                 }
             }
         });
+
         rvCategories.setLayoutManager(new LinearLayoutManager(this));
         rvCategories.setAdapter(categoryAdapter);
         loadCategories();
@@ -85,19 +88,7 @@ public class CategoryManagementScreen extends AppCompatActivity {
     private void loadCategories() {
         categoryList.clear();
         categoryList.addAll(categoryDAO.getAllCategories());
-        tvCategoryCountBadge.setText(categoryList.size() + " Danh mục");
         categoryAdapter.notifyDataSetChanged();
-    }
-
-    private void setListeners() {
-
-        btnAddCategory.setOnClickListener(v -> {
-            Category newCategory = new Category("Danh mục mới", 0, R.drawable.btn_category);
-            if (categoryDAO.insertCategory(newCategory)) {
-                Toast.makeText(this, "Thêm danh mục mới", Toast.LENGTH_SHORT).show();
-                loadCategories();
-            }
-        });
     }
 
     @Override
@@ -106,5 +97,13 @@ public class CategoryManagementScreen extends AppCompatActivity {
             categoryDAO.close();
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (categoryAdapter != null && categoryDAO != null) {
+            loadCategories();
+        }
     }
 }

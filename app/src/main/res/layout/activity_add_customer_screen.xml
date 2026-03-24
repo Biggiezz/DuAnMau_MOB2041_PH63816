@@ -92,37 +92,37 @@
                 android:layout_marginTop="24dp"
                 android:orientation="vertical">
 
-                <!-- Mã khách hàng -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@drawable/bg_input_border"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
+                <!--                &lt;!&ndash; Mã khách hàng &ndash;&gt;-->
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="64dp"-->
+                <!--                    android:background="@drawable/bg_input_border"-->
+                <!--                    android:gravity="center_vertical"-->
+                <!--                    android:orientation="horizontal"-->
+                <!--                    android:paddingHorizontal="16dp">-->
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_verify"
-                        app:tint="@color/color_hint" />
+                <!--                    <ImageView-->
+                <!--                        android:layout_width="24dp"-->
+                <!--                        android:layout_height="24dp"-->
+                <!--                        android:src="@drawable/ic_verify"-->
+                <!--                        app:tint="@color/color_hint" />-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
+                <!--                    <LinearLayout-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="12dp"-->
+                <!--                        android:orientation="vertical">-->
 
-                        <EditText
-                            android:id="@+id/edtAddCustomerCode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:hint="Nhập vào mã KH"
-                            android:textColor="@color/color_subtitle"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-                </LinearLayout>
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/tvAddCustomerCode"-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:background="@null"-->
+                <!--                            android:hint="Mã KH"-->
+                <!--                            android:textColor="@color/color_subtitle"-->
+                <!--                            android:textSize="16sp" />-->
+                <!--                    </LinearLayout>-->
+                <!--                </LinearLayout>-->
 
                 <!-- Họ và tên -->
                 <LinearLayout
@@ -164,7 +164,7 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_phone"
+                        android:src="@drawable/ic_phone2"
                         app:tint="@color/color_hint" />
 
                     <EditText

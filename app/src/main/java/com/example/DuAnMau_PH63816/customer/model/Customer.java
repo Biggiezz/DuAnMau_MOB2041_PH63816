@@ -23,6 +23,9 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(String name, String phone, String email, String address, String amount, int status) {
+    }
+
     public String getId() {
         return id;
     }

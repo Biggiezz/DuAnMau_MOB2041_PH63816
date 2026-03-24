@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".category.AddCategoryManagementScreen">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAddCategoryManagementScreen"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Thêm danh mục mới"
+        app:titleTextColor="@android:color/black" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A000000" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Tên danh mục"
+        android:textColor="@color/color_title"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edtNameCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/bg_edit_text"
+        android:fontFamily="@font/work_sans_medium"
+        android:hint="Ví dụ: Đồ uống, Thực phẩm tươi sống..."
+        android:inputType="text"
+        android:textColor="@color/color_title"
+        android:textColorHint="@color/color_hint"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Mã danh mục"
+        android:textColor="@color/color_title"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edtCodeCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/bg_edit_text"
+        android:fontFamily="@font/work_sans_medium"
+        android:hint="Ví dụ: CAT005"
+        android:inputType="text"
+        android:textColor="@color/color_title"
+        android:textColorHint="@color/color_hint"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Số lượng sản phẩm"
+        android:textColor="@color/color_title"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edtCountCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/bg_edit_text"
+        android:fontFamily="@font/work_sans_medium"
+        android:hint="Ví dụ: 50"
+        android:inputType="text"
+        android:textColor="@color/color_title"
+        android:textColorHint="@color/color_hint"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Mô tả chi tiết"
+        android:textColor="@color/color_title"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edtDescribeCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/bg_edit_text"
+        android:fontFamily="@font/work_sans_medium"
+        android:gravity="top|start"
+        android:hint="Nhập mô tả ngắn gọn về danh mục này..."
+        android:inputType="textMultiLine"
+        android:minLines="4"
+        android:textColor="@color/color_title"
+        android:textColorHint="@color/color_hint"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnAddCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/color_default"
+        android:padding="12dp"
+        android:elevation="2dp"
+        android:text="Lưu danh mục"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>

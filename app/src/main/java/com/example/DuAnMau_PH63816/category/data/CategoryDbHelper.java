@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CategoryDbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "Category.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
 
     public CategoryDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -19,7 +19,8 @@ public class CategoryDbHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT," +
                 "productCount INTEGER," +
-                "iconResId INTEGER)";
+                "iconResId INTEGER," +
+                "describe TEXT)";
         db.execSQL(sql);
     }
 

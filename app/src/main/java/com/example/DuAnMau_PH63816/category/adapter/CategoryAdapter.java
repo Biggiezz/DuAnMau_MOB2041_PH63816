@@ -1,4 +1,4 @@
-package com.example.DuAnMau_PH63816.category;
+package com.example.DuAnMau_PH63816.category.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,16 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.category.model.Category;
+
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     public interface OnCategoryActionListener {
         void onEdit(Category category);
+
         void onDelete(Category category);
     }
 
@@ -44,19 +48,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.imgCategoryIcon.setImageResource(category.getIconResId());
 
         holder.imgEdit.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onEdit(category);
-            } else {
-                Toast.makeText(context, "Sửa " + category.getName(), Toast.LENGTH_SHORT).show();
-            }
+            if (listener != null) listener.onEdit(category);
         });
 
         holder.imgDelete.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onDelete(category);
-            } else {
-                Toast.makeText(context, "Xóa " + category.getName(), Toast.LENGTH_SHORT).show();
-            }
+            if (listener != null) listener.onDelete(category);
+        });
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onEdit(category);
         });
     }
 
