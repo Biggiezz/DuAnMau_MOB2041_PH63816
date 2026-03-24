@@ -8,13 +8,15 @@ import androidx.annotation.Nullable;
 
 public class CustomerDbHelper extends SQLiteOpenHelper {
 
+    private static final int DB_VERSION = 3;
+
     public CustomerDbHelper(@Nullable Context context) {
-        super(context, "Customer.db", null, 2);
+        super(context, "Customer.db", null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-    String sql = "CREATE TABLE IF NOT EXISTS Customer(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+    String sql = "CREATE TABLE IF NOT EXISTS Customer(id TEXT PRIMARY KEY," +
             "name TEXT," +
             " phone TEXT," +
             " email TEXT," +

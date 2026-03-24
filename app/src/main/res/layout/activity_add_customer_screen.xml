@@ -303,7 +303,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:weightSum="2">
 
                 <RadioButton
                     android:id="@+id/rbAddVIP"
@@ -324,25 +324,11 @@
                     android:id="@+id/rbAddMember"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/radio_bg_selector"
                     android:button="@null"
                     android:gravity="center"
                     android:text="Member"
-                    android:textColor="@color/txt_radio_selector"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:id="@+id/rbAddPotential"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/radio_bg_selector"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:text="Tiềm năng"
                     android:textColor="@color/txt_radio_selector"
                     android:textSize="14sp"
                     android:textStyle="bold" />

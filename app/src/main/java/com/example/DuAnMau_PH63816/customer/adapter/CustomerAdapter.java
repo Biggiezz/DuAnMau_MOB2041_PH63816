@@ -53,14 +53,15 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         Customer customer = items.get(position);
         holder.tvCustomerName.setText(customer.getName());
         boolean isVip = customer.getStatus() == 0;
-        holder.tvCustomerType.setText(isVip ? "VIP" : "Member");
+        String typeText = isVip ? "VIP" : "Member";
+        int statusColor = isVip ? R.drawable.bg_badge_vip : R.drawable.bg_badge_member;
+        holder.tvCustomerType.setText(typeText);
         holder.tvCustomerInfo.setText(
                 context.getString(
                         R.string.customer_info_format,
                         customer.getId(),
                         customer.getPhone())
         );
-        int statusColor = isVip ? R.drawable.bg_badge_vip : R.drawable.bg_badge_member;
 
         holder.tvCustomerType.setBackgroundResource(statusColor);
 

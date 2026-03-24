@@ -121,15 +121,15 @@ public class InvoiceDAO {
             return;
         }
 
-        Invoice invoice1 = new Invoice("HD-2026-001", "CHỜ THANH TOÁN", "1", "10/05/2026", "295.000k", "Tiền mặt", "Phúc");
+        Invoice invoice1 = new Invoice("HD-2026-001", "CHỜ THANH TOÁN", "KH001", "10/05/2026", "295.000k", "Tiền mặt", "Phúc");
         long invoiceId1 = insertInvoiceAndGetId(invoice1);
         insertSeedDetails((int) invoiceId1, getInvoice1Details());
 
-        Invoice invoice2 = new Invoice("HD-2026-002", "ĐÃ THANH TOÁN", "2", "09/05/2026", "850.000k", "Chuyển khoản", "Linh");
+        Invoice invoice2 = new Invoice("HD-2026-002", "ĐÃ THANH TOÁN", "KH002", "09/05/2026", "850.000k", "Chuyển khoản", "Linh");
         long invoiceId2 = insertInvoiceAndGetId(invoice2);
         insertSeedDetails((int) invoiceId2, getInvoice2Details());
 
-        Invoice invoice3 = new Invoice("HD-2026-003", "ĐÃ HỦY", "3", "08/05/2026", "940.000k", "Tiền mặt", "Hà");
+        Invoice invoice3 = new Invoice("HD-2026-003", "ĐÃ HỦY", "KH003", "08/05/2026", "940.000k", "Tiền mặt", "Hà");
         long invoiceId3 = insertInvoiceAndGetId(invoice3);
         insertSeedDetails((int) invoiceId3, getInvoice3Details());
     }
