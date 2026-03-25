@@ -37,8 +37,8 @@ public class StaffDAO {
                 staff.setPassword(cursor.getString(3));
                 staff.setPhone(cursor.getString(4));
                 staff.setAddress(cursor.getString(5));
-                staff.setImage(cursor.getInt(6));
-                staff.setRole(cursor.getInt(7));
+                staff.setImage(0);
+                staff.setRole(cursor.getInt(6));
                 list.add(staff);
                 cursor.moveToNext();
             }
@@ -71,8 +71,8 @@ public class StaffDAO {
         contentValues.put("address", staff.getAddress());
         contentValues.put("role", staff.getRole());
 
-        long kq = sqLiteDatabase.update("Staff", contentValues, "staffCode = ?", new String[]{String.valueOf(staff.getStaffCode())});
-        return kq != -1;
+        int kq = sqLiteDatabase.update("Staff", contentValues, "staffCode = ?", new String[]{String.valueOf(staff.getStaffCode())});
+        return kq > 0;
     }
 
     public boolean deleteStaff(Staff staff) {
@@ -161,5 +161,9 @@ public class StaffDAO {
         editor.remove("nameLogin");
         editor.remove("role");
         editor.apply();
+    }
+
+    public void close() {
+        if (staffDbHelper != null) staffDbHelper.close();
     }
 }

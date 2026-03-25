@@ -22,7 +22,28 @@ public class Staff {
     }
 
     public Staff() {
+    }
 
+    public Staff(String id, String name, String phone, String email, String address, String role) {
+        if (id != null) {
+            id = id.trim().replace("NV", "");
+            if (!id.isEmpty()) {
+                this.staffCode = Integer.parseInt(id);
+            }
+        }
+        this.nameStaff = name;
+        this.phone = phone;
+        this.nameLogin = email;
+        this.address = address;
+        this.role = "Quản lý".equals(role) ? 0 : 1;
+    }
+
+    public Staff(String name, String phone, String email, String address, String role) {
+        this.nameStaff = name;
+        this.phone = phone;
+        this.nameLogin = email;
+        this.address = address;
+        this.role = "Quản lý".equals(role) ? 0 : 1;
     }
 
     public int getImage() {
