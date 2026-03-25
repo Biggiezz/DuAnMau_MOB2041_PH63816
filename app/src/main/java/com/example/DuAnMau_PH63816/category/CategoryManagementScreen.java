@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class CategoryManagementScreen extends AppCompatActivity {
 
     private RecyclerView rvCategories;
+    private TextView tvCategoryCountBadge;
     private final ArrayList<Category> categoryList = new ArrayList<>();
     private CategoryAdapter categoryAdapter;
     CategoryDAO categoryDAO;
@@ -49,7 +50,7 @@ public class CategoryManagementScreen extends AppCompatActivity {
     private void initViews() {
         rvCategories = findViewById(R.id.rvCategories);
         AppCompatButton btnAddCategory = findViewById(R.id.btnAddCategory);
-        TextView tvCategoryCountBadge = findViewById(R.id.tvCategoryCountBadge);
+        tvCategoryCountBadge = findViewById(R.id.tvCategoryCountBadge);
         Toolbar toolbarCategoryManagementScreen = findViewById(R.id.toolbarCategoryManagementScreen);
         if (toolbarCategoryManagementScreen != null) {
             setSupportActionBar(toolbarCategoryManagementScreen);
@@ -63,32 +64,50 @@ public class CategoryManagementScreen extends AppCompatActivity {
             @Override
             public void onEdit(Category category) {
                 Intent intent = new Intent(CategoryManagementScreen.this, EditCategoryManagementScreen.class);
-                intent.putExtra("extra_category_name", category.getName());
-                intent.putExtra("extra_category_code", category.getId());
-                intent.putExtra("extra_category_count", category.getProductCount());
-                intent.putExtra("extra_category_icon", category.getIconResId());
-                intent.putExtra("extra_category_describe", category.getDescribe());
+                intent.putExtra(CategoryExtras.ID, category.getId());
+                intent.putExtra(CategoryExtras.NAME, category.getName());
+                intent.putExtra(CategoryExtras.PRODUCT_COUNT, category.getProductCount());
+                intent.putExtra(CategoryExtras.ICON, category.getIconResId());
+                intent.putExtra(CategoryExtras.DESCRIBE, category.getDescribe());
                 startActivity(intent);
             }
 
             @Override
             public void onDelete(Category category) {
-                if (categoryDAO.deleteCategory(category)) {
-                    Toast.makeText(CategoryManagementScreen.this, "Đã xóa " + category.getName(), Toast.LENGTH_SHORT).show();
-                    loadCategories();
-                }
+                handleDelete(category);
             }
         });
+
 
         rvCategories.setLayoutManager(new LinearLayoutManager(this));
         rvCategories.setAdapter(categoryAdapter);
         loadCategories();
     }
 
+    private void handleDelete(Category category) {
+        if (categoryDAO == null) {
+            showToast("Không tìm thấy danh mục");
+            return;
+        }
+        if (categoryDAO.deleteCategory(category)) {
+            loadCategories();
+            showToast("Đã xóa danh mục");
+        } else {
+            showToast("Xóa danh mục thất bại");
+        }
+    }
     private void loadCategories() {
         categoryList.clear();
         categoryList.addAll(categoryDAO.getAllCategories());
         categoryAdapter.notifyDataSetChanged();
+        if (tvCategoryCountBadge != null) {
+            tvCategoryCountBadge.setText(
+                    String.valueOf(" " + categoryList.size() + " danh mục "));
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
