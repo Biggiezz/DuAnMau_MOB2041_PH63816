@@ -178,7 +178,7 @@
                         style="@style/FormEditText"
                         android:clickable="false"
                         android:cursorVisible="false"
-                        android:drawableRight="@drawable/ic_calendar"
+                        android:drawableEnd="@drawable/ic_calendar"
                         android:focusable="false"
                         android:hint="mm/dd/yyyy"
                         android:inputType="date" />

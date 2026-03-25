@@ -172,14 +172,17 @@
                     style="@style/FormInputLayout"
                     android:layout_width="0dp"
                     android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:hint="Ngày nhập">
+                    android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtDate"
                         style="@style/FormEditText"
-                        android:inputType="date"
-                        android:text="10/05/2026" />
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:drawableEnd="@drawable/ic_calendar"
+                        android:focusable="false"
+                        android:hint="mm/dd/yyyy"
+                        android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -220,11 +223,12 @@
             <Button
                 android:id="@+id/btnUpdateProduct"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/color_default"
                 android:text="Cập nhật sản phẩm"
                 android:textAllCaps="false"
+                android:padding="12dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp" />
@@ -232,10 +236,11 @@
             <Button
                 android:id="@+id/btnDeleteProduct"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/bg_warning"
                 android:text="Xóa sản phẩm"
+                android:padding="12dp"
                 android:textAllCaps="false"
                 android:textColor="@color/txt_warning"
                 android:textSize="16sp"

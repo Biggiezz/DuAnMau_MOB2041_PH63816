@@ -13,6 +13,9 @@
         android:theme="@style/Theme.DuAnMau_PH63816"
         tools:targetApi="31">
         <activity
+            android:name=".statistics.StatisticalScreen"
+            android:exported="false" />
+        <activity
             android:name=".category.EditCategoryManagementScreen"
             android:exported="false" />
         <activity

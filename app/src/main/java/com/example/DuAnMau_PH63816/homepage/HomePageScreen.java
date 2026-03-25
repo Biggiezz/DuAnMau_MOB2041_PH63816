@@ -23,6 +23,7 @@ import com.example.DuAnMau_PH63816.invoice.InvoiceActivity;
 import com.example.DuAnMau_PH63816.product.ProductScreen;
 import com.example.DuAnMau_PH63816.profile.ProfileScreen;
 import com.example.DuAnMau_PH63816.staff.StaffManagementScreen;
+import com.example.DuAnMau_PH63816.statistics.StatisticalScreen;
 import com.example.DuAnMau_PH63816.top_customer.TopCustomerBuyingProductsScreen;
 import com.example.DuAnMau_PH63816.top_product.TopSellingProductsScreen;
 import com.google.android.material.navigation.NavigationView;
@@ -66,6 +67,7 @@ public class HomePageScreen extends AppCompatActivity {
         imgPersonnel.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, StaffManagementScreen.class)));
         imgInvoice.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, InvoiceActivity.class)));
         imgCategory.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, CategoryManagementScreen.class)));
+        imgStatistical.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, StatisticalScreen.class)));
         btnSetting.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProfileScreen.class)));
         /// toolbar
         setSupportActionBar(toolbarHomePageScreen);
