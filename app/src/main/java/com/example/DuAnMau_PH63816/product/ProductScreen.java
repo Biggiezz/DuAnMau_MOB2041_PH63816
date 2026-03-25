@@ -52,15 +52,15 @@ public class ProductScreen extends AppCompatActivity {
 
         adapter = new ProductAdapter(this, products, product -> {
             Intent intent = new Intent(ProductScreen.this, DetailProductScreen.class);
-            intent.putExtra("extra_product_name", product.getName());
-            intent.putExtra("extra_product_price", product.getPriceLabel());
-            intent.putExtra("extra_product_stock", product.getStockLabel());
-            intent.putExtra("extra_product_image", product.getImage());
-            intent.putExtra("extra_product_id", product.getId());
-            intent.putExtra("extra_product_category", product.getCategory());
-            intent.putExtra("extra_product_unit", product.getUnit());
-            intent.putExtra("extra_product_date", product.getDate());
-            intent.putExtra("extra_product_status", product.getStatus());
+            intent.putExtra(ProductExtras.NAME, product.getName());
+            intent.putExtra(ProductExtras.PRICE, product.getPriceLabel());
+            intent.putExtra(ProductExtras.STOCK, product.getStockLabel());
+            intent.putExtra(ProductExtras.IMAGE, product.getImage());
+            intent.putExtra(ProductExtras.ID, product.getId());
+            intent.putExtra(ProductExtras.CATEGORY, product.getCategory());
+            intent.putExtra(ProductExtras.UNIT, product.getUnit());
+            intent.putExtra(ProductExtras.DATE, product.getDate());
+            intent.putExtra(ProductExtras.STATUS, product.getStatus());
             startActivity(intent);
         });
 

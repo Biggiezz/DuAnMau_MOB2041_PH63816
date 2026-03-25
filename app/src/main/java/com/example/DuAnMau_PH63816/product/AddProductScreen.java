@@ -1,11 +1,11 @@
 package com.example.DuAnMau_PH63816.product;
 
-import android.app.DatePickerDialog;
+import static com.example.DuAnMau_PH63816.common.OpenDatePicker.openDatePicker;
+
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -22,13 +22,10 @@ import com.example.DuAnMau_PH63816.product.data.ProductDAO;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 public class AddProductScreen extends AppCompatActivity {
 
-    final Calendar calendar = Calendar.getInstance();
     private static final String STOCK_PREFIX = " · Tồn: ";
 
     private EditText edtDate, edtProductName, edtPrice, edtStock;
@@ -54,19 +51,7 @@ public class AddProductScreen extends AppCompatActivity {
 
     private void setListener() {
         edtDate.setOnClickListener(v -> {
-            new DatePickerDialog(AddProductScreen.this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                    String myFormat = "dd-MM-yyyy";
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                    edtDate.setText(sdf.format(calendar.getTime()));
-
-                }
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            openDatePicker(this, edtDate);
         });
         btnAddProduct.setOnClickListener(v -> {
             String name = edtProductName.getText().toString().trim();

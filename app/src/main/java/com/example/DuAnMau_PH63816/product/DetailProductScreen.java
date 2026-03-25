@@ -1,5 +1,7 @@
 package com.example.DuAnMau_PH63816.product;
 
+import static com.example.DuAnMau_PH63816.common.OpenDatePicker.openDatePicker;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
@@ -67,46 +69,48 @@ public class DetailProductScreen extends AppCompatActivity {
 
         }
 
-        String name = intent.getStringExtra("extra_product_name");
+        edtDate.setOnClickListener(v -> openDatePicker(this, edtDate));
+
+        String name = intent.getStringExtra(ProductExtras.NAME);
         if (name != null && edtProductName != null) {
             edtProductName.setText(name);
         }
 
-        productId = intent.getIntExtra("extra_product_id", -1);
+        productId = intent.getIntExtra(ProductExtras.ID, -1);
         if (productId != -1 && edtProductId != null) {
             edtProductId.setText(String.valueOf(productId));
             edtProductId.setEnabled(false);
         }
 
-        String priceLabel = intent.getStringExtra("extra_product_price");
+        String priceLabel = intent.getStringExtra(ProductExtras.PRICE);
         if (priceLabel != null && edtPrice != null) {
             edtPrice.setText(priceLabel);
         }
 
-        String stockLabel = intent.getStringExtra("extra_product_stock");
+        String stockLabel = intent.getStringExtra(ProductExtras.STOCK);
         if (stockLabel != null && edtStock != null) {
             edtStock.setText(stripStockLabel(stockLabel));
         }
-        String category = intent.getStringExtra("extra_product_category");
+        String category = intent.getStringExtra(ProductExtras.CATEGORY);
         if (category != null && spnCategory != null) {
             spnCategory.setText(category, false);
         }
-        String unit = intent.getStringExtra("extra_product_unit");
+        String unit = intent.getStringExtra(ProductExtras.UNIT);
         if (unit != null && spnUnit != null) {
             spnUnit.setText(unit, false);
         }
-        String date = intent.getStringExtra("extra_product_date");
+        String date = intent.getStringExtra(ProductExtras.DATE);
         if (date != null && edtDate != null) {
             edtDate.setText(date);
         }
-        int status = intent.getIntExtra("extra_product_status", 1);
+        int status = intent.getIntExtra(ProductExtras.STATUS, 1);
         if (status == 1 && rbSelling != null) {
             rbSelling.setChecked(true);
         } else if (rbOutOfStock != null) {
             rbOutOfStock.setChecked(true);
         }
 
-        currentImage = intent.getStringExtra("extra_product_image");
+        currentImage = intent.getStringExtra(ProductExtras.IMAGE);
         ProductAdapter.bindProductImage(imgProductCover, currentImage);
 
         if (btnUpdateProduct != null) {
