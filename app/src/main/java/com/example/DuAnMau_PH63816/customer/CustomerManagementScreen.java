@@ -56,30 +56,12 @@ public class CustomerManagementScreen extends AppCompatActivity {
                 new CustomerAdapter.OnCustomerClickListener() {
                     @Override
                     public void onDetail(@NonNull Customer customer) {
-                        Intent intent1 = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
-                        intent1.putExtra("extra_customer_name", customer.getName());
-                        intent1.putExtra("extra_customer_name_big", customer.getName());
-                        intent1.putExtra("extra_customer_id", customer.getId());
-                        intent1.putExtra("extra_customer_email", customer.getEmail());
-                        intent1.putExtra("extra_customer_phone", customer.getPhone());
-                        intent1.putExtra("extra_customer_address", customer.getAddress());
-                        intent1.putExtra("extra_customer_price", customer.getPrice());
-                        intent1.putExtra("extra_customer_status", customer.getStatus());
-                        startActivity(intent1);
+                        openCustomerDetail(customer);
                     }
 
                     @Override
                     public void onEdit(@NonNull Customer customer) {
-                        Intent intent1 = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
-                        intent1.putExtra("extra_customer_name", customer.getName());
-                        intent1.putExtra("extra_customer_name_big", customer.getName());
-                        intent1.putExtra("extra_customer_id", customer.getId());
-                        intent1.putExtra("extra_customer_email", customer.getEmail());
-                        intent1.putExtra("extra_customer_phone", customer.getPhone());
-                        intent1.putExtra("extra_customer_address", customer.getAddress());
-                        intent1.putExtra("extra_customer_price", customer.getPrice());
-                        intent1.putExtra("extra_customer_status", customer.getStatus());
-                        startActivity(intent1);
+                        openCustomerDetail(customer);
                     }
                 }
         );
@@ -88,6 +70,19 @@ public class CustomerManagementScreen extends AppCompatActivity {
         loadCustomers();
 
         floatAddCustomer.setOnClickListener(v -> startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class)));
+    }
+
+    private void openCustomerDetail(@NonNull Customer customer) {
+        Intent intent = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
+        intent.putExtra(CustomerExtras.NAME, customer.getName());
+        intent.putExtra(CustomerExtras.NAME_BIG, customer.getName());
+        intent.putExtra(CustomerExtras.ID, customer.getId());
+        intent.putExtra(CustomerExtras.EMAIL, customer.getEmail());
+        intent.putExtra(CustomerExtras.PHONE, customer.getPhone());
+        intent.putExtra(CustomerExtras.ADDRESS, customer.getAddress());
+        intent.putExtra(CustomerExtras.PRICE, customer.getPrice());
+        intent.putExtra(CustomerExtras.STATUS, customer.getStatus());
+        startActivity(intent);
     }
 
     private void loadCustomers() {

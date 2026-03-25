@@ -28,7 +28,6 @@ public class AddCustomerScreen extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add_customer_screen);
         customerDAO = new CustomerDAO(this);
-//        TextView tvCode = findViewById(R.id.tvAddCustomerCode);
         EditText edtName = findViewById(R.id.edtAddCustomerName);
         EditText edtPhone = findViewById(R.id.edtAddCustomerPhone);
         EditText edtEmail = findViewById(R.id.edtAddCustomerEmail);

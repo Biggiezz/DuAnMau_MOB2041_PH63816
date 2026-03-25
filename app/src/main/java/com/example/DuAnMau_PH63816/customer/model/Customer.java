@@ -24,6 +24,12 @@ public class Customer {
     }
 
     public Customer(String name, String phone, String email, String address, String amount, int status) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.price = amount;
+        this.status = status;
     }
 
     public String getId() {

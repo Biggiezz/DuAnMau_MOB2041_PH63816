@@ -15,7 +15,6 @@ import com.example.DuAnMau_PH63816.customer.model.Customer;
 
 import java.util.List;
 
-/// extend adapter cua recycler view vao class nay
 public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHolder> {
 
     public interface OnCustomerClickListener {
@@ -24,13 +23,11 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
         void onEdit(@NonNull Customer customer);
     }
 
-    /// khai bao context va list de lay du lieu
     private final Context context;
     private final LayoutInflater inflater;
     private final List<Customer> items;
     private final OnCustomerClickListener listener;
 
-    /// khoi tao context va list de lay du lieu
     public CustomerAdapter(Context context, List<Customer> items, OnCustomerClickListener listener) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -41,15 +38,12 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        /// lay layoutInflater de lay layout custom
         View view = inflater.inflate(R.layout.item_customer, parent, false);
-        /// no se tra ve viewholder
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        /// lay du lieu tu list va gan vao viewholder de hien thi len giao dien
         Customer customer = items.get(position);
         holder.tvCustomerName.setText(customer.getName());
         boolean isVip = customer.getStatus() == 0;
@@ -84,7 +78,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        /// lay du lieu tu layout custom
         final TextView tvCustomerName;
         final TextView tvCustomerType;
         final TextView tvCustomerInfo;

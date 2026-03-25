@@ -57,37 +57,37 @@ public class DetailCustomerScreen extends AppCompatActivity {
         Button btnDelete = findViewById(R.id.btnDelete);
 
 
-        String customerName = intent.getStringExtra("extra_customer_name_big");
+        String customerName = intent.getStringExtra(CustomerExtras.NAME_BIG);
         if (customerName != null && tvCustomerNameBig != null) {
             tvCustomerNameBig.setText(customerName);
         }
 
-        String name = intent.getStringExtra("extra_customer_name");
+        String name = intent.getStringExtra(CustomerExtras.NAME);
         if (name != null && edtCustomerName != null) {
             edtCustomerName.setText(name);
         }
-        String phone = intent.getStringExtra("extra_customer_phone");
+        String phone = intent.getStringExtra(CustomerExtras.PHONE);
         if (phone != null && edtPhone != null) {
             edtPhone.setText(phone);
         }
-        String email = intent.getStringExtra("extra_customer_email");
+        String email = intent.getStringExtra(CustomerExtras.EMAIL);
         if (email != null && edtEmail != null) {
             edtEmail.setText(email);
         }
-        String address = intent.getStringExtra("extra_customer_address");
+        String address = intent.getStringExtra(CustomerExtras.ADDRESS);
         if (address != null && edtAddress != null) {
             edtAddress.setText(address);
         }
-        String id = intent.getStringExtra("extra_customer_id");
+        String id = intent.getStringExtra(CustomerExtras.ID);
         if (id != null && edtCustomerCode != null) {
             edtCustomerCode.setText(id);
         }
 
-        String price = intent.getStringExtra("extra_customer_price");
+        String price = intent.getStringExtra(CustomerExtras.PRICE);
         if (price != null && edtAmount != null) {
             edtAmount.setText(price);
         }
-        int status = intent.getIntExtra("extra_customer_status", 1);
+        int status = intent.getIntExtra(CustomerExtras.STATUS, 1);
         if (status == 0) {
             rbVip.setChecked(true);
             tvCustomerTypeBig.setText("Khách hàng VIP");
