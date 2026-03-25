@@ -84,8 +84,8 @@
                 android:textSize="12sp" />
 
             <!-- Input Fields -->
-            <EditText
-                android:id="@+id/edtStaffId"
+            <TextView
+                android:id="@+id/tvStaffId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -195,7 +195,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:btnIcon="@drawable/ic_home" />
+            app:btnIcon="@drawable/ic_homepage" />
 
         <com.example.DuAnMau_PH63816.custom.CustomBottomButton
             android:id="@+id/btnCart"

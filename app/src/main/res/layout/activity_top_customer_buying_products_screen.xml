@@ -175,17 +175,15 @@
             <Button
                 android:id="@+id/btnShowList"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/color_default"
+                android:padding="12dp"
                 android:text="Hiển thị danh sách"
-                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp"
-                app:iconGravity="textStart"
-                app:iconTint="@color/white" />
+                app:cornerRadius="12dp" />
 
             <!-- Danh sách sản phẩm -->
             <TextView
@@ -223,7 +221,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:btnIcon="@drawable/ic_home" />
+            app:btnIcon="@drawable/ic_homepage" />
 
 
         <com.example.DuAnMau_PH63816.custom.CustomBottomButton

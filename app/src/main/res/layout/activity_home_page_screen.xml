@@ -231,7 +231,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:btnIcon="@drawable/ic_home" />
+                app:btnIcon="@drawable/ic_homepage" />
 
             <com.example.DuAnMau_PH63816.custom.CustomBottomButton
                 android:id="@+id/btnCart"
