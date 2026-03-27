@@ -24,6 +24,11 @@
     <string name="home_label_best_selling" translatable="false">Sản phẩm Bán chạy</string>
     <string name="home_toolbar_title" translatable="false">Quản trị</string>
     <string name="login_title" translatable="false">Chào mừng bạn trở lại JP Mart</string>
+    <string name="tab_home" translatable="false">Trang chủ</string>
+    <string name="tab_cart" translatable="false">Sản phẩm</string>
+    <string name="tab_notification" translatable="false">Thông báo</string>
+    <string name="tab_profile" translatable="false">Hồ sơ</string>
+    <string name="placeholder_coming_soon" translatable="false">Tính năng đang được cập nhật</string>
     <string name="login_subtitle" translatable="false">Đăng nhập vào tài khoản của bạn để tiếp tục mua sắm.</string>
     <string name="login_forgot_password" translatable="false">Quên mật khẩu?</string>
     <string name="toast_notification" translatable="false">Thông báo</string>

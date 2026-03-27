@@ -24,6 +24,11 @@
     <string name="chage_password">Change password</string>
     <string name="home_toolbar_title">Administration</string>
     <string name="login_title">Welcome back to JP Mart</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_cart">Products</string>
+    <string name="tab_notification">Notification</string>
+    <string name="tab_profile">Profile</string>
+    <string name="placeholder_coming_soon">Feature is coming soon</string>
     <string name="toast_notification">Notification</string>
     <string name="error_email_required">Please enter email</string>
     <string name="error_password_required">Please import</string>

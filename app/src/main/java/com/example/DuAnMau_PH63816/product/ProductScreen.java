@@ -10,21 +10,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.DuAnMau_PH63816.R;
-import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
-import com.example.DuAnMau_PH63816.product.data.ProductDAO;
-import com.example.DuAnMau_PH63816.product.model.Product;
+import com.example.DuAnMau_PH63816.common.BottomTabHost;
+import com.example.DuAnMau_PH63816.common.BottomTabPagerAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
+public class ProductScreen extends AppCompatActivity implements BottomTabHost {
 
-public class ProductScreen extends AppCompatActivity {
-
-    private ProductDAO productDAO;
-    private final ArrayList<Product> products = new ArrayList<>();
-    private ProductAdapter adapter;
+    private ViewPager2 viewPagerProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,59 +32,65 @@ public class ProductScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        productDAO = new ProductDAO(this);
         initUi();
     }
 
     private void initUi() {
         Toolbar toolbarProductScreen = findViewById(R.id.toolbarProductScreen);
         ImageView imgAddProduct = findViewById(R.id.imgAddProduct);
-        RecyclerView rvProducts = findViewById(R.id.rvProducts);
+        TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
+        viewPagerProduct = findViewById(R.id.viewPagerProduct);
 
         if (toolbarProductScreen != null) {
             setSupportActionBar(toolbarProductScreen);
             toolbarProductScreen.setNavigationOnClickListener(v -> finish());
         }
 
-        adapter = new ProductAdapter(this, products, product -> {
-            Intent intent = new Intent(ProductScreen.this, DetailProductScreen.class);
-            intent.putExtra(ProductExtras.NAME, product.getName());
-            intent.putExtra(ProductExtras.PRICE, product.getPriceLabel());
-            intent.putExtra(ProductExtras.STOCK, product.getStockLabel());
-            intent.putExtra(ProductExtras.IMAGE, product.getImage());
-            intent.putExtra(ProductExtras.ID, product.getId());
-            intent.putExtra(ProductExtras.CATEGORY, product.getCategory());
-            intent.putExtra(ProductExtras.UNIT, product.getUnit());
-            intent.putExtra(ProductExtras.DATE, product.getDate());
-            intent.putExtra(ProductExtras.STATUS, product.getStatus());
-            startActivity(intent);
+        viewPagerProduct.setAdapter(new BottomTabPagerAdapter(this));
+        viewPagerProduct.setCurrentItem(1, false);
+        toolbarProductScreen.setTitle(getToolbarTitleRes(1));
+        new TabLayoutMediator(tabLayout, viewPagerProduct, (tab, position) -> {
+            if (position == 0) {
+                tab.setText(R.string.tab_home);
+                tab.setIcon(R.drawable.ic_homepage);
+            } else if (position == 1) {
+                tab.setText(R.string.tab_cart);
+                tab.setIcon(R.drawable.ic_product);
+            } else if (position == 2) {
+                tab.setText(R.string.tab_notification);
+                tab.setIcon(R.drawable.ic_notification);
+            } else {
+                tab.setText(R.string.tab_profile);
+                tab.setIcon(R.drawable.ic_setting);
+            }
+        }).attach();
+        viewPagerProduct.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                toolbarProductScreen.setTitle(getToolbarTitleRes(position));
+            }
         });
 
-        rvProducts.setLayoutManager(new LinearLayoutManager(this));
-        rvProducts.setAdapter(adapter);
         imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));
-
-        loadProducts();
     }
 
-    private void loadProducts() {
-        if (productDAO == null || adapter == null) return;
-        products.clear();
-        products.addAll(productDAO.getAllProducts());
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (productDAO != null) {
-            productDAO.close();
+    private int getToolbarTitleRes(int position) {
+        if (position == 0) {
+            return R.string.home_toolbar_title;
         }
-        super.onDestroy();
+        if (position == 1) {
+            return R.string.title_product;
+        }
+        if (position == 2) {
+            return R.string.notification;
+        }
+        return R.string.setting;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadProducts();
+    public void openBottomTab(int position) {
+        if (viewPagerProduct != null) {
+            viewPagerProduct.setCurrentItem(position, true);
+        }
     }
 }

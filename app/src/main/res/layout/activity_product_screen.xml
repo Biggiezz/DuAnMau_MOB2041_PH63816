@@ -32,16 +32,20 @@
         android:layout_height="1dp"
         android:background="#1A000000" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProducts"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerProduct"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        tools:listitem="@layout/item_product_card" />
+        android:layout_weight="1" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutBottom"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@android:color/white"
+        app:tabIconTint="@color/color_subtitle"
+        app:tabRippleColor="@android:color/transparent"
+        app:tabSelectedTextColor="@color/color_default"
+        app:tabTextColor="@color/color_subtitle" />
 
 </LinearLayout>

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,21 +13,18 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.DuAnMau_PH63816.R;
-import com.example.DuAnMau_PH63816.category.CategoryManagementScreen;
-import com.example.DuAnMau_PH63816.custom.CustomBottomButton;
-import com.example.DuAnMau_PH63816.customer.CustomerManagementScreen;
-import com.example.DuAnMau_PH63816.invoice.InvoiceActivity;
-import com.example.DuAnMau_PH63816.product.ProductScreen;
-import com.example.DuAnMau_PH63816.profile.ProfileScreen;
-import com.example.DuAnMau_PH63816.staff.StaffManagementScreen;
-import com.example.DuAnMau_PH63816.statistics.StatisticalScreen;
-import com.example.DuAnMau_PH63816.top_customer.TopCustomerBuyingProductsScreen;
-import com.example.DuAnMau_PH63816.top_product.TopSellingProductsScreen;
+import com.example.DuAnMau_PH63816.common.BottomTabHost;
+import com.example.DuAnMau_PH63816.common.BottomTabPagerAdapter;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
-public class HomePageScreen extends AppCompatActivity {
+public class HomePageScreen extends AppCompatActivity implements BottomTabHost {
+
+    private ViewPager2 viewPagerHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,38 +43,66 @@ public class HomePageScreen extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.main);
         NavigationView navigationView = findViewById(R.id.navigationView);
         Toolbar toolbarHomePageScreen = findViewById(R.id.toolbarHomePageScreen);
-        ImageView imgProduct = findViewById(R.id.imgProduct);
-        ImageView imgCategory = findViewById(R.id.imgCategory);
-        ImageView imgCustomer = findViewById(R.id.imgCustomer);
-        ImageView imgPersonnel = findViewById(R.id.imgPersonnel);
-        ImageView imgInvoice = findViewById(R.id.imgInvoice);
-        ImageView imgTopCustomer = findViewById(R.id.imgTopCustomer);
-        ImageView imgStatistical = findViewById(R.id.imgStatistical);
-        ImageView imgBestSelling = findViewById(R.id.imgBestSelling);
-        CustomBottomButton btnHome = findViewById(R.id.btnHome);
-        CustomBottomButton btnCart = findViewById(R.id.btnCart);
-        CustomBottomButton btnNotification = findViewById(R.id.btnNotification);
-        CustomBottomButton btnSetting = findViewById(R.id.btnProfile);
-
-        imgProduct.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProductScreen.class)));
-        imgCustomer.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, CustomerManagementScreen.class)));
-        imgBestSelling.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, TopSellingProductsScreen.class)));
-        imgTopCustomer.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, TopCustomerBuyingProductsScreen.class)));
-        imgPersonnel.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, StaffManagementScreen.class)));
-        imgInvoice.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, InvoiceActivity.class)));
-        imgCategory.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, CategoryManagementScreen.class)));
-        imgStatistical.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, StatisticalScreen.class)));
-        btnSetting.setOnClickListener(v -> startActivity(new Intent(HomePageScreen.this, ProfileScreen.class)));
+        TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
+        viewPagerHome = findViewById(R.id.viewPagerHome);
         /// toolbar
         setSupportActionBar(toolbarHomePageScreen);
-        toolbarHomePageScreen.setNavigationIcon(R.drawable.ic_back);
-        toolbarHomePageScreen.setNavigationOnClickListener(v -> finish());
+        toolbarHomePageScreen.setNavigationIcon(R.drawable.btn_menu);
+        toolbarHomePageScreen.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        viewPagerHome.setAdapter(new BottomTabPagerAdapter(this));
+        viewPagerHome.setCurrentItem(0, false);
+        toolbarHomePageScreen.setTitle(getToolbarTitleRes(0));
+        new TabLayoutMediator(tabLayout, viewPagerHome, (tab, position) -> {
+            if (position == 0) {
+                tab.setText(R.string.tab_home);
+                tab.setIcon(R.drawable.ic_homepage);
+            } else if (position == 1) {
+                tab.setText(R.string.tab_cart);
+                tab.setIcon(R.drawable.ic_product);
+            } else if (position == 2) {
+                tab.setText(R.string.tab_notification);
+                tab.setIcon(R.drawable.ic_notification);
+            } else {
+                tab.setText(R.string.tab_profile);
+                tab.setIcon(R.drawable.ic_setting);
+            }
+        }).attach();
+        viewPagerHome.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                toolbarHomePageScreen.setTitle(getToolbarTitleRes(position));
+            }
+        });
 
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(item -> {
+                if (item.getItemId() == R.id.nav_log_out) {
+                    viewPagerHome.setCurrentItem(3, true);
+                }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             });
+        }
+    }
+
+    private int getToolbarTitleRes(int position) {
+        if (position == 0) {
+            return R.string.home_toolbar_title;
+        }
+        if (position == 1) {
+            return R.string.title_product;
+        }
+        if (position == 2) {
+            return R.string.notification;
+        }
+        return R.string.setting;
+    }
+
+    @Override
+    public void openBottomTab(int position) {
+        if (viewPagerHome != null) {
+            viewPagerHome.setCurrentItem(position, true);
         }
     }
 

@@ -24,109 +24,25 @@
         android:layout_height="1dp"
         android:background="#1A000000" />
 
-
-    <ScrollView
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerCategory"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp">
+        tools:ignore="SpeakableTextPresentCheck" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="16dp">
-
-            <!-- ADD BUTTON -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:backgroundTint="@color/color_default"
-                android:padding="16dp"
-                android:text="Thêm danh mục mới"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:cornerRadius="12dp" />
-
-            <!-- HEADER ROW -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TẤT CẢ DANH MỤC"
-                    android:textColor="@color/color_subtitle"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvCategoryCountBadge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_date_picker"
-                    android:text="5 Danh mục"
-                    android:textColor="@color/color_default"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- RECYCLER VIEW -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCategories"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_category" />
-        </LinearLayout>
-    </ScrollView>
-
-    <!-- BOTTOM MENU -->
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutBottom"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@color/white"
-        android:elevation="8dp"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_home" />
-
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnCart"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_product" />
-
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnNotification"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_notification" />
-
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_setting" />
-    </LinearLayout>
+        android:background="@android:color/white"
+        app:tabGravity="fill"
+        app:tabIconTint="@color/color_subtitle"
+        app:tabIndicatorHeight="0dp"
+        app:tabInlineLabel="false"
+        app:tabMode="fixed"
+        app:tabRippleColor="@android:color/transparent"
+        app:tabSelectedTextColor="@color/color_default"
+        app:tabTextColor="@color/color_subtitle" />
 
 </LinearLayout>

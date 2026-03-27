@@ -29,232 +29,25 @@
             app:title="@string/home_toolbar_title"
             app:titleTextColor="@android:color/black" />
 
-        <!-- SCROLL CONTENT -->
-
-        <!-- GRID MENU -->
-        <GridLayout
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerHome"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:columnCount="3"
-            android:padding="16dp">
+            android:layout_weight="1" />
 
-            <!-- PRODUCT -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgProduct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_product" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_label_product"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- CATEGORY -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_category" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_label_category"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- CUSTOMER -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgCustomer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_client" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_label_customer"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- STAFF -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgPersonnel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_staff" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_label_staff"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- INVOICE -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgInvoice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_invoice" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_label_invoice"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- TOP CUSTOMER -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                        android:id="@+id/imgTopCustomer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_top_customer" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_label_top_customer"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- STATISTIC -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgStatistical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_statistical" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/home_label_revenue"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-            <!-- BEST SELLING -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgBestSelling"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:src="@drawable/btn_best_selling" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/home_label_best_selling"
-                    android:textColor="@color/color_subtitle" />
-            </LinearLayout>
-
-        </GridLayout>
-
-        <!-- BOTTOM MENU -->
-        <LinearLayout
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutBottom"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:weightSum="4">
-
-            <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-                android:id="@+id/btnHome"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:btnIcon="@drawable/ic_homepage" />
-
-            <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-                android:id="@+id/btnCart"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:btnIcon="@drawable/ic_product" />
-
-            <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-                android:id="@+id/btnNotification"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:btnIcon="@drawable/ic_notification" />
-
-            <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-                android:id="@+id/btnProfile"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:btnIcon="@drawable/ic_setting" />
-
-        </LinearLayout>
+            android:background="@android:color/white"
+            app:tabGravity="fill"
+            app:tabIconTint="@color/color_subtitle"
+            app:tabIndicatorHeight="0dp"
+            app:tabInlineLabel="false"
+            app:tabMode="fixed"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabSelectedTextColor="@color/color_default"
+            app:tabTextColor="@color/color_subtitle" />
 
     </LinearLayout>
 
