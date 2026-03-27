@@ -2,6 +2,7 @@ package com.example.DuAnMau_PH63816.invoice;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,19 +28,27 @@ public class InvoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
 
-//        ImageView icBack = findViewById(R.id.icBack);
         RecyclerView rvInvoices = findViewById(R.id.rvInvoices);
         Toolbar toolbarInvoiceScreen = findViewById(R.id.toolbarInvoice);
-        invoiceDAO = new InvoiceDAO(this);
-        adapter = new InvoiceAdapter(this, invoices, this::openDetail);
+        if (rvInvoices == null || toolbarInvoiceScreen == null) {
+            Toast.makeText(this, "Khong the mo man hinh hoa don", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-//        icBack.setOnClickListener(v -> navigateBack());
-        setSupportActionBar(toolbarInvoiceScreen);
-        toolbarInvoiceScreen.setNavigationIcon(R.drawable.ic_back);
-        toolbarInvoiceScreen.setNavigationOnClickListener(v -> navigateBack());
-        rvInvoices.setLayoutManager(new LinearLayoutManager(this));
-        rvInvoices.setAdapter(adapter);
-        loadInvoices();
+        try {
+            invoiceDAO = new InvoiceDAO(this);
+            adapter = new InvoiceAdapter(this, invoices, this::openDetail);
+            setSupportActionBar(toolbarInvoiceScreen);
+            toolbarInvoiceScreen.setNavigationIcon(R.drawable.ic_back);
+            toolbarInvoiceScreen.setNavigationOnClickListener(v -> navigateBack());
+            rvInvoices.setLayoutManager(new LinearLayoutManager(this));
+            rvInvoices.setAdapter(adapter);
+            loadInvoices();
+        } catch (RuntimeException exception) {
+            Toast.makeText(this, "Du lieu hoa don dang loi, vui long mo lai", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     private void navigateBack() {
@@ -55,6 +64,9 @@ public class InvoiceActivity extends AppCompatActivity {
     }
 
     private void loadInvoices() {
+        if (invoiceDAO == null || adapter == null) {
+            return;
+        }
         invoices.clear();
         invoices.addAll(invoiceDAO.getAllInvoices());
         adapter.notifyDataSetChanged();

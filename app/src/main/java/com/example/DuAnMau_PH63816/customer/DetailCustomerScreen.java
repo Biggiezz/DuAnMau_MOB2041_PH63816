@@ -108,7 +108,7 @@ public class DetailCustomerScreen extends AppCompatActivity {
             String updatedAddress = edtAddress.getText().toString().trim();
             String updatedPrice = edtAmount.getText().toString().trim();
 
-            if (TextUtils.isEmpty(updatedId) || TextUtils.isEmpty(updatedName) || TextUtils.isEmpty(updatedPhone)) {
+            if (updatedId.isEmpty() || updatedName.isEmpty() || updatedPhone.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập mã, tên và số điện thoại", Toast.LENGTH_SHORT).show();
                 return;
             }
