@@ -4,8 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.widget.TextView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class OpenDatePicker {
@@ -14,8 +16,10 @@ public class OpenDatePicker {
         String currentText = textView.getText().toString().trim();
         try {
             if (!currentText.isEmpty()) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                calendar.setTime(sdf.parse(currentText));
+                Date parsedDate = parseDate(currentText);
+                if (parsedDate != null) {
+                    calendar.setTime(parsedDate);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -26,14 +30,34 @@ public class OpenDatePicker {
                     calendar.set(Calendar.YEAR, year);
                     calendar.set(Calendar.MONTH, month);
                     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                    String format = "dd-MM-yyyy";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.US);
-                    textView.setText(simpleDateFormat.format(calendar.getTime()));
+                    textView.setText(formatDate(calendar.getTime()));
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         ).show();
+    }
+
+    public static Date parseDate(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
+        String normalized = value.trim().replace('/', '-');
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            simpleDateFormat.setLenient(false);
+            return simpleDateFormat.parse(normalized);
+        } catch (ParseException exception) {
+            return null;
+        }
+    }
+
+    public static String formatDate(Date date) {
+        if (date == null) {
+            return "";
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        return simpleDateFormat.format(date);
     }
 }
