@@ -88,38 +88,37 @@ public class ProductDAO {
     }
 
     private void ensureSeedData() {
-        if (getAllProducts().isEmpty()) {
-            for (Product seed : getSeedProducts()) {
+        for (Product seed : getSeedProducts()) {
+            Product existingProduct = getProductByName(seed.getName());
+            if (existingProduct == null) {
                 insertProduct(seed);
+                continue;
             }
+
+            seed.setId(existingProduct.getId());
+            updateProduct(seed);
         }
     }
 
-    /// Hàm kiểm tra có trùng mã với ô nhập không
-//    private Product getProductById(String productId) {
-//        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Product WHERE id = ?", new String[]{productId});
-//        if (cursor.moveToFirst()) {
-//            Product product = new Product();
-//            product.setId(cursor.getInt(0));
-//            product.setName(cursor.getString(1));
-//            product.setPriceLabel(cursor.getString(2));
-//            product.setStockLabel(cursor.getString(3));
-//            product.setImage(cursor.getString(4));
-//            product.setCategory(cursor.getString(5));
-//            product.setUnit(cursor.getString(6));
-//            product.setDate(cursor.getString(7));
-//            product.setStatus(cursor.getInt(8));
-//            cursor.close();
-//            return product;
-//        }
-//        cursor.close();
-//        return null;
-//    }
-//
-//    public boolean isProductIdExists(String productId) {
-//        return getProductById(productId) != null;
-//    }
-//
+    private Product getProductByName(String productName) {
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Product WHERE name = ? LIMIT 1", new String[]{productName});
+        Product product = null;
+        if (cursor.moveToFirst()) {
+            product = new Product();
+            product.setId(cursor.getInt(0));
+            product.setName(cursor.getString(1));
+            product.setPriceLabel(cursor.getString(2));
+            product.setStockLabel(cursor.getString(3));
+            product.setImage(cursor.getString(4));
+            product.setCategory(cursor.getString(5));
+            product.setUnit(cursor.getString(6));
+            product.setDate(cursor.getString(7));
+            product.setStatus(cursor.getInt(8));
+        }
+        cursor.close();
+        return product;
+    }
+
     private ArrayList<Product> getSeedProducts() {
         ArrayList<Product> seeds = new ArrayList<>();
         Product ramen = new Product("Mì Ramen Tonkotsu", "125.000k", " · Tồn: 10", R.drawable.ic_ramen);
@@ -142,6 +141,42 @@ public class ProductDAO {
         sushi.setDate("12-05-2026");
         sushi.setStatus(1);
         seeds.add(sushi);
+
+        Product water = new Product("Nước suối", "20.000k", " · Tồn: 60", R.drawable.logo);
+        water.setCategory("Đồ uống");
+        water.setUnit("Chai");
+        water.setDate("13-05-2026");
+        water.setStatus(1);
+        seeds.add(water);
+
+        Product eggTopping = new Product("Topping trứng ngâm", "25.000k", " · Tồn: 25", R.drawable.logo);
+        eggTopping.setCategory("Topping");
+        eggTopping.setUnit("Phần");
+        eggTopping.setDate("14-05-2026");
+        eggTopping.setStatus(1);
+        seeds.add(eggTopping);
+
+        Product salmonSalad = new Product("Salad cá hồi", "165.000k", " · Tồn: 18", R.drawable.logo);
+        salmonSalad.setCategory("Khai vị");
+        salmonSalad.setUnit("Đĩa");
+        salmonSalad.setDate("15-05-2026");
+        salmonSalad.setStatus(1);
+        seeds.add(salmonSalad);
+
+        Product roastedTea = new Product("Trà đào cam sả", "55.000k", " · Tồn: 30", R.drawable.logo);
+        roastedTea.setCategory("Đồ uống");
+        roastedTea.setUnit("Ly");
+        roastedTea.setDate("16-05-2026");
+        roastedTea.setStatus(1);
+        seeds.add(roastedTea);
+
+        Product takoyaki = new Product("Takoyaki sốt mayo", "95.000k", " · Tồn: 22", R.drawable.logo);
+        takoyaki.setCategory("Ăn vặt");
+        takoyaki.setUnit("Phần");
+        takoyaki.setDate("17-05-2026");
+        takoyaki.setStatus(1);
+        seeds.add(takoyaki);
+
         return seeds;
     }
 
