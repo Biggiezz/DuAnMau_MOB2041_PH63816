@@ -117,7 +117,7 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
     private void hienThiTopKhachHang(Date startDate, Date endDate, int limit) {
         Map<String, TopCustomerItem> map = new HashMap<>();
 
-        // Gom nhóm theo khách hàng và cộng dồn số lần mua, tổng chi tiêu.
+        /// Gom nhóm theo khách hàng và cộng dồn số lần mua, tổng chi tiêu.
         for (Invoice invoice : invoiceDAO.getAllInvoices()) {
             Date invoiceDate = parseDate(invoice.getDate());
             if (invoiceDate == null) {
@@ -149,7 +149,7 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
         }
 
         List<TopCustomerItem> list = new ArrayList<>(map.values());
-        // Sắp xếp giảm dần theo tổng chi tiêu để lấy top khách hàng.
+        /// Sắp xếp giảm dần theo tổng chi tiêu để lấy top khách hàng.
         list.sort((o1, o2) -> Long.compare(o2.getTongChiTieu(), o1.getTongChiTieu()));
 
         if (list.size() > limit) {
@@ -169,7 +169,7 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
         Date minDate = null;
         Date maxDate = null;
 
-        // Lấy khoảng ngày mặc định từ các hóa đơn đã thanh toán để demo nhanh hơn.
+        /// Lấy khoảng ngày mặc định từ các hóa đơn đã thanh toán để demo nhanh hơn.
         for (Invoice invoice : invoiceDAO.getAllInvoices()) {
             if (!"ĐÃ THANH TOÁN".equals(invoice.getStatus())) {
                 continue;

@@ -91,7 +91,7 @@ public class StaffDAO {
                 new String[]{userName, passWord}
         )) {
             if (sql.moveToFirst()) {
-                saveCurrentUserSession(sql.getString(1), sql.getInt(2));
+                saveCurrentUserSession(sql.getInt(0), sql.getString(1), sql.getInt(2));
                 return true;
             }
             clearCurrentUserSession();
@@ -118,24 +118,36 @@ public class StaffDAO {
     }
 
     public boolean kiemTraMatKhauCu(String maNhanVien, String matKhauCu) {
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT password FROM Staff WHERE staffCode = ?", new String[]{maNhanVien});
-        if (cursor.moveToFirst()) {
-            String matKhauHienTai = cursor.getString(0);
-            cursor.close();
-            sqLiteDatabase.close();
-            return matKhauHienTai.equals(matKhauCu);
+        if (maNhanVien == null || maNhanVien.trim().isEmpty()) {
+            return false;
         }
-        cursor.close();
-        sqLiteDatabase.close();
-        return false;
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT password FROM Staff WHERE staffCode = ?",
+                new String[]{maNhanVien}
+        )) {
+            if (cursor.moveToFirst()) {
+                String matKhauHienTai = cursor.getString(0);
+                return matKhauHienTai != null && matKhauHienTai.equals(matKhauCu);
+            }
+            return false;
+        }
     }
 
     public boolean capNhatMatKhauMoi(String maNhanVien, String matKhauMoi) {
+        if (maNhanVien == null || maNhanVien.trim().isEmpty()) {
+            return false;
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put("password", matKhauMoi);
         int row = sqLiteDatabase.update("Staff", contentValues, "staffCode = ?", new String[]{maNhanVien});
-        sqLiteDatabase.close();
         return row > 0;
+    }
+
+    public String getCurrentStaffCode() {
+        int staffCode = sharedPreferences.getInt("staffCode", -1);
+        if (staffCode <= 0) {
+            return null;
+        }
+        return String.valueOf(staffCode);
     }
 
     public boolean isUsernameExists(String userName) {
@@ -149,8 +161,9 @@ public class StaffDAO {
         }
     }
 
-    private void saveCurrentUserSession(String nameLogin, int role) {
+    private void saveCurrentUserSession(int staffCode, String nameLogin, int role) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("staffCode", staffCode);
         editor.putString("nameLogin", nameLogin);
         editor.putInt("role", role);
         editor.apply();
@@ -158,6 +171,7 @@ public class StaffDAO {
 
     private void clearCurrentUserSession() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("staffCode");
         editor.remove("nameLogin");
         editor.remove("role");
         editor.apply();
