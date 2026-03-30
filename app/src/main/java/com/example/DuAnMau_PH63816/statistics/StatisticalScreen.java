@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
-import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
 
@@ -60,7 +59,6 @@ public class StatisticalScreen extends AppCompatActivity {
             setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(v -> finish());
         }
-        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
     }
     private void initListener() {
         imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
