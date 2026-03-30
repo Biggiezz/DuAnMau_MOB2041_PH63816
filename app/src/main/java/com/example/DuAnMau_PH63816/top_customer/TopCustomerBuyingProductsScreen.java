@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
 import com.example.DuAnMau_PH63816.top_customer.adapter.TopCustomerAdapter;
@@ -39,6 +41,7 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
     private InvoiceDAO invoiceDAO;
     private RecyclerView rcvTopCustomer;
     private TextView tvStartDate, tvEndDate;
+    private ImageView imgStartDate, imgEndDate;
     private EditText edtCustomerCount;
     private Button btnShowList;
     private TopCustomerAdapter adapter;
@@ -53,16 +56,8 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        Toolbar toolbar = findViewById(R.id.toolbarTopCustomerBuyingProductsScreen);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
-
         initUi();
         invoiceDAO = new InvoiceDAO(this);
-
 
         adapter = new TopCustomerAdapter(this, new ArrayList<>());
         rcvTopCustomer.setLayoutManager(new LinearLayoutManager(this));
@@ -71,8 +66,8 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
 
         setDefaultDate();
 
-        tvStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
-        tvEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
+        imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
+        imgEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
         btnShowList.setOnClickListener(v -> {
             if (tvStartDate.getText().toString().trim().isEmpty()
                     || tvEndDate.getText().toString().trim().isEmpty()
@@ -109,15 +104,24 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
     private void initUi() {
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
+        imgStartDate = findViewById(R.id.imgStartDate);
+        imgEndDate = findViewById(R.id.imgEndDate);
         edtCustomerCount = findViewById(R.id.edtCustomerCount);
         btnShowList = findViewById(R.id.btnShowList);
         rcvTopCustomer = findViewById(R.id.rcvTopCustomer);
+        Toolbar toolbar = findViewById(R.id.toolbarTopCustomerBuyingProductsScreen);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationOnClickListener(v -> finish());
+        }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
     }
 
     private void hienThiTopKhachHang(Date startDate, Date endDate, int limit) {
+        /// Tạo map để lưu trữ khách hàng và tổng chi tiêu.
         Map<String, TopCustomerItem> map = new HashMap<>();
 
-        // Gom nhóm theo khách hàng và cộng dồn số lần mua, tổng chi tiêu.
+        /// Gom nhóm theo khách hàng và cộng dồn số lần mua, tổng chi tiêu.
         for (Invoice invoice : invoiceDAO.getAllInvoices()) {
             Date invoiceDate = parseDate(invoice.getDate());
             if (invoiceDate == null) {
@@ -139,17 +143,22 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
             }
 
             TopCustomerItem item = map.get(customerId);
+            /// Nếu khách hàng chưa có trong map, tạo mới.
             if (item == null) {
+                ///
                 item = new TopCustomerItem(customerId, customerName, 0, 0);
+                /// Khách hàng mới được thêm vào map.
                 map.put(customerId, item);
             }
 
+            /// Cộng dồn số lần mua và tổng chi tiêu.
             item.setSoLanMua(item.getSoLanMua() + 1);
+            /// Cộng dồn tổng chi tiêu.
             item.setTongChiTieu(item.getTongChiTieu() + parseAmount(invoice.getTotal()));
         }
 
         List<TopCustomerItem> list = new ArrayList<>(map.values());
-        // Sắp xếp giảm dần theo tổng chi tiêu để lấy top khách hàng.
+        /// Sắp xếp giảm dần theo tổng chi tiêu để lấy top khách hàng.
         list.sort((o1, o2) -> Long.compare(o2.getTongChiTieu(), o1.getTongChiTieu()));
 
         if (list.size() > limit) {
@@ -169,7 +178,7 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
         Date minDate = null;
         Date maxDate = null;
 
-        // Lấy khoảng ngày mặc định từ các hóa đơn đã thanh toán để demo nhanh hơn.
+        /// Lấy khoảng ngày mặc định từ các hóa đơn đã thanh toán để demo nhanh hơn.
         for (Invoice invoice : invoiceDAO.getAllInvoices()) {
             if (!"ĐÃ THANH TOÁN".equals(invoice.getStatus())) {
                 continue;

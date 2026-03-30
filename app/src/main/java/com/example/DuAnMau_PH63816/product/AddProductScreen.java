@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.product.data.ProductDAO;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
@@ -116,6 +117,7 @@ public class AddProductScreen extends AppCompatActivity {
             setSupportActionBar(toolbarAddProductScreen);
             toolbarAddProductScreen.setNavigationOnClickListener(v -> finish());
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_PRODUCT);
     }
 
     private void setupDropdowns() {

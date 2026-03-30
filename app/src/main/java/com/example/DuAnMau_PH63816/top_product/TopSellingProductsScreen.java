@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDetailDAO;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
@@ -84,6 +85,7 @@ public class TopSellingProductsScreen extends AppCompatActivity {
             setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(v -> finish());
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
     }
 
     private void setListener() {

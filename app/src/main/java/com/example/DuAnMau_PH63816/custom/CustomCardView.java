@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 public class CustomCardView extends CardView {
     private final ImageView imgIcon;
+    private final ImageView imgRemove;
     private final ImageView imgEdit;
     private final TextView txtTitle;
     private final TextView txtSubTitle;
@@ -27,6 +28,7 @@ public class CustomCardView extends CardView {
         LayoutInflater.from(context).inflate(R.layout.card_custom, this, true);
 
         imgIcon = findViewById(R.id.imgIcon);
+        imgRemove = findViewById(R.id.imgRemove);
         imgEdit = findViewById(R.id.imgEdit);
         txtTitle = findViewById(R.id.txtTitle);
         txtSubTitle = findViewById(R.id.txtSubtitle);
@@ -53,6 +55,7 @@ public class CustomCardView extends CardView {
             imgEdit.setVisibility(VISIBLE);
         }
 
+
         txtTitle.setText(title);
         txtSubTitle.setText(subtitle);
         if (!TextUtils.isEmpty(subtitle2)) {
@@ -67,6 +70,16 @@ public class CustomCardView extends CardView {
 
     public void setOnEditClickListener(OnClickListener listener) {
         imgEdit.setOnClickListener(listener);
+    }
+
+    public void setOnRemoveClickListener(@Nullable OnClickListener listener) {
+        if (listener == null) {
+            imgRemove.setOnClickListener(null);
+            imgRemove.setVisibility(GONE);
+            return;
+        }
+        imgRemove.setVisibility(VISIBLE);
+        imgRemove.setOnClickListener(listener);
     }
 
     public void setTitle(String title) {

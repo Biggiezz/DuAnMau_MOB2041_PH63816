@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.staff.adapter.StaffAdapter;
 import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 import com.example.DuAnMau_PH63816.staff.model.Staff;
@@ -51,6 +52,7 @@ public class StaffManagementScreen extends AppCompatActivity {
             setSupportActionBar(toolbarStaffManagementScreen);
             toolbarStaffManagementScreen.setNavigationOnClickListener(v -> finish());
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
         staffDAO = new StaffDAO(this);
     }
 

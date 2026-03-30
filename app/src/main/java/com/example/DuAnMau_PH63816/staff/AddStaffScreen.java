@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 import com.example.DuAnMau_PH63816.staff.model.Staff;
 import com.google.android.material.button.MaterialButton;
@@ -61,6 +62,7 @@ public class AddStaffScreen extends AppCompatActivity {
             setSupportActionBar(toolbarAddStaffScreen);
             toolbarAddStaffScreen.setNavigationOnClickListener(v -> finish());
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
         edtStaffId.setText("Tự động tạo");
         btnSaveStaff.setOnClickListener(v -> {
             String name = edtStaffName.getText().toString().trim();

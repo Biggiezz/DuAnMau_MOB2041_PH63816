@@ -6,10 +6,17 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.core.widget.ImageViewCompat;
 
 import com.example.DuAnMau_PH63816.R;
 
 public class CustomBottomButton extends LinearLayout {
+
+    private final ImageView imgIcon;
+    private final TextView txtLabel;
+    private int iconResId;
 
     public CustomBottomButton(Context context) {
         this(context, null);
@@ -28,15 +35,33 @@ public class CustomBottomButton extends LinearLayout {
         setPadding(p, p, p, p);
 
         LayoutInflater.from(context).inflate(R.layout.bottom_button_custom, this, true);
+        imgIcon = findViewById(R.id.imgIcon);
+        txtLabel = findViewById(R.id.txtLabel);
 
         if (attrs == null) return;
 
-        ImageView imgIcon = findViewById(R.id.imgIcon);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomBottomButton);
 
-        int icon = a.getResourceId(R.styleable.CustomBottomButton_btnIcon, 0);
-        if (icon != 0 && imgIcon != null) imgIcon.setImageResource(icon);
+        iconResId = a.getResourceId(R.styleable.CustomBottomButton_btnIcon, 0);
+        if (iconResId != 0 && imgIcon != null) imgIcon.setImageResource(iconResId);
 
         a.recycle();
+    }
+
+    public void setLabel(CharSequence label) {
+        if (txtLabel != null) {
+            txtLabel.setText(label);
+        }
+    }
+
+    public void setSelectedState(boolean selected) {
+        int color = getContext().getColor(selected ? R.color.color_default : R.color.color_subtitle);
+        if (imgIcon != null) {
+            ImageViewCompat.setImageTintList(imgIcon, android.content.res.ColorStateList.valueOf(color));
+        }
+        if (txtLabel != null) {
+            txtLabel.setTextColor(color);
+        }
+        setAlpha(selected ? 1f : 0.88f);
     }
 }

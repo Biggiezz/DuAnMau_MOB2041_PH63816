@@ -1,11 +1,13 @@
 package com.example.DuAnMau_PH63816.statistics;
 
 import static com.example.DuAnMau_PH63816.common.OpenDatePicker.openDatePicker;
+import static com.example.DuAnMau_PH63816.common.OpenDatePicker.parseDate;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,11 +18,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
+import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
+import com.example.DuAnMau_PH63816.invoice.model.Invoice;
+
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class StatisticalScreen extends AppCompatActivity {
+    private TextView tvStartDate, tvEndDate, tvRevenueStatistics;
     private ImageView imgStartDate, imgEndDate;
-    private TextView tvStartDate, tvEndDate;
-
+    private InvoiceDAO invoiceDAO;
+    private Button btnShowList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,25 +42,92 @@ public class StatisticalScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        invoiceDAO = new InvoiceDAO(this);
         initUi();
+        initListener();
     }
 
     private void initUi() {
-        Intent intent = getIntent();
-        if (intent == null) return;
-
-        Toolbar toolbarStatisticalScreen = findViewById(R.id.toolbarStatisticalScreen);
+        Toolbar toolbar = findViewById(R.id.toolbarStatisticalScreen);
+        btnShowList = findViewById(R.id.btnShowList);
         imgStartDate = findViewById(R.id.imgStartDate);
         imgEndDate = findViewById(R.id.imgEndDate);
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
+        tvRevenueStatistics = findViewById(R.id.tvRevenueStatistics);
 
-        if (toolbarStatisticalScreen != null) {
-            setSupportActionBar(toolbarStatisticalScreen);
-            toolbarStatisticalScreen.setNavigationOnClickListener(v -> finish());
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationOnClickListener(v -> finish());
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
+    }
+    private void initListener() {
         imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
         imgEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
+        btnShowList.setOnClickListener(v -> thongKeDoanhThu());
+    }
+    private void thongKeDoanhThu() {
+        String startDateText = tvStartDate.getText().toString().trim();
+        String endDateText = tvEndDate.getText().toString().trim();
+
+        if (startDateText.isEmpty() || endDateText.isEmpty()) {
+            Toast.makeText(this, "Vui lòng chọn đầy đủ từ ngày và đến ngày", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Date startDate = parseDate(startDateText);
+        Date endDate = parseDate(endDateText);
+        if (startDate == null || endDate == null) {
+            Toast.makeText(this, "Định dạng ngày không hợp lệ", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (startDate.after(endDate)) {
+            Toast.makeText(this, "Từ ngày không được lớn hơn đến ngày", Toast.LENGTH_LONG).show();
+            return;
+        }
+        long tongDoanhThu = 0L;
+        for (Invoice invoice : invoiceDAO.getAllInvoices()) {
+            Date invoiceDate = parseDate(invoice.getDate());
+            if (invoiceDate != null && !invoiceDate.before(startDate) && !invoiceDate.after(endDate)) {
+                tongDoanhThu += parseAmount(invoice.getTotal());
+            }
+        }
+        if (tongDoanhThu == 0L) {
+            Toast.makeText(this, "Không có hóa đơn trong khoảng thời gian này", Toast.LENGTH_SHORT).show();
+        }
+        tvRevenueStatistics.setText(
+                NumberFormat.getInstance(new Locale("vi", "VN")).format(tongDoanhThu) + " VND"
+        );
+    }
+
+    private long parseAmount(String totalText) {
+        if (totalText == null || totalText.trim().isEmpty()) {
+            return 0L;
+        }
+
+        String normalized = totalText.trim().toLowerCase(Locale.getDefault())
+                .replace("vnd", "")
+                .replace("đ", "")
+                .replace("k", "")
+                .replace(".", "")
+                .replace(",", "")
+                .trim();
+
+        if (normalized.isEmpty()) {
+            return 0L;
+        }
+
+        try {
+            return Long.parseLong(normalized);
+        } catch (NumberFormatException exception) {
+            return 0L;
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        if (invoiceDAO != null) {
+            invoiceDAO.close();
+        }
+        super.onDestroy();
     }
 }
-

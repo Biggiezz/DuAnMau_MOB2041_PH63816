@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
 import com.example.DuAnMau_PH63816.invoice.adapter.InvoiceAdapter;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
@@ -45,6 +46,7 @@ public class InvoiceActivity extends AppCompatActivity {
             rvInvoices.setLayoutManager(new LinearLayoutManager(this));
             rvInvoices.setAdapter(adapter);
             loadInvoices();
+            BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
         } catch (RuntimeException exception) {
             Toast.makeText(this, "Du lieu hoa don dang loi, vui long mo lai", Toast.LENGTH_SHORT).show();
             finish();

@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
 import com.example.DuAnMau_PH63816.product.data.ProductDAO;
 import com.example.DuAnMau_PH63816.product.model.Product;
@@ -68,6 +69,7 @@ public class DetailProductScreen extends AppCompatActivity {
             toolbarDetailProductScreen.setNavigationOnClickListener(v -> finish());
 
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_PRODUCT);
 
         edtDate.setOnClickListener(v -> openDatePicker(this, edtDate));
 

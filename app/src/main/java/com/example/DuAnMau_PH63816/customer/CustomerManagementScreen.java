@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.customer.adapter.CustomerAdapter;
 import com.example.DuAnMau_PH63816.customer.data.CustomerDAO;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
@@ -68,6 +69,7 @@ public class CustomerManagementScreen extends AppCompatActivity {
         rvCustomer.setLayoutManager(new LinearLayoutManager(this));
         rvCustomer.setAdapter(adapter);
         loadCustomers();
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
 
         floatAddCustomer.setOnClickListener(v -> startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class)));
     }

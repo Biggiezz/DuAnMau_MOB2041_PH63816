@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.customer.data.CustomerDAO;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
 
@@ -100,6 +101,7 @@ public class DetailCustomerScreen extends AppCompatActivity {
             setSupportActionBar(toolbarDetailCustomerScreen);
             toolbarDetailCustomerScreen.setNavigationOnClickListener(v -> finish());
         }
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
         btnUpdate.setOnClickListener(v -> {
             String updatedId = edtCustomerCode.getText().toString().trim();
             String updatedName = edtCustomerName.getText().toString().trim();
