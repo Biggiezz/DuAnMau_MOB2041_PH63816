@@ -1,8 +1,16 @@
 package com.example.DuAnMau_PH63816.product;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,12 +23,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.common.BottomTabHost;
 import com.example.DuAnMau_PH63816.common.BottomTabPagerAdapter;
+import com.example.DuAnMau_PH63816.product.data.CartManager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class ProductScreen extends AppCompatActivity implements BottomTabHost {
+public class ProductScreen extends AppCompatActivity implements BottomTabHost, CartAnimationHost {
 
     private ViewPager2 viewPagerProduct;
+    private View layoutCartAction;
+    private TextView txtCartBadge;
+    private final CartManager.OnCartChangedListener cartChangedListener = this::updateCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +49,10 @@ public class ProductScreen extends AppCompatActivity implements BottomTabHost {
 
     private void initUi() {
         Toolbar toolbarProductScreen = findViewById(R.id.toolbarProductScreen);
+        layoutCartAction = findViewById(R.id.layoutCartAction);
+        ImageView imgCartProduct = findViewById(R.id.imgCartProduct);
         ImageView imgAddProduct = findViewById(R.id.imgAddProduct);
+        txtCartBadge = findViewById(R.id.txtCartBadge);
         TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
         viewPagerProduct = findViewById(R.id.viewPagerProduct);
 
@@ -71,7 +86,12 @@ public class ProductScreen extends AppCompatActivity implements BottomTabHost {
             }
         });
 
+        View.OnClickListener openCartClickListener =
+                v -> startActivity(new Intent(ProductScreen.this, CartActivity.class));
+        layoutCartAction.setOnClickListener(openCartClickListener);
+        imgCartProduct.setOnClickListener(openCartClickListener);
         imgAddProduct.setOnClickListener(v -> startActivity(new Intent(ProductScreen.this, AddProductScreen.class)));
+        updateCartBadge(CartManager.getTotalQuantity());
     }
 
     private int getToolbarTitleRes(int position) {
@@ -92,5 +112,86 @@ public class ProductScreen extends AppCompatActivity implements BottomTabHost {
         if (viewPagerProduct != null) {
             viewPagerProduct.setCurrentItem(position, true);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        CartManager.addOnCartChangedListener(cartChangedListener);
+    }
+
+    @Override
+    protected void onStop() {
+        CartManager.removeOnCartChangedListener(cartChangedListener);
+        super.onStop();
+    }
+
+    private void updateCartBadge(int totalQuantity) {
+        if (txtCartBadge == null) {
+            return;
+        }
+        if (totalQuantity > 0) {
+            txtCartBadge.setVisibility(View.VISIBLE);
+            txtCartBadge.setText(String.valueOf(totalQuantity));
+            return;
+        }
+        txtCartBadge.setVisibility(View.GONE);
+    }
+
+    public void animateAddToCart(View startView) {
+        if (!(startView instanceof ImageView) || layoutCartAction == null) {
+            return;
+        }
+
+        int[] startLocation = new int[2];
+        int[] endLocation = new int[2];
+        startView.getLocationOnScreen(startLocation);
+        layoutCartAction.getLocationOnScreen(endLocation);
+
+        ImageView animationView = new ImageView(this);
+        animationView.setImageDrawable(((ImageView) startView).getDrawable());
+
+        ViewGroup rootLayout = (ViewGroup) getWindow().getDecorView();
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                startView.getWidth(),
+                startView.getHeight()
+        );
+        params.leftMargin = startLocation[0];
+        params.topMargin = startLocation[1];
+        rootLayout.addView(animationView, params);
+
+        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(animationView, View.SCALE_X, 1f, 4f);
+        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(animationView, View.SCALE_Y, 1f, 4f);
+        AnimatorSet scaleUpSet = new AnimatorSet();
+        scaleUpSet.playTogether(scaleUpX, scaleUpY);
+        scaleUpSet.setDuration(220);
+
+        ObjectAnimator translateX = ObjectAnimator.ofFloat(
+                animationView,
+                View.TRANSLATION_X,
+                endLocation[0] - startLocation[0]
+        );
+        ObjectAnimator translateY = ObjectAnimator.ofFloat(
+                animationView,
+                View.TRANSLATION_Y,
+                endLocation[1] - startLocation[1]
+        );
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(animationView, View.SCALE_X, 4f, 0.3f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(animationView, View.SCALE_Y, 4f, 0.3f);
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(animationView, View.ALPHA, 1f, 0f);
+
+        AnimatorSet moveToCartSet = new AnimatorSet();
+        moveToCartSet.playTogether(translateX, translateY, scaleDownX, scaleDownY, fadeOut);
+        moveToCartSet.setDuration(420);
+
+        AnimatorSet finalSet = new AnimatorSet();
+        finalSet.playSequentially(scaleUpSet, moveToCartSet);
+        finalSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                rootLayout.removeView(animationView);
+            }
+        });
+        finalSet.start();
     }
 }

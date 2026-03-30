@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.product.adapter.ProductAdapter;
+import com.example.DuAnMau_PH63816.product.data.CartManager;
 import com.example.DuAnMau_PH63816.product.data.ProductDAO;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
@@ -38,19 +40,42 @@ public class ProductContentFragment extends Fragment {
         productDAO = new ProductDAO(requireContext());
 
         RecyclerView rvProducts = view.findViewById(R.id.rvProducts);
-        adapter = new ProductAdapter(requireContext(), products, product -> {
-            Intent intent = new Intent(requireContext(), DetailProductScreen.class);
-            intent.putExtra(ProductExtras.NAME, product.getName());
-            intent.putExtra(ProductExtras.PRICE, product.getPriceLabel());
-            intent.putExtra(ProductExtras.STOCK, product.getStockLabel());
-            intent.putExtra(ProductExtras.IMAGE, product.getImage());
-            intent.putExtra(ProductExtras.ID, product.getId());
-            intent.putExtra(ProductExtras.CATEGORY, product.getCategory());
-            intent.putExtra(ProductExtras.UNIT, product.getUnit());
-            intent.putExtra(ProductExtras.DATE, product.getDate());
-            intent.putExtra(ProductExtras.STATUS, product.getStatus());
-            startActivity(intent);
-        });
+        adapter = new ProductAdapter(
+                requireContext(),
+                products,
+                product -> {
+                    Intent intent = new Intent(requireContext(), DetailProductScreen.class);
+                    intent.putExtra(ProductExtras.NAME, product.getName());
+                    intent.putExtra(ProductExtras.PRICE, product.getPriceLabel());
+                    intent.putExtra(ProductExtras.STOCK, product.getStockLabel());
+                    intent.putExtra(ProductExtras.IMAGE, product.getImage());
+                    intent.putExtra(ProductExtras.ID, product.getId());
+                    intent.putExtra(ProductExtras.CATEGORY, product.getCategory());
+                    intent.putExtra(ProductExtras.UNIT, product.getUnit());
+                    intent.putExtra(ProductExtras.DATE, product.getDate());
+                    intent.putExtra(ProductExtras.STATUS, product.getStatus());
+                    startActivity(intent);
+                },
+                (product, addIconView) -> {
+                    CartManager.addProduct(product);
+                    if (requireActivity() instanceof CartAnimationHost) {
+                        ((CartAnimationHost) requireActivity()).animateAddToCart(addIconView);
+                    }
+                    Toast.makeText(
+                            requireContext(),
+                            getString(R.string.toast_added_to_cart, product.getName()),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                },
+                product -> {
+                    CartManager.decreaseQuantity(product);
+                    Toast.makeText(
+                            requireContext(),
+                            getString(R.string.toast_removed_from_cart, product.getName()),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+        );
 
         rvProducts.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvProducts.setAdapter(adapter);

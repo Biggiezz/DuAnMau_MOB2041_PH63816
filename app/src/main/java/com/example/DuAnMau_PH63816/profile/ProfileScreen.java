@@ -2,6 +2,8 @@ package com.example.DuAnMau_PH63816.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +16,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.common.BottomTabHost;
 import com.example.DuAnMau_PH63816.common.BottomTabPagerAdapter;
+import com.example.DuAnMau_PH63816.product.CartActivity;
+import com.example.DuAnMau_PH63816.product.data.CartManager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
 
     private ViewPager2 viewPagerProfile;
+    private TextView txtCartBadgeProfile;
+    private final CartManager.OnCartChangedListener cartChangedListener = this::updateCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +42,15 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
 
     private void initUi() {
         Toolbar toolbarProfileScreen = findViewById(R.id.toolbarProfileScreen);
+        View layoutCartActionProfile = findViewById(R.id.layoutCartActionProfile);
         TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
+        txtCartBadgeProfile = findViewById(R.id.txtCartBadgeProfile);
         viewPagerProfile = findViewById(R.id.viewPagerProfile);
         if (toolbarProfileScreen != null) {
             setSupportActionBar(toolbarProfileScreen);
             toolbarProfileScreen.setNavigationOnClickListener(v -> finish());
         }
+        layoutCartActionProfile.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
         viewPagerProfile.setAdapter(new BottomTabPagerAdapter(this));
         viewPagerProfile.setCurrentItem(3, false);
         toolbarProfileScreen.setTitle(getToolbarTitleRes(3));
@@ -66,6 +75,7 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
                 toolbarProfileScreen.setTitle(getToolbarTitleRes(position));
             }
         });
+        updateCartBadge(CartManager.getTotalQuantity());
     }
 
     private int getToolbarTitleRes(int position) {
@@ -86,6 +96,30 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
         if (viewPagerProfile != null) {
             viewPagerProfile.setCurrentItem(position, true);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        CartManager.addOnCartChangedListener(cartChangedListener);
+    }
+
+    @Override
+    protected void onStop() {
+        CartManager.removeOnCartChangedListener(cartChangedListener);
+        super.onStop();
+    }
+
+    private void updateCartBadge(int totalQuantity) {
+        if (txtCartBadgeProfile == null) {
+            return;
+        }
+        if (totalQuantity > 0) {
+            txtCartBadgeProfile.setVisibility(View.VISIBLE);
+            txtCartBadgeProfile.setText(String.valueOf(totalQuantity));
+            return;
+        }
+        txtCartBadgeProfile.setVisibility(View.GONE);
     }
 
 }

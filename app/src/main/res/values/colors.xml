@@ -15,4 +15,5 @@
     <color name="bg_chage_pass">#F1F5F9</color>
     <color name="txt_cancel">#64748B</color>
     <color name="bg_cancel">#F1F5F9</color>
+    <color name="cart_screen_background">#F7F3F2</color>
 </resources>

@@ -30,6 +30,10 @@
             android:exported="false"
             android:parentActivityName=".homepage.HomePageScreen" />
         <activity
+            android:name=".product.CartActivity"
+            android:exported="false"
+            android:parentActivityName=".product.ProductScreen" />
+        <activity
             android:name=".product.AddProductScreen"
             android:exported="false" />
         <activity

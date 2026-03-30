@@ -2,6 +2,7 @@ package com.example.DuAnMau_PH63816.product.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -22,16 +23,34 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         void onProductClick(@NonNull Product product);
     }
 
+    public interface OnAddToCartClickListener {
+        void onAddToCartClick(@NonNull Product product, @NonNull View addIconView);
+    }
+
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCartClick(@NonNull Product product);
+    }
+
     /// khai bao context va list de lay du lieu
     private final LayoutInflater inflater;
     private final List<Product> items;
     private final OnProductClickListener listener;
+    private final OnAddToCartClickListener addToCartListener;
+    private final OnRemoveFromCartClickListener removeFromCartListener;
 
     /// khoi tao context va list de lay du lieu
-    public ProductAdapter(Context context, List<Product> items, OnProductClickListener listener) {
+    public ProductAdapter(
+            Context context,
+            List<Product> items,
+            OnProductClickListener listener,
+            OnAddToCartClickListener addToCartListener,
+            OnRemoveFromCartClickListener removeFromCartListener
+    ) {
         this.inflater = LayoutInflater.from(context);
         this.items = items;
         this.listener = listener;
+        this.addToCartListener = addToCartListener;
+        this.removeFromCartListener = removeFromCartListener;
     }
 
     @NonNull
@@ -56,6 +75,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         bindProductImage(holder.imgIcon, product.getImage());
 
         holder.cardView.setOnClickListener(v -> listener.onProductClick(product));
+        holder.cardView.setOnEditClickListener(v -> {
+            if (addToCartListener != null) {
+                addToCartListener.onAddToCartClick(product, v);
+            }
+        });
+        holder.cardView.setOnRemoveClickListener(v -> {
+            if (removeFromCartListener != null) {
+                removeFromCartListener.onRemoveFromCartClick(product);
+            }
+        });
     }
 
     @Override

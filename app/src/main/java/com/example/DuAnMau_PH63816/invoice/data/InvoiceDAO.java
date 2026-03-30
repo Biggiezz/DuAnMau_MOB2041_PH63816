@@ -227,7 +227,7 @@ public class InvoiceDAO {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen));
         details.add(new InvoiceDetail(0, "Kem Matcha Premium", 2, "90.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.img_nuoc_suoi));
         return details;
     }
 
@@ -256,7 +256,7 @@ public class InvoiceDAO {
     private ArrayList<InvoiceDetail> getInvoice8Details() {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
         return details;
     }
 
@@ -264,9 +264,9 @@ public class InvoiceDAO {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha));
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.img_nuoc_suoi));
+        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad));
+        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.img_tra_dao));
         return details;
     }
 
@@ -274,9 +274,9 @@ public class InvoiceDAO {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
         details.add(new InvoiceDetail(0, "Kem Matcha Premium", 1, "45.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "190.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "30.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
+        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "190.000k", R.drawable.img_takoyaki));
+        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "30.000k", R.drawable.img_tra_dao));
         return details;
     }
 
@@ -285,9 +285,9 @@ public class InvoiceDAO {
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 3, "750.000k", R.drawable.ic_ramen));
         details.add(new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha));
         details.add(new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 1, "20.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
+        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad));
+        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 1, "20.000k", R.drawable.img_trung_ngam));
         return details;
     }
 
@@ -295,21 +295,21 @@ public class InvoiceDAO {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen));
         details.add(new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
         details.add(new InvoiceDetail(0, "Voucher giảm giá", 1, "-120.000k", R.drawable.logo));
         details.add(new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 2, "50.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 3, "165.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "160.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 2, "50.000k", R.drawable.img_trung_ngam));
+        details.add(new InvoiceDetail(0, "Trà đào cam sả", 3, "165.000k", R.drawable.img_tra_dao));
+        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "160.000k", R.drawable.img_takoyaki));
         return details;
     }
 
     private ArrayList<InvoiceDetail> getInvoice13Details() {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "40.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 1, "35.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Nước suối", 2, "40.000k", R.drawable.img_nuoc_suoi));
+        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.img_tra_dao));
+        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 1, "35.000k", R.drawable.img_trung_ngam));
         return details;
     }
 
@@ -317,24 +317,24 @@ public class InvoiceDAO {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
         details.add(new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Nước suối", 1, "15.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.img_takoyaki));
+        details.add(new InvoiceDetail(0, "Nước suối", 1, "15.000k", R.drawable.img_nuoc_suoi));
         return details;
     }
 
     private ArrayList<InvoiceDetail> getInvoice15Details() {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "45.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad));
+        details.add(new InvoiceDetail(0, "Nước suối", 2, "45.000k", R.drawable.img_nuoc_suoi));
         return details;
     }
 
     private ArrayList<InvoiceDetail> getInvoice16Details() {
         ArrayList<InvoiceDetail> details = new ArrayList<>();
         details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "40.000k", R.drawable.logo));
+        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.img_takoyaki));
+        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "40.000k", R.drawable.img_tra_dao));
         return details;
     }
 

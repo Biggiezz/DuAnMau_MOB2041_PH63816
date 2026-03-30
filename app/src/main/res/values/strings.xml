@@ -35,6 +35,15 @@
     <string name="error_email_required" translatable="false">Vui lòng nhập email</string>
     <string name="error_password_required" translatable="false">Vui lòng nhập mật khẩu</string>
     <string name="toast_edit_product" translatable="false">Edit sản phẩm: %1$s</string>
+    <string name="title_cart" translatable="false">Giỏ hàng</string>
+    <string name="cart_item_count_format" translatable="false">Bạn đang có %1$d sản phẩm</string>
+    <string name="cart_subtotal_label" translatable="false">Tạm tính</string>
+    <string name="cart_total_label" translatable="false">Tổng thanh toán</string>
+    <string name="cart_checkout" translatable="false">Thanh toán</string>
+    <string name="cart_empty" translatable="false">Chưa có sản phẩm nào trong giỏ hàng</string>
+    <string name="cart_checkout_pending" translatable="false">Tính năng thanh toán đang được cập nhật</string>
+    <string name="toast_added_to_cart" translatable="false">Đã thêm %1$s vào giỏ hàng</string>
+    <string name="toast_removed_from_cart" translatable="false">Đã giảm %1$s khỏi giỏ hàng</string>
     <string name="customer_info_format" translatable="false">ID: %1$s • %2$s</string>
     <string name="setting" translatable="false">Cài đặt</string>
     <string name="name" translatable="false">Nguyễn Mạnh Phúc</string>
@@ -71,13 +80,15 @@
     <string name="create_account_title" translatable="false">Tạo tài khoản</string>
     <string name="comunicate" translatable="false">giao tiếp</string>
     <string name="prompt_already_have_account" translatable="false">Bạn đã có tài khoản chưa?</string>
-    <string name="category_icon">Biểu tượng danh mục</string>
-    <string name="category_name">Tên danh mục</string>
-    <string name="category_code">Mã danh mục</string>
-    <string name="category_count">Số lượng sản phẩm</string>
-    <string name="category_describe">Mô tả chi tiết</string>
-    <string name="category_update">Cập nhật danh mục</string>
-    <string name="customer_code">Mã khách hàng</string>
-    <string name="customer_phone">Số điện thoại</string>
-    <string name="customer_email">Email</string>
+    <string name="category_icon" translatable="false">Biểu tượng danh mục</string>
+    <string name="category_name" translatable="false">Tên danh mục</string>
+    <string name="category_code" translatable="false">Mã danh mục</string>
+    <string name="category_count" translatable="false">Số lượng sản phẩm</string>
+    <string name="category_describe" translatable="false">Mô tả chi tiết</string>
+    <string name="category_update" translatable="false">Cập nhật danh mục</string>
+    <string name="customer_code" translatable="false">Mã khách hàng</string>
+    <string name="customer_phone" translatable="false">Số điện thoại</string>
+    <string name="customer_email" translatable="false">Email</string>
+    <string name="cancel" translatable="false">Hủy</string>
+    <string name="save" translatable="false">Lưu</string>
 </resources>

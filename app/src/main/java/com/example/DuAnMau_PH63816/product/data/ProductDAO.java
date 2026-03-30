@@ -142,35 +142,35 @@ public class ProductDAO {
         sushi.setStatus(1);
         seeds.add(sushi);
 
-        Product water = new Product("Nước suối", "20.000k", " · Tồn: 60", R.drawable.logo);
+        Product water = new Product("Nước suối", "20.000k", " · Tồn: 60", R.drawable.img_nuoc_suoi);
         water.setCategory("Đồ uống");
         water.setUnit("Chai");
         water.setDate("13-05-2026");
         water.setStatus(1);
         seeds.add(water);
 
-        Product eggTopping = new Product("Topping trứng ngâm", "25.000k", " · Tồn: 25", R.drawable.logo);
+        Product eggTopping = new Product("Topping trứng ngâm", "25.000k", " · Tồn: 25", R.drawable.img_trung_ngam);
         eggTopping.setCategory("Topping");
         eggTopping.setUnit("Phần");
         eggTopping.setDate("14-05-2026");
         eggTopping.setStatus(1);
         seeds.add(eggTopping);
 
-        Product salmonSalad = new Product("Salad cá hồi", "165.000k", " · Tồn: 18", R.drawable.logo);
+        Product salmonSalad = new Product("Salad cá hồi", "165.000k", " · Tồn: 18", R.drawable.img_salad);
         salmonSalad.setCategory("Khai vị");
         salmonSalad.setUnit("Đĩa");
         salmonSalad.setDate("15-05-2026");
         salmonSalad.setStatus(1);
         seeds.add(salmonSalad);
 
-        Product roastedTea = new Product("Trà đào cam sả", "55.000k", " · Tồn: 30", R.drawable.logo);
+        Product roastedTea = new Product("Trà đào cam sả", "55.000k", " · Tồn: 30", R.drawable.img_tra_dao);
         roastedTea.setCategory("Đồ uống");
         roastedTea.setUnit("Ly");
         roastedTea.setDate("16-05-2026");
         roastedTea.setStatus(1);
         seeds.add(roastedTea);
 
-        Product takoyaki = new Product("Takoyaki sốt mayo", "95.000k", " · Tồn: 22", R.drawable.logo);
+        Product takoyaki = new Product("Takoyaki sốt mayo", "95.000k", " · Tồn: 22", R.drawable.img_takoyaki);
         takoyaki.setCategory("Ăn vặt");
         takoyaki.setUnit("Phần");
         takoyaki.setDate("17-05-2026");
