@@ -71,4 +71,15 @@
     <string name="prompt_already_have_account">"Already have an account? "</string>
     <string name="label_category">Category management</string>
     <string name="label_customer">Customer management</string>
+    <string name="category_icon">"Category icon "</string>
+    <string name="category_name">Category name</string>
+    <string name="category_code">Category code</string>
+    <string name="category_count">"Product quantity "</string>
+    <string name="category_describe">Detailed description</string>
+    <string name="category_update">Update catalog</string>
+    <string name="customer_code">Customer code</string>
+    <string name="customer_phone">Phone number</string>
+    <string name="customer_email">Email</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

@@ -29,6 +29,11 @@
             app:title="@string/home_toolbar_title"
             app:titleTextColor="@android:color/black" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1A000000" />
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerHome"
             android:layout_width="match_parent"

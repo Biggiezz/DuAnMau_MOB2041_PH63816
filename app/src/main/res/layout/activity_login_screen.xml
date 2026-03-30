@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".login.LoginScreen">
 
     <androidx.appcompat.widget.Toolbar
@@ -108,17 +108,17 @@
             android:textColor="@color/color_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="64dp"
-        app:cornerRadius="8dp"
-        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/color_default"
+        android:padding="12dp"
         android:text="@string/action_log_in"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:cornerRadius="12dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -133,10 +133,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
             android:text="@string/login_prompt_no_account"
             android:textColor="@color/color_title"
             android:textSize="12sp"
-            android:layout_marginEnd="4dp"
             android:textStyle="bold" />
 
         <TextView
