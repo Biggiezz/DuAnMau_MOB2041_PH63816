@@ -102,6 +102,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:hint="DD/MM/YYYY"
                         android:textColor="@color/color_title"
                         android:textSize="16sp" />
@@ -145,6 +147,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:hint="DD/MM/YYYY"
                         android:textColor="@color/color_title"
                         android:textSize="16sp" />

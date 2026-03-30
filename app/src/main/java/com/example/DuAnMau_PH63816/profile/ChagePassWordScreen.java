@@ -17,34 +17,46 @@ import com.example.DuAnMau_PH63816.common.Common;
 import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 
 public class ChagePassWordScreen extends AppCompatActivity {
-    EditText edtOldPassWord, edtNewPassWord, edtConfirmNewPassWord;
-    StaffDAO staffDAO;
+    private EditText edtOldPassWord;
+    private EditText edtNewPassWord;
+    private EditText edtConfirmNewPassWord;
+    private StaffDAO staffDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chage_pass_word_screen);
-        Toolbar toolbarChangePasswordScreen = findViewById(R.id.toolbarChangePasswordScreen);
-        if (toolbarChangePasswordScreen != null) {
-            setSupportActionBar(toolbarChangePasswordScreen);
-            toolbarChangePasswordScreen.setNavigationOnClickListener(v -> finish());
-        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        staffDAO = new StaffDAO(this);
+        restoreCurrentStaffCode();
         initUi();
+        setupActions();
+    }
+    private void restoreCurrentStaffCode() {
+        if (Common.maNhanVien == null || Common.maNhanVien.trim().isEmpty()) {
+            Common.maNhanVien = staffDAO.getCurrentStaffCode();
+        }
     }
 
     private void initUi() {
         edtOldPassWord = findViewById(R.id.edtPassword);
         edtNewPassWord = findViewById(R.id.edtNewPassword);
         edtConfirmNewPassWord = findViewById(R.id.edtConfirmNewPassword);
+        Toolbar toolbarChangePasswordScreen = findViewById(R.id.toolbarChangePasswordScreen);
+        if (toolbarChangePasswordScreen != null) {
+            setSupportActionBar(toolbarChangePasswordScreen);
+            toolbarChangePasswordScreen.setNavigationOnClickListener(v -> finish());
+        }
+    }
+    private void setupActions() {
         Button btnUpdatePassword = findViewById(R.id.btnUpdatePassword);
         Button btnCancel = findViewById(R.id.btnCancel);
-        btnUpdatePassword.setOnClickListener(v -> capNhatMatKhau());
+        btnUpdatePassword.setOnClickListener(v -> handleChangePassword());
         btnCancel.setOnClickListener(v -> clearForm());
     }
 
@@ -52,29 +64,57 @@ public class ChagePassWordScreen extends AppCompatActivity {
         edtOldPassWord.setText("");
         edtNewPassWord.setText("");
         edtConfirmNewPassWord.setText("");
+        edtOldPassWord.requestFocus();
     }
 
-    private void capNhatMatKhau() {
+    private void handleChangePassword() {
         String oldPassword = edtOldPassWord.getText().toString().trim();
         String newPassword = edtNewPassWord.getText().toString().trim();
         String confirmNewPassword = edtConfirmNewPassWord.getText().toString().trim();
-        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
-            Toast.makeText(this, "Vui lòng không được bỏ trống", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (!newPassword.equals(confirmNewPassword)) {
-            Toast.makeText(this, "Mật khẩu mới không khớp", Toast.LENGTH_LONG).show();
+
+        if (!validateInput(oldPassword, newPassword, confirmNewPassword)) {
             return;
         }
         if (!staffDAO.kiemTraMatKhauCu(Common.maNhanVien, oldPassword)) {
             Toast.makeText(this, "Mật khẩu cũ không đúng", Toast.LENGTH_LONG).show();
             return;
         }
-        if (!staffDAO.capNhatMatKhauMoi(Common.maNhanVien, newPassword)) {
+        if (staffDAO.capNhatMatKhauMoi(Common.maNhanVien, newPassword)) {
             Toast.makeText(this, "Cập nhật mật khẩu thành công", Toast.LENGTH_LONG).show();
+            clearForm();
             finish();
-        } else {
-            Toast.makeText(this, "Cập nhật mật khẩu thất bại", Toast.LENGTH_LONG).show();
+            return;
         }
+        Toast.makeText(this, "Cập nhật mật khẩu thất bại", Toast.LENGTH_LONG).show();
+    }
+    private boolean validateInput(String oldPassword, String newPassword, String confirmNewPassword) {
+        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (Common.maNhanVien == null || Common.maNhanVien.trim().isEmpty()) {
+            Toast.makeText(this, "Không xác định được tài khoản hiện tại", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (newPassword.length() < 8) {
+            Toast.makeText(this, "Mật khẩu mới phải có ít nhất 8 ký tự", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (!newPassword.equals(confirmNewPassword)) {
+            Toast.makeText(this, "Mật khẩu mới không khớp", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (oldPassword.equals(newPassword)) {
+            Toast.makeText(this, "Mật khẩu mới không được trùng mật khẩu cũ", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+    @Override
+    protected void onDestroy() {
+        if (staffDAO != null) {
+            staffDAO.close();
+        }
+        super.onDestroy();
     }
 }

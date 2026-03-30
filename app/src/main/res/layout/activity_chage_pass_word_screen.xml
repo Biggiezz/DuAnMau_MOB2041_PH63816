@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".profile.ChagePassWordScreen">
 
@@ -23,7 +24,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_chage_pass"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <View
@@ -149,17 +150,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnUpdatePassword"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/color_default"
-                android:padding="12dp"
-                android:text="@string/update_password"
+                android:text="@string/save"
                 android:textStyle="bold"
                 app:cornerRadius="12dp" />
 
@@ -168,10 +169,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/txt_warning"
-                android:padding="12dp"
-                android:text="Hủy"
+                android:text="@string/cancel"
                 android:textStyle="bold"
                 app:cornerRadius="12dp" />
         </LinearLayout>

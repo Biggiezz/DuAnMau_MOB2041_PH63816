@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.Common;
 import com.example.DuAnMau_PH63816.create_account.CreateAccountActivity;
 import com.example.DuAnMau_PH63816.forgot.ForgotPasswordScreen;
 import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
@@ -68,6 +69,7 @@ public class LoginScreen extends AppCompatActivity {
                 return;
             }
 
+            Common.maNhanVien = staffDAO.getCurrentStaffCode();
             Toast.makeText(LoginScreen.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginScreen.this, HomePageScreen.class);
             startActivity(intent);
