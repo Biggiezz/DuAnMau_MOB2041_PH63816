@@ -111,7 +111,7 @@ public class StaffDAO {
         contentValues.put("password", staff.getPassword());
         contentValues.put("phone", staff.getPhone());
         contentValues.put("address", staff.getAddress());
-        contentValues.put("role", 1);
+        contentValues.put("role", staff.getRole());
 
         long check = sqLiteDatabase.insert("Staff", null, contentValues);
         return check != -1;

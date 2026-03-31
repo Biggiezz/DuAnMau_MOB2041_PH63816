@@ -2,9 +2,11 @@ package com.example.DuAnMau_PH63816.staff;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -33,6 +35,9 @@ public class StaffManagementScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_staff_management_screen);
+        if (!ensureAdminAccess()) {
+            return;
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -42,6 +47,17 @@ public class StaffManagementScreen extends AppCompatActivity {
         initViews();
         setupRecyclerView();
         setListeners();
+    }
+
+    private boolean ensureAdminAccess() {
+        SharedPreferences sharedPreferences = getSharedPreferences("StaffData", MODE_PRIVATE);
+        int role = sharedPreferences.getInt("role", 1);
+        if (role == 0) {
+            return true;
+        }
+        Toast.makeText(this, "Bạn không có quyền truy cập chức năng này", Toast.LENGTH_SHORT).show();
+        finish();
+        return false;
     }
 
     private void initViews() {
@@ -59,12 +75,12 @@ public class StaffManagementScreen extends AppCompatActivity {
     private void setupRecyclerView() {
         staffAdapter = new StaffAdapter(this, staffList, new StaffAdapter.OnStaffActionListener() {
             @Override
-            public void onEdit(Staff staff) {
+            public void onEdit(@NonNull Staff staff) {
                 openEditStaff(staff);
             }
 
             @Override
-            public void onDelete(Staff staff) {
+            public void onDelete(@NonNull Staff staff) {
                 showDeleteDialog(staff);
             }
         });

@@ -1,10 +1,12 @@
 package com.example.DuAnMau_PH63816.homepage;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -35,8 +37,8 @@ public class HomeContentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         bindProductNavigation(view);
         bindNavigation(view, R.id.imgCategory, CategoryManagementScreen.class);
-        bindNavigation(view, R.id.imgCustomer, CustomerManagementScreen.class);
-        bindNavigation(view, R.id.imgPersonnel, StaffManagementScreen.class);
+        bindAdminNavigation(view, R.id.layoutCustomer, R.id.imgCustomer, CustomerManagementScreen.class);
+        bindAdminNavigation(view, R.id.layoutPersonnel, R.id.imgPersonnel, StaffManagementScreen.class);
         bindNavigation(view, R.id.imgInvoice, InvoiceActivity.class);
         bindNavigation(view, R.id.imgTopCustomer, TopCustomerBuyingProductsScreen.class);
         bindNavigation(view, R.id.imgStatistical, StatisticalScreen.class);
@@ -57,5 +59,21 @@ public class HomeContentFragment extends Fragment {
     private void bindNavigation(View root, int viewId, Class<?> destination) {
         ImageView imageView = root.findViewById(viewId);
         imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), destination)));
+    }
+
+    private void bindAdminNavigation(View root, int containerId, int viewId, Class<?> destination) {
+        View container = root.findViewById(containerId);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("StaffData", android.content.Context.MODE_PRIVATE);
+        int role = sharedPreferences.getInt("role", 1);
+        if (role != 0) {
+            ViewGroup parent = (ViewGroup) container.getParent();
+            if (parent instanceof GridLayout) {
+                ((GridLayout) parent).removeView(container);
+            } else {
+                container.setVisibility(View.GONE);
+            }
+            return;
+        }
+        bindNavigation(root, viewId, destination);
     }
 }

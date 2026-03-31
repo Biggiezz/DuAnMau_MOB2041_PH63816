@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_email_or_phone"
-            android:inputType="textPassword"
+            android:inputType="textEmailAddress"
             android:textColor="@color/color_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,6 +110,32 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_create_password"
             android:inputType="textPassword"
+            android:textColor="@color/color_hint" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Vai trò"
+        android:textColor="@color/color_title"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/actvRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Chọn vai trò"
+            android:inputType="none"
+            android:paddingVertical="14dp"
             android:textColor="@color/color_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 

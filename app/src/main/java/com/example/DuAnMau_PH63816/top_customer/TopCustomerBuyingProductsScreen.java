@@ -145,7 +145,6 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
             TopCustomerItem item = map.get(customerId);
             /// Nếu khách hàng chưa có trong map, tạo mới.
             if (item == null) {
-                ///
                 item = new TopCustomerItem(customerId, customerName, 0, 0);
                 /// Khách hàng mới được thêm vào map.
                 map.put(customerId, item);

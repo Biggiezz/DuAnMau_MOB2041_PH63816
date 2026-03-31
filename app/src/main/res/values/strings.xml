@@ -32,9 +32,6 @@
     <string name="login_subtitle" translatable="false">Đăng nhập vào tài khoản của bạn để tiếp tục mua sắm.</string>
     <string name="login_forgot_password" translatable="false">Quên mật khẩu?</string>
     <string name="toast_notification" translatable="false">Thông báo</string>
-    <string name="error_email_required" translatable="false">Vui lòng nhập email</string>
-    <string name="error_password_required" translatable="false">Vui lòng nhập mật khẩu</string>
-    <string name="toast_edit_product" translatable="false">Edit sản phẩm: %1$s</string>
     <string name="title_cart" translatable="false">Giỏ hàng</string>
     <string name="cart_item_count_format" translatable="false">Bạn đang có %1$d sản phẩm</string>
     <string name="cart_subtotal_label" translatable="false">Tạm tính</string>
@@ -67,7 +64,6 @@
     <string name="enter_new_password" translatable="false">Nhập mật khẩu mới</string>
     <string name="confirm_new_password" translatable="false">Xác nhận mật khẩu mới</string>
     <string name="enter_confirm_password" translatable="false">Nhập lại mật khẩu mới</string>
-    <string name="update_password" translatable="false">Cập nhật mật khẩu</string>
     <string name="hint_full_name" translatable="false">Nhập tên đầy đủ của bạn</string>
     <string name="hint_email_or_phone" translatable="false">Nhập địa chỉ email hoặc số điện thoại của bạn.</string>
     <string name="label_email_or_phone" translatable="false">Email hoặc số điện thoại</string>
@@ -81,10 +77,6 @@
     <string name="comunicate" translatable="false">giao tiếp</string>
     <string name="prompt_already_have_account" translatable="false">Bạn đã có tài khoản chưa?</string>
     <string name="category_icon" translatable="false">Biểu tượng danh mục</string>
-    <string name="category_name" translatable="false">Tên danh mục</string>
-    <string name="category_code" translatable="false">Mã danh mục</string>
-    <string name="category_count" translatable="false">Số lượng sản phẩm</string>
-    <string name="category_describe" translatable="false">Mô tả chi tiết</string>
     <string name="category_update" translatable="false">Cập nhật danh mục</string>
     <string name="customer_code" translatable="false">Mã khách hàng</string>
     <string name="customer_phone" translatable="false">Số điện thoại</string>

@@ -38,7 +38,7 @@
                     android:id="@+id/tvNameLoginProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
+                    android:text=""
                     android:textColor="@color/color_title"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -47,7 +47,7 @@
                     android:id="@+id/tvPower"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/power"
+                    android:text=""
                     android:textColor="@color/color_default"
                     android:textSize="16sp" />
             </LinearLayout>

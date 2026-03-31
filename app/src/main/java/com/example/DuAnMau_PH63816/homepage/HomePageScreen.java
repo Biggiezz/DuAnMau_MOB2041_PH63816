@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,6 +70,7 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
         toolbarHomePageScreen.setNavigationIcon(R.drawable.btn_menu);
         toolbarHomePageScreen.setNavigationOnClickListener(v ->
                 drawerLayout.openDrawer(GravityCompat.START));
+        applyRoleUi(navigationView);
 
         int initialTab = getIntent().getIntExtra("extra_initial_tab", 0);
         viewPagerHome.setAdapter(new BottomTabPagerAdapter(this));
@@ -107,6 +109,30 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             });
+        }
+    }
+
+    private void applyRoleUi(NavigationView navigationView) {
+        SharedPreferences sharedPreferences = getSharedPreferences("StaffData", MODE_PRIVATE);
+        int currentRole = sharedPreferences.getInt("role", 1);
+        switch (currentRole) {
+            case 0:
+                toolbarHomePageScreen.setSubtitle("Quản lý");
+                break;
+            case 1:
+                toolbarHomePageScreen.setSubtitle("Nhân viên");
+                break;
+            default:
+                toolbarHomePageScreen.setSubtitle("Chưa xác định vai trò");
+                break;
+        }
+
+        if (navigationView != null) {
+            Menu menu = navigationView.getMenu();
+            MenuItem shareItem = menu.findItem(R.id.nav_share);
+            if (shareItem != null) {
+                shareItem.setVisible(currentRole == 0);
+            }
         }
     }
 
@@ -257,10 +283,6 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
             }
         });
         finalSet.start();
-    }
-
-    private int dpToPx(int dp) {
-        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     @Override

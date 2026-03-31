@@ -92,7 +92,6 @@
                 android:background="@drawable/bg_edit_text"
                 android:fontFamily="@font/work_sans_medium"
                 android:hint="Mã nhân viên"
-                android:inputType="text"
                 android:textColor="@color/color_title"
                 android:textColorHint="@color/color_hint"
                 android:textSize="14sp" />

@@ -14,15 +14,11 @@ public class OpenDatePicker {
     public static void openDatePicker(Context context, TextView textView) {
         Calendar calendar = Calendar.getInstance();
         String currentText = textView.getText().toString().trim();
-        try {
-            if (!currentText.isEmpty()) {
-                Date parsedDate = parseDate(currentText);
-                if (parsedDate != null) {
-                    calendar.setTime(parsedDate);
-                }
+        if (!currentText.isEmpty()) {
+            Date parsedDate = parseDate(currentText);
+            if (parsedDate != null) {
+                calendar.setTime(parsedDate);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         new DatePickerDialog(
                 context,
