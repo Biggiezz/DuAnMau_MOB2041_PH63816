@@ -92,17 +92,30 @@ public class CustomerDAO {
         return null;
     }
 
-    public boolean isCustomerIdExists(String customerId) {
-        return getCustomerById(customerId) != null;
-    }
+//    public boolean isCustomerIdExists(String customerId) {
+//        return getCustomerById(customerId) != null;
+//    }
 
     private void ensureSeedData() {
-        if (!getAllCustomer().isEmpty()) {
+        /// Tổng tiền hiện tại được cộng theo tất cả hóa đơn seed trong InvoiceDAO:
+        /// KH001 = 545.000 + 420.000 + 1.250.000 + 1.175.000 + 980.000 + 635.000 = 5.005.000
+        /// KH002 = 850.000 + 675.000 + 560.000 + 1.190.000 + 745.000 = 4.020.000
+        /// KH003 = 940.000 + 180.000 + 935.000 + 760.000 + 1.060.000 = 3.875.000
+        upsertSeedCustomer(new Customer("KH001", "Nguyễn Văn A", "0901 234 567", "vana@gmail.com", "12 Nguyễn Trãi, Quận 1, TP.HCM", "5.005.000", 0));
+        upsertSeedCustomer(new Customer("KH002", "Trần ThaB", "0908 888 666", "thab@gmail.com", "25 Lê Lợi, Quận 3, TP.HCM", "4.020.000", 1));
+        upsertSeedCustomer(new Customer("KH003", "Lê Văn C", "0933 222 111", "levanc@gmail.com", "8 Võ Văn Tần, Quận 10, TP.HCM", "3.875.000", 1));
+    }
+
+    private void upsertSeedCustomer(Customer seedCustomer) {
+        Customer existingCustomer = getCustomerById(seedCustomer.getId());
+        if (existingCustomer == null) {
+            insertCustomer(seedCustomer);
             return;
         }
-        insertCustomer(new Customer("KH001", "Nguyễn Văn A", "0901 234 567", "vana@gmail.com", "12 Nguyễn Trãi, Quận 1, TP.HCM", "12.450.000", 0));
-        insertCustomer(new Customer("KH002", "Trần ThaB", "0908 888 666", "thab@gmail.com", "25 Lê Lợi, Quận 3, TP.HCM", "3.240.000", 1));
-        insertCustomer(new Customer("KH003", "Lê Văn C", "0933 222 111", "levanc@gmail.com", "8 Võ Văn Tần, Quận 10, TP.HCM", "8.900.000", 1));
+
+        existingCustomer.setPrice(seedCustomer.getPrice());
+        existingCustomer.setStatus(seedCustomer.getStatus());
+        updateCustomer(existingCustomer);
     }
 
     public void close() {

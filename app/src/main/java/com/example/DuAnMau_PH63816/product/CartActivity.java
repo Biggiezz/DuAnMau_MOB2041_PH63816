@@ -1,106 +1,1 @@
-package com.example.DuAnMau_PH63816.product;
-
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.DuAnMau_PH63816.R;
-import com.example.DuAnMau_PH63816.product.adapter.CartAdapter;
-import com.example.DuAnMau_PH63816.product.data.CartManager;
-import com.example.DuAnMau_PH63816.product.model.CartItem;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class CartActivity extends AppCompatActivity {
-
-    private final List<CartItem> cartItems = new ArrayList<>();
-    private CartAdapter cartAdapter;
-    private TextView txtCartItemCount;
-    private TextView txtCartEmpty;
-    private TextView txtCartSubtotal;
-    private TextView txtCartTotal;
-    private View layoutCartSummary;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_cart);
-        CartManager.initialize(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        Toolbar toolbar = findViewById(R.id.toolbarCart);
-        RecyclerView rvCartProducts = findViewById(R.id.rvCartProducts);
-        Button btnCheckout = findViewById(R.id.btnCheckout);
-        txtCartItemCount = findViewById(R.id.txtCartItemCount);
-        txtCartEmpty = findViewById(R.id.txtCartEmpty);
-        txtCartSubtotal = findViewById(R.id.txtCartSubtotal);
-        txtCartTotal = findViewById(R.id.txtCartTotal);
-        layoutCartSummary = findViewById(R.id.layoutCartSummary);
-
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-            }
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
-
-        cartAdapter = new CartAdapter(
-                this,
-                cartItems,
-                product -> {
-                    CartManager.decreaseQuantity(product);
-                    refreshCart();
-                },
-                product -> {
-                    CartManager.increaseQuantity(product);
-                    refreshCart();
-                }
-        );
-        rvCartProducts.setLayoutManager(new LinearLayoutManager(this));
-        rvCartProducts.setAdapter(cartAdapter);
-
-        btnCheckout.setOnClickListener(v -> Toast.makeText(
-                this,
-                getString(R.string.cart_checkout_pending),
-                Toast.LENGTH_SHORT
-        ).show());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        refreshCart();
-    }
-
-    private void refreshCart() {
-        cartItems.clear();
-        cartItems.addAll(CartManager.getItems());
-        cartAdapter.notifyDataSetChanged();
-
-        int totalQuantity = CartManager.getTotalQuantity();
-        boolean hasItems = !cartItems.isEmpty();
-        txtCartItemCount.setText(getString(R.string.cart_item_count_format, totalQuantity));
-        txtCartEmpty.setVisibility(hasItems ? View.GONE : View.VISIBLE);
-        layoutCartSummary.setVisibility(hasItems ? View.VISIBLE : View.GONE);
-        txtCartSubtotal.setText(CartManager.formatCurrency(CartManager.getSubtotal()));
-        txtCartTotal.setText(CartManager.formatCurrency(CartManager.getSubtotal()));
-    }
-}
+package com.example.DuAnMau_PH63816.product;import android.os.Bundle;import android.view.View;import android.widget.Button;import android.widget.TextView;import android.widget.Toast;import androidx.activity.EdgeToEdge;import androidx.appcompat.app.AppCompatActivity;import androidx.appcompat.widget.Toolbar;import androidx.core.graphics.Insets;import androidx.core.view.ViewCompat;import androidx.core.view.WindowInsetsCompat;import androidx.recyclerview.widget.LinearLayoutManager;import androidx.recyclerview.widget.RecyclerView;import com.example.DuAnMau_PH63816.R;import com.example.DuAnMau_PH63816.product.adapter.CartAdapter;import com.example.DuAnMau_PH63816.product.data.CartManager;import com.example.DuAnMau_PH63816.product.model.CartItem;import java.util.ArrayList;import java.util.List;public class CartActivity extends AppCompatActivity {    private final List<CartItem> cartItems = new ArrayList<>();    private CartAdapter cartAdapter;    private TextView txtCartItemCount;    private TextView txtCartEmpty;    private TextView txtCartSubtotal;    private TextView txtCartTotal;    private View layoutCartSummary;    @Override    protected void onCreate(Bundle savedInstanceState) {        super.onCreate(savedInstanceState);        EdgeToEdge.enable(this);        setContentView(R.layout.activity_cart);        CartManager.initialize(this);        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);            return insets;        });        Toolbar toolbar = findViewById(R.id.toolbarCart);        RecyclerView rvCartProducts = findViewById(R.id.rvCartProducts);        Button btnCheckout = findViewById(R.id.btnCheckout);        txtCartItemCount = findViewById(R.id.txtCartItemCount);        txtCartEmpty = findViewById(R.id.txtCartEmpty);        txtCartSubtotal = findViewById(R.id.txtCartSubtotal);        txtCartTotal = findViewById(R.id.txtCartTotal);        layoutCartSummary = findViewById(R.id.layoutCartSummary);        if (toolbar != null) {            setSupportActionBar(toolbar);            if (getSupportActionBar() != null) {                getSupportActionBar().setDisplayShowTitleEnabled(false);            }            toolbar.setNavigationOnClickListener(v -> finish());        }        cartAdapter = new CartAdapter(                this,                cartItems,                product -> {                    CartManager.decreaseQuantity(product);                    refreshCart();                },                product -> {                    CartManager.increaseQuantity(product);                    refreshCart();                }        );        rvCartProducts.setLayoutManager(new LinearLayoutManager(this));        rvCartProducts.setAdapter(cartAdapter);        btnCheckout.setOnClickListener(v -> Toast.makeText(                this,                getString(R.string.cart_checkout_pending),                Toast.LENGTH_SHORT        ).show());    }    @Override    protected void onResume() {        super.onResume();        refreshCart();    }    private void refreshCart() {        cartItems.clear();        cartItems.addAll(CartManager.getItems());        cartAdapter.notifyDataSetChanged();        int totalQuantity = CartManager.getTotalQuantity();        boolean hasItems = !cartItems.isEmpty();        txtCartItemCount.setText(getString(R.string.cart_item_count_format, totalQuantity));        ///        txtCartEmpty.setVisibility(hasItems ? View.GONE : View.VISIBLE);        ///        layoutCartSummary.setVisibility(hasItems ? View.VISIBLE : View.GONE);        txtCartSubtotal.setText(CartManager.formatCurrency(CartManager.getSubtotal()));        txtCartTotal.setText(CartManager.formatCurrency(CartManager.getSubtotal()));    }}

@@ -14,18 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white"
-        app:navigationIcon="@drawable/ic_back">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_cart"
-            android:textColor="@color/color_title"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-
-    </androidx.appcompat.widget.Toolbar>
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Giỏ hàng" />
 
     <View
         android:layout_width="match_parent"
@@ -106,7 +96,7 @@
                 android:textColor="@color/color_subtitle"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="91.000đ" />
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -132,7 +122,7 @@
                 android:textColor="@color/color_default"
                 android:textSize="34sp"
                 android:textStyle="bold"
-                tools:text="86.000đ" />
+                />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton

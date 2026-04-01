@@ -26,7 +26,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class DetailProductScreen extends AppCompatActivity {
 
-    private static final String STOCK_PREFIX = " · Tồn: ";
 
     private ProductDAO productDAO;
     private int productId = -1;
@@ -102,7 +101,7 @@ public class DetailProductScreen extends AppCompatActivity {
             spnUnit.setText(unit, false);
         }
         String date = intent.getStringExtra(ProductExtras.DATE);
-        if (date != null && edtDate != null) {
+        if (date != null) {
             edtDate.setText(date);
         }
         int status = intent.getIntExtra(ProductExtras.STATUS, 1);
@@ -141,7 +140,7 @@ public class DetailProductScreen extends AppCompatActivity {
             RadioButton sellingView
     ) {
         if (productId == -1 || productDAO == null) {
-            showToast("Không tìm thấy sản phẩm");
+            Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
             return;
         }
         String name = getTextValue(nameView);
@@ -151,14 +150,14 @@ public class DetailProductScreen extends AppCompatActivity {
         String unit = getTextValue(unitView);
         String date = getTextValue(dateView);
         if (name.isEmpty() || price.isEmpty() || stock.isEmpty() || category.isEmpty() || unit.isEmpty() || date.isEmpty()) {
-            showToast("Vui lòng điền đầy đủ thông tin sản phẩm");
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin sản phẩm", Toast.LENGTH_SHORT).show();
             return;
         }
         Product product = new Product();
         product.setId(productId);
         product.setName(name);
         product.setPriceLabel(price);
-        product.setStockLabel(STOCK_PREFIX + stock);
+        product.setStockLabel(" · Tồn: " + stock);
         product.setImage(currentImage != null ? currentImage : "");
         product.setCategory(category);
         product.setUnit(unit);
@@ -166,32 +165,32 @@ public class DetailProductScreen extends AppCompatActivity {
         product.setStatus(sellingView != null && sellingView.isChecked() ? 1 : 0);
         boolean updated = productDAO.updateProduct(product);
         if (updated) {
-            showToast("Cập nhật thành công");
+            Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            showToast("Cập nhật thất bại");
+            Toast.makeText(this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void handleDelete() {
         if (productId == -1 || productDAO == null) {
-            showToast("Không tìm thấy sản phẩm");
+            Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
             return;
         }
         Product product = new Product();
         product.setId(productId);
         if (productDAO.deleteProduct(product)) {
-            showToast("Đã xóa sản phẩm");
+            Toast.makeText(this, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            showToast("Xóa sản phẩm thất bại");
+            Toast.makeText(this, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
         }
     }
 
     private String stripStockLabel(String stockLabel) {
         if (stockLabel == null) return "";
-        if (stockLabel.startsWith(STOCK_PREFIX)) {
-            return stockLabel.substring(STOCK_PREFIX.length()).trim();
+        if (stockLabel.startsWith(" · Tồn: ")) {
+            return stockLabel.substring(" · Tồn: ".length()).trim();
         }
         return stockLabel;
     }
@@ -204,10 +203,6 @@ public class DetailProductScreen extends AppCompatActivity {
     private String getTextValue(AutoCompleteTextView editText) {
         if (editText == null || editText.getText() == null) return "";
         return editText.getText().toString().trim();
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -159,19 +159,16 @@ public class TopSellingProductsScreen extends AppCompatActivity {
                 continue;
             }
 
-            TopSellingProductItem item = map.get(productName);
-            if (item == null) {
-                item = new TopSellingProductItem(productName, detail.getImageRes(), 0, 0);
-                map.put(productName, item);
-            }
+            TopSellingProductItem item = map.computeIfAbsent(productName, n ->
+                    new TopSellingProductItem(n, detail.getImageRes(), 0, 0));
 
             item.setSoldQuantity(item.getSoldQuantity() + detail.getQuantity());
             item.setRevenue(item.getRevenue() + parseAmount(detail.getTotalPrice()));
         }
-
+        /// Chuyển map thành list để hiển thị
         List<TopSellingProductItem> list = new ArrayList<>(map.values());
 
-        /// Sắp xếp giảm dần theo số lượng bán, nếu bằng nhau thì doanh thu lớn hơn đứng trước.
+        /// Sắp xếp giảm dần theo số lượng bán, nếu bằng nhau thì doanh thu lớn hơn đứng trước
         list.sort((o1, o2) -> {
             if (o2.getSoldQuantity() != o1.getSoldQuantity()) {
                 return o2.getSoldQuantity() - o1.getSoldQuantity();
