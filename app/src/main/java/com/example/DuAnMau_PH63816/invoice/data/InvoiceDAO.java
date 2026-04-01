@@ -117,6 +117,9 @@ public class InvoiceDAO {
     }
 
     private void ensureSeedData() {
+        if (!getAllInvoices().isEmpty()) {
+            return;
+        }
         /// Mốc ngày demo nhanh cho màn thống kê:
         /// 24/01/2026: KH003 mua hàng
         /// 20/02/2026: KH001 mua hàng
@@ -138,62 +141,29 @@ public class InvoiceDAO {
         /// - 01/05/2026 -> 31/05/2026: nhiều khách mua nhất
         /// - 01/01/2026 -> 31/03/2026: dễ thấy dữ liệu theo quý
         /// - 28/05/2026 -> 31/05/2026: dễ demo top khách hàng cuối tháng
-        seedInvoiceIfMissing(new Invoice("HD-2026-001", "CHỜ THANH TOÁN", "KH001", "10/03/2026", "545.000k", "Tiền mặt", "Phúc"), getInvoice1Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-002", "ĐÃ THANH TOÁN", "KH002", "09/05/2026", "850.000k", "Chuyển khoản", "Linh"), getInvoice2Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-003", "ĐÃ HỦY", "KH003", "08/07/2026", "940.000k", "Tiền mặt", "Hà"), getInvoice3Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-004", "ĐÃ THANH TOÁN", "KH001", "12/03/2026", "420.000k", "Tiền mặt", "Phúc"), getInvoice4Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-005", "ĐÃ THANH TOÁN", "KH002", "14/05/2026", "675.000k", "Chuyển khoản", "Linh"), getInvoice5Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-006", "CHỜ THANH TOÁN", "KH003", "16/08/2026", "180.000k", "Tiền mặt", "Hà"), getInvoice6Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-007", "ĐÃ THANH TOÁN", "KH001", "20/02/2026", "1.250.000k", "Chuyển khoản", "Phúc"), getInvoice7Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-008", "ĐÃ THANH TOÁN", "KH002", "23/05/2026", "560.000k", "Tiền mặt", "Linh"), getInvoice8Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-009", "ĐÃ THANH TOÁN", "KH003", "24/01/2026", "935.000k", "Tiền mặt", "Hà"), getInvoice9Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-010", "ĐÃ THANH TOÁN", "KH001", "25/05/2026", "1.175.000k", "Chuyển khoản", "Phúc"), getInvoice10Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-011", "ĐÃ THANH TOÁN", "KH002", "26/04/2026", "1.190.000k", "Tiền mặt", "Linh"), getInvoice11Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-012", "ĐÃ THANH TOÁN", "KH003", "27/05/2026", "760.000k", "Chuyển khoản", "Hà"), getInvoice12Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-013", "ĐÃ THANH TOÁN", "KH001", "28/05/2026", "980.000k", "Tiền mặt", "Phúc"), getInvoice13Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-014", "ĐÃ THANH TOÁN", "KH002", "29/05/2026", "745.000k", "Chuyển khoản", "Linh"), getInvoice14Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-015", "ĐÃ THANH TOÁN", "KH003", "30/05/2026", "1.060.000k", "Tiền mặt", "Hà"), getInvoice15Details());
-        seedInvoiceIfMissing(new Invoice("HD-2026-016", "ĐÃ THANH TOÁN", "KH001", "31/05/2026", "635.000k", "Chuyển khoản", "Phúc"), getInvoice16Details());
+        insertSeedInvoice(new Invoice("HD-2026-001", "CHỜ THANH TOÁN", "KH001", "10/03/2026", "545.000k", "Tiền mặt", "Phúc"), getInvoice1Details());
+        insertSeedInvoice(new Invoice("HD-2026-002", "ĐÃ THANH TOÁN", "KH002", "09/05/2026", "850.000k", "Chuyển khoản", "Linh"), getInvoice2Details());
+        insertSeedInvoice(new Invoice("HD-2026-003", "ĐÃ HỦY", "KH003", "08/07/2026", "940.000k", "Tiền mặt", "Hà"), getInvoice3Details());
+        insertSeedInvoice(new Invoice("HD-2026-004", "ĐÃ THANH TOÁN", "KH001", "12/03/2026", "420.000k", "Tiền mặt", "Phúc"), getInvoice4Details());
+        insertSeedInvoice(new Invoice("HD-2026-005", "ĐÃ THANH TOÁN", "KH002", "14/05/2026", "675.000k", "Chuyển khoản", "Linh"), getInvoice5Details());
+        insertSeedInvoice(new Invoice("HD-2026-006", "CHỜ THANH TOÁN", "KH003", "16/08/2026", "180.000k", "Tiền mặt", "Hà"), getInvoice6Details());
+        insertSeedInvoice(new Invoice("HD-2026-007", "ĐÃ THANH TOÁN", "KH001", "20/02/2026", "1.250.000k", "Chuyển khoản", "Phúc"), getInvoice7Details());
+        insertSeedInvoice(new Invoice("HD-2026-008", "ĐÃ THANH TOÁN", "KH002", "23/05/2026", "560.000k", "Tiền mặt", "Linh"), getInvoice8Details());
+        insertSeedInvoice(new Invoice("HD-2026-009", "ĐÃ THANH TOÁN", "KH003", "24/01/2026", "935.000k", "Tiền mặt", "Hà"), getInvoice9Details());
+        insertSeedInvoice(new Invoice("HD-2026-010", "ĐÃ THANH TOÁN", "KH001", "25/05/2026", "1.175.000k", "Chuyển khoản", "Phúc"), getInvoice10Details());
+        insertSeedInvoice(new Invoice("HD-2026-011", "ĐÃ THANH TOÁN", "KH002", "26/04/2026", "1.190.000k", "Tiền mặt", "Linh"), getInvoice11Details());
+        insertSeedInvoice(new Invoice("HD-2026-012", "ĐÃ THANH TOÁN", "KH003", "27/05/2026", "760.000k", "Chuyển khoản", "Hà"), getInvoice12Details());
+        insertSeedInvoice(new Invoice("HD-2026-013", "ĐÃ THANH TOÁN", "KH001", "28/05/2026", "980.000k", "Tiền mặt", "Phúc"), getInvoice13Details());
+        insertSeedInvoice(new Invoice("HD-2026-014", "ĐÃ THANH TOÁN", "KH002", "29/05/2026", "745.000k", "Chuyển khoản", "Linh"), getInvoice14Details());
+        insertSeedInvoice(new Invoice("HD-2026-015", "ĐÃ THANH TOÁN", "KH003", "30/05/2026", "1.060.000k", "Tiền mặt", "Hà"), getInvoice15Details());
+        insertSeedInvoice(new Invoice("HD-2026-016", "ĐÃ THANH TOÁN", "KH001", "31/05/2026", "635.000k", "Chuyển khoản", "Phúc"), getInvoice16Details());
     }
 
-    private void seedInvoiceIfMissing(Invoice invoice, ArrayList<InvoiceDetail> details) {
-        Integer existingInvoiceId = getInvoiceIdByCode(invoice.getCode());
-        if (existingInvoiceId != null) {
-            updateInvoice(existingInvoiceId, invoice);
-            deleteDetailsByInvoiceId(existingInvoiceId);
-            insertSeedDetails(existingInvoiceId, details);
-            return;
-        }
+    private void insertSeedInvoice(Invoice invoice, ArrayList<InvoiceDetail> details) {
         long invoiceId = insertInvoiceAndGetId(invoice);
         if (invoiceId != -1) {
             insertSeedDetails((int) invoiceId, details);
         }
-    }
-
-    private Integer getInvoiceIdByCode(String code) {
-        Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT id FROM Invoice WHERE code = ? LIMIT 1",
-                new String[]{code}
-        );
-        Integer invoiceId = cursor.moveToFirst() ? cursor.getInt(0) : null;
-        cursor.close();
-        return invoiceId;
-    }
-
-    private void updateInvoice(int invoiceId, Invoice invoice) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("code", invoice.getCode());
-        contentValues.put("status", invoice.getStatus());
-        contentValues.put("customerId", invoice.getCustomerId());
-        contentValues.put("date", invoice.getDate());
-        contentValues.put("total", invoice.getTotal());
-        contentValues.put("paymentMethod", invoice.getPaymentMethod());
-        contentValues.put("staffName", invoice.getStaffName());
-        sqLiteDatabase.update("Invoice", contentValues, "id = ?", new String[]{String.valueOf(invoiceId)});
-    }
-
-    private void deleteDetailsByInvoiceId(int invoiceId) {
-        sqLiteDatabase.delete("InvoiceDetail", "invoiceId = ?", new String[]{String.valueOf(invoiceId)});
     }
 
     private void insertSeedDetails(int invoiceId, ArrayList<InvoiceDetail> details) {

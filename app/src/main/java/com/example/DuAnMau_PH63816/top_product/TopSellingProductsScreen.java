@@ -118,13 +118,13 @@ public class TopSellingProductsScreen extends AppCompatActivity {
             return;
         }
 
-        int limit;
-        try {
-            limit = Integer.parseInt(itemCountText);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        int limit = Integer.parseInt(itemCountText);
+//        try {
+//            limit = Integer.parseInt(itemCountText);
+//        } catch (NumberFormatException e) {
+//            Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         if (limit <= 0) {
             Toast.makeText(this, "Số lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();

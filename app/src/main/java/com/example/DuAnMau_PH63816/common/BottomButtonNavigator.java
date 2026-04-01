@@ -12,6 +12,8 @@ import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
 
 public final class BottomButtonNavigator {
 
+    public static final String EXTRA_INITIAL_TAB = "extra_initial_tab";
+
     public static final int TAB_HOME = 0;
     public static final int TAB_PRODUCT = 1;
     public static final int TAB_NOTIFICATION = 2;
@@ -46,7 +48,7 @@ public final class BottomButtonNavigator {
 
     public static void openTab(AppCompatActivity activity, int tabIndex) {
         Intent intent = new Intent(activity, HomePageScreen.class);
-        intent.putExtra("extra_initial_tab", tabIndex);
+        intent.putExtra(EXTRA_INITIAL_TAB, tabIndex);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivity(intent);
         activity.finish();
@@ -54,8 +56,7 @@ public final class BottomButtonNavigator {
 
     private static void configure(AppCompatActivity activity, @IdRes int viewId, CharSequence label, boolean selected) {
         View view = activity.findViewById(viewId);
-        if (view instanceof CustomBottomButton) {
-            CustomBottomButton button = (CustomBottomButton) view;
+        if (view instanceof CustomBottomButton button) {
             button.setLabel(label);
             button.setSelectedState(selected);
         }

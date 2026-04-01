@@ -96,8 +96,8 @@ public class ChagePassWordScreen extends AppCompatActivity {
             Toast.makeText(this, "Không xác định được tài khoản hiện tại", Toast.LENGTH_LONG).show();
             return false;
         }
-        if (newPassword.length() < 8) {
-            Toast.makeText(this, "Mật khẩu mới phải có ít nhất 8 ký tự", Toast.LENGTH_LONG).show();
+        if (newPassword.length() < 6) {
+            Toast.makeText(this, "Mật khẩu mới phải có ít nhất 6 ký tự", Toast.LENGTH_LONG).show();
             return false;
         }
         if (!newPassword.equals(confirmNewPassword)) {

@@ -1,17 +1,11 @@
 package com.example.DuAnMau_PH63816.homepage;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,31 +20,27 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.common.BottomTabHost;
 import com.example.DuAnMau_PH63816.common.BottomTabPagerAdapter;
-import com.example.DuAnMau_PH63816.product.CartAnimationHost;
 import com.example.DuAnMau_PH63816.product.CartActivity;
 import com.example.DuAnMau_PH63816.product.data.CartManager;
+import com.example.DuAnMau_PH63816.login.LoginScreen;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class HomePageScreen extends AppCompatActivity implements BottomTabHost, CartAnimationHost {
-
-
+public class HomePageScreen extends AppCompatActivity implements BottomTabHost {
     private ViewPager2 viewPagerHome;
     private int currentTabPosition = 0;
     private Toolbar toolbarHomePageScreen;
-    private MenuItem cartMenuItem;
-    private View cartActionView;
     private TextView txtCartBadgeMenu;
-    private final CartManager.OnCartChangedListener cartChangedListener = this::updateCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page_screen);
+        CartManager.initialize(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -59,24 +49,45 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
         initUi();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
+    }
+
     private void initUi() {
         DrawerLayout drawerLayout = findViewById(R.id.main);
         NavigationView navigationView = findViewById(R.id.navigationView);
         toolbarHomePageScreen = findViewById(R.id.toolbarHomePageScreen);
         TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
         viewPagerHome = findViewById(R.id.viewPagerHome);
-        /// toolbar
+
+        setupToolbar(drawerLayout);
+        applyRoleUi(navigationView);
+        setupBottomTabs(tabLayout);
+
+        if (navigationView != null) {
+            navigationView.setNavigationItemSelectedListener(item -> {
+                handleDrawerItem(item);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            });
+        }
+    }
+
+    private void setupToolbar(DrawerLayout drawerLayout) {
         setSupportActionBar(toolbarHomePageScreen);
         toolbarHomePageScreen.setNavigationIcon(R.drawable.btn_menu);
-        toolbarHomePageScreen.setNavigationOnClickListener(v ->
-                drawerLayout.openDrawer(GravityCompat.START));
-        applyRoleUi(navigationView);
+        toolbarHomePageScreen.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+    }
 
-        int initialTab = getIntent().getIntExtra("extra_initial_tab", 0);
+    private void setupBottomTabs(TabLayout tabLayout) {
+        int initialTab = getIntent().getIntExtra(BottomButtonNavigator.EXTRA_INITIAL_TAB, 0);
         viewPagerHome.setAdapter(new BottomTabPagerAdapter(this));
         viewPagerHome.setCurrentItem(initialTab, false);
         currentTabPosition = initialTab;
         toolbarHomePageScreen.setTitle(getToolbarTitleRes(initialTab));
+
         new TabLayoutMediator(tabLayout, viewPagerHome, (tab, position) -> {
             if (position == 0) {
                 tab.setText(R.string.tab_home);
@@ -92,6 +103,7 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
                 tab.setIcon(R.drawable.ic_setting);
             }
         }).attach();
+
         viewPagerHome.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -100,16 +112,6 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
                 invalidateOptionsMenu();
             }
         });
-
-        if (navigationView != null) {
-            navigationView.setNavigationItemSelectedListener(item -> {
-                if (item.getItemId() == R.id.nav_log_out) {
-                    viewPagerHome.setCurrentItem(3, true);
-                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            });
-        }
     }
 
     private void applyRoleUi(NavigationView navigationView) {
@@ -136,6 +138,25 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
         }
     }
 
+    private void handleDrawerItem(MenuItem item) {
+        if (item.getItemId() == R.id.nav_log_out) {
+            logout();
+        }
+    }
+
+    private void logout() {
+        getSharedPreferences("StaffData", MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply();
+        CartManager.clear();
+
+        Intent intent = new Intent(this, LoginScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private int getToolbarTitleRes(int position) {
         if (position == 0) {
             return R.string.home_toolbar_title;
@@ -160,15 +181,14 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        cartMenuItem = menu.findItem(R.id.notification);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem actionItem = menu.findItem(R.id.notification);
-        cartMenuItem = actionItem;
         if (actionItem != null) {
+            View cartActionView;
             if (currentTabPosition == 1) {
                 if (actionItem.getActionView() == null) {
                     actionItem.setActionView(R.layout.view_toolbar_cart_action);
@@ -181,7 +201,7 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
                     cartActionView.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
                 }
                 actionItem.setTitle(R.string.title_cart);
-                updateCartBadge(CartManager.getTotalQuantity());
+                updateCartBadge();
             } else {
                 actionItem.setActionView(null);
                 cartActionView = null;
@@ -212,7 +232,7 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
     protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        int initialTab = intent.getIntExtra("extra_initial_tab", currentTabPosition);
+        int initialTab = intent.getIntExtra(BottomButtonNavigator.EXTRA_INITIAL_TAB, currentTabPosition);
         if (viewPagerHome != null) {
             viewPagerHome.setCurrentItem(initialTab, false);
         }
@@ -223,84 +243,11 @@ public class HomePageScreen extends AppCompatActivity implements BottomTabHost, 
         invalidateOptionsMenu();
     }
 
-    @Override
-    public void animateAddToCart(View startView) {
-        if (!(startView instanceof android.widget.ImageView) || toolbarHomePageScreen == null || currentTabPosition != 1) {
-            return;
-        }
-
-        int[] startLocation = new int[2];
-        int[] endLocation = new int[2];
-        startView.getLocationOnScreen(startLocation);
-        View targetView = cartActionView != null ? cartActionView : toolbarHomePageScreen;
-        targetView.getLocationOnScreen(endLocation);
-
-        int targetX = endLocation[0] + (targetView.getWidth() / 2);
-        int targetY = endLocation[1] + (targetView.getHeight() / 2);
-
-        android.widget.ImageView animationView = new android.widget.ImageView(this);
-        animationView.setImageDrawable(((android.widget.ImageView) startView).getDrawable());
-
-        ViewGroup rootLayout = (ViewGroup) getWindow().getDecorView();
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                startView.getWidth(),
-                startView.getHeight()
-        );
-        params.leftMargin = startLocation[0];
-        params.topMargin = startLocation[1];
-        rootLayout.addView(animationView, params);
-
-        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(animationView, View.SCALE_X, 1f, 4f);
-        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(animationView, View.SCALE_Y, 1f, 4f);
-        AnimatorSet scaleUpSet = new AnimatorSet();
-        scaleUpSet.playTogether(scaleUpX, scaleUpY);
-        scaleUpSet.setDuration(220);
-
-        ObjectAnimator translateX = ObjectAnimator.ofFloat(
-                animationView,
-                View.TRANSLATION_X,
-                targetX - startLocation[0]
-        );
-        ObjectAnimator translateY = ObjectAnimator.ofFloat(
-                animationView,
-                View.TRANSLATION_Y,
-                targetY - startLocation[1]
-        );
-        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(animationView, View.SCALE_X, 4f, 0.3f);
-        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(animationView, View.SCALE_Y, 4f, 0.3f);
-        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(animationView, View.ALPHA, 1f, 0f);
-
-        AnimatorSet moveToCartSet = new AnimatorSet();
-        moveToCartSet.playTogether(translateX, translateY, scaleDownX, scaleDownY, fadeOut);
-        moveToCartSet.setDuration(420);
-
-        AnimatorSet finalSet = new AnimatorSet();
-        finalSet.playSequentially(scaleUpSet, moveToCartSet);
-        finalSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                rootLayout.removeView(animationView);
-            }
-        });
-        finalSet.start();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        CartManager.addOnCartChangedListener(cartChangedListener);
-    }
-
-    @Override
-    protected void onStop() {
-        CartManager.removeOnCartChangedListener(cartChangedListener);
-        super.onStop();
-    }
-
-    private void updateCartBadge(int totalQuantity) {
+    private void updateCartBadge() {
         if (txtCartBadgeMenu == null) {
             return;
         }
+        int totalQuantity = CartManager.getTotalQuantity();
         if (totalQuantity <= 0) {
             txtCartBadgeMenu.setVisibility(View.GONE);
             return;

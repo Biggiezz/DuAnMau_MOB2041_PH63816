@@ -60,6 +60,10 @@ public class LoginScreen extends AppCompatActivity {
                 edtPassword.setError("Vui lòng nhập mật khẩu");
                 hasError = true;
             }
+            if (userName.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Vui lòng không bỏ trống tên đăng nhâp và mật khẩu", Toast.LENGTH_LONG).show();
+                return;
+            }
             if (hasError) {
                 return;
             }

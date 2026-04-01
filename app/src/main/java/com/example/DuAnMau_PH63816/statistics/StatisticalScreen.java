@@ -70,7 +70,7 @@ public class StatisticalScreen extends AppCompatActivity {
         String endDateText = tvEndDate.getText().toString().trim();
 
         if (startDateText.isEmpty() || endDateText.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn đầy đủ từ ngày và đến ngày", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Vui lòng chọn đầy đủ từ ngày hoặc đến ngày", Toast.LENGTH_LONG).show();
             return;
         }
         Date startDate = parseDate(startDateText);

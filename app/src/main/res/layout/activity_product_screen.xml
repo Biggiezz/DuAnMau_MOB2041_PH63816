@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".product.ProductScreen">
 
@@ -58,13 +59,6 @@
                     tools:visibility="visible" />
             </FrameLayout>
 
-            <ImageView
-                android:id="@+id/imgAddProduct"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="16dp"
-                android:contentDescription="@string/save"
-                android:src="@drawable/ic_add" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -73,11 +67,23 @@
         android:layout_height="1dp"
         android:background="#1A000000" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerProduct"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="#FAFAFA">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerProduct"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutBottom"

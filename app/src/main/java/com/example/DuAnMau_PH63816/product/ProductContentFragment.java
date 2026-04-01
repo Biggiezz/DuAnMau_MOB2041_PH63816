@@ -37,10 +37,16 @@ public class ProductContentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        CartManager.initialize(requireContext());
         productDAO = new ProductDAO(requireContext());
 
         RecyclerView rvProducts = view.findViewById(R.id.rvProducts);
+        View fabAddProduct = view.findViewById(R.id.fabAddProduct);
+        if (fabAddProduct != null) {
+            fabAddProduct.setOnClickListener(v -> startActivity(new Intent(requireContext(), AddProductScreen.class)));
+        }
         adapter = new ProductAdapter(
+
                 requireContext(),
                 products,
                 product -> {
@@ -58,9 +64,7 @@ public class ProductContentFragment extends Fragment {
                 },
                 (product, addIconView) -> {
                     CartManager.addProduct(product);
-                    if (requireActivity() instanceof CartAnimationHost) {
-                        ((CartAnimationHost) requireActivity()).animateAddToCart(addIconView);
-                    }
+                    animateAddButton(addIconView);
                     Toast.makeText(
                             requireContext(),
                             getString(R.string.toast_added_to_cart, product.getName()),
@@ -103,5 +107,23 @@ public class ProductContentFragment extends Fragment {
         products.clear();
         products.addAll(productDAO.getAllProducts());
         adapter.notifyDataSetChanged();
+    }
+
+    private void animateAddButton(View view) {
+        if (view == null) {
+            return;
+        }
+        view.animate()
+                .scaleX(1.12f)
+                .scaleY(1.12f)
+                .alpha(0.7f)
+                .setDuration(120)
+                .withEndAction(() -> view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .alpha(1f)
+                        .setDuration(120)
+                        .start())
+                .start();
     }
 }

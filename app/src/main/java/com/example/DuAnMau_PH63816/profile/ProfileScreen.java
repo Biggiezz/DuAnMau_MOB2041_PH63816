@@ -25,19 +25,25 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
 
     private ViewPager2 viewPagerProfile;
     private TextView txtCartBadgeProfile;
-    private final CartManager.OnCartChangedListener cartChangedListener = this::updateCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile_screen);
+        CartManager.initialize(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootProfile), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         initUi();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCartBadge();
     }
 
     private void initUi() {
@@ -53,7 +59,9 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
         layoutCartActionProfile.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
         viewPagerProfile.setAdapter(new BottomTabPagerAdapter(this));
         viewPagerProfile.setCurrentItem(3, false);
-        toolbarProfileScreen.setTitle(getToolbarTitleRes(3));
+        if (toolbarProfileScreen != null) {
+            toolbarProfileScreen.setTitle(getToolbarTitleRes(3));
+        }
         new TabLayoutMediator(tabLayout, viewPagerProfile, (tab, position) -> {
             if (position == 0) {
                 tab.setText(R.string.tab_home);
@@ -75,7 +83,7 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
                 toolbarProfileScreen.setTitle(getToolbarTitleRes(position));
             }
         });
-        updateCartBadge(CartManager.getTotalQuantity());
+        updateCartBadge();
     }
 
     private int getToolbarTitleRes(int position) {
@@ -98,22 +106,11 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        CartManager.addOnCartChangedListener(cartChangedListener);
-    }
-
-    @Override
-    protected void onStop() {
-        CartManager.removeOnCartChangedListener(cartChangedListener);
-        super.onStop();
-    }
-
-    private void updateCartBadge(int totalQuantity) {
+    private void updateCartBadge() {
         if (txtCartBadgeProfile == null) {
             return;
         }
+        int totalQuantity = CartManager.getTotalQuantity();
         if (totalQuantity > 0) {
             txtCartBadgeProfile.setVisibility(View.VISIBLE);
             txtCartBadgeProfile.setText(String.valueOf(totalQuantity));

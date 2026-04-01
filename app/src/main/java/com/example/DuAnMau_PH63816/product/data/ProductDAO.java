@@ -77,46 +77,23 @@ public class ProductDAO {
         contentValues.put("date", product.getDate());
         contentValues.put("status", product.getStatus());
 
-        long kq = sqLiteDatabase.update("Product", contentValues, "id=?", new String[]{String.valueOf(product.getId())});
-        return kq != -1;
+        int kq = sqLiteDatabase.update("Product", contentValues, "id=?", new String[]{String.valueOf(product.getId())});
+        return kq > 0;
     }
 
     /// delete
     public boolean deleteProduct(Product product) {
-        long kq = sqLiteDatabase.delete("Product", "id = ?", new String[]{String.valueOf(product.getId())});
-        return kq != -1;
+        int kq = sqLiteDatabase.delete("Product", "id = ?", new String[]{String.valueOf(product.getId())});
+        return kq > 0;
     }
 
     private void ensureSeedData() {
+        if (!getAllProducts().isEmpty()) {
+            return;
+        }
         for (Product seed : getSeedProducts()) {
-            Product existingProduct = getProductByName(seed.getName());
-            if (existingProduct == null) {
-                insertProduct(seed);
-                continue;
-            }
-
-            seed.setId(existingProduct.getId());
-            updateProduct(seed);
+            insertProduct(seed);
         }
-    }
-
-    private Product getProductByName(String productName) {
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Product WHERE name = ? LIMIT 1", new String[]{productName});
-        Product product = null;
-        if (cursor.moveToFirst()) {
-            product = new Product();
-            product.setId(cursor.getInt(0));
-            product.setName(cursor.getString(1));
-            product.setPriceLabel(cursor.getString(2));
-            product.setStockLabel(cursor.getString(3));
-            product.setImage(cursor.getString(4));
-            product.setCategory(cursor.getString(5));
-            product.setUnit(cursor.getString(6));
-            product.setDate(cursor.getString(7));
-            product.setStatus(cursor.getInt(8));
-        }
-        cursor.close();
-        return product;
     }
 
     private ArrayList<Product> getSeedProducts() {
