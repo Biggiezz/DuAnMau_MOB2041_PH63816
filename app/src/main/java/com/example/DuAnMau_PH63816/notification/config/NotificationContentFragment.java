@@ -44,15 +44,19 @@ public class NotificationContentFragment extends Fragment {
         txtNotificationMessage = view.findViewById(R.id.txtNotificationMessage);
 
         showDefaultState();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         boolean fromCheckout = requireActivity()
                 .getIntent()
                 .getBooleanExtra("from_checkout", false);
-
         if (!fromCheckout) {
+            showDefaultState();
             return;
         }
-
         showCheckoutState();
         maybeShowCheckoutNotification();
     }
