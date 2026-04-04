@@ -51,7 +51,7 @@
     <string name="sercurity" translatable="false">Bảo mật</string>
     <string name="option" translatable="false">Tùy chọn</string>
     <string name="laguage" translatable="false">Ngôn ngữ</string>
-    <string name="notification" translatable="false">Thông báo</string>
+    <string name="notification" translatable="false">Thông báo JPMart</string>
     <string name="help" translatable="false">Hỗ trợ</string>
     <string name="policy_terms" translatable="false"><![CDATA[Điều khoản & Chính sách]]></string>
     <string name="log_out" translatable="false">Đăng xuất</string>
@@ -83,4 +83,8 @@
     <string name="customer_email" translatable="false">Email</string>
     <string name="cancel" translatable="false">Hủy</string>
     <string name="save" translatable="false">Lưu</string>
+    <string name="channel_name">JP Mart</string>
+    <string name="channel_description">Thông báo của JP Mart</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.DuAnMau_PH63816.homepage.HomeContentFragment;
+import com.example.DuAnMau_PH63816.notification.config.NotificationContentFragment;
 import com.example.DuAnMau_PH63816.profile.ProfileContentFragment;
 import com.example.DuAnMau_PH63816.product.ProductContentFragment;
 
@@ -24,7 +25,7 @@ public class BottomTabPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new ProductContentFragment();
             case 2:
-                return SimpleMessageFragment.newInstance("Thông báo");
+                return new NotificationContentFragment();
             case 3:
             default:
                 return new ProfileContentFragment();
