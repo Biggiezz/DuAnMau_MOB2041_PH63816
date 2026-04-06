@@ -1,10 +1,11 @@
-package com.example.DuAnMau_PH63816.notification.config;
+package com.example.DuAnMau_PH63816.notification.fragment;
 
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.notification.config.ConfigNotification;
+import com.google.android.material.button.MaterialButton;
 
 
 public class NotificationContentFragment extends Fragment {
@@ -28,6 +31,8 @@ public class NotificationContentFragment extends Fragment {
 
     private TextView txtNotificationTitle;
     private TextView txtNotificationMessage;
+    private MaterialButton btnShopping;
+    private ImageView imgSuccess;
 
 
     @Override
@@ -42,7 +47,8 @@ public class NotificationContentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         txtNotificationTitle = view.findViewById(R.id.txtNotificationTitle);
         txtNotificationMessage = view.findViewById(R.id.txtNotificationMessage);
-
+        btnShopping = view.findViewById(R.id.btnShopping);
+        imgSuccess = view.findViewById(R.id.imgSuccess);
         showDefaultState();
     }
 
@@ -95,20 +101,32 @@ public class NotificationContentFragment extends Fragment {
         if (txtNotificationMessage != null) {
             txtNotificationMessage.setText(R.string.placeholder_coming_soon);
         }
+        if (btnShopping != null) {
+            btnShopping.setVisibility(View.GONE);
+        }
+        if (imgSuccess != null) {
+            imgSuccess.setVisibility(View.GONE);
+        }
     }
 
     private void showCheckoutState() {
         if (txtNotificationTitle != null) {
-            txtNotificationTitle.setText("Thanh toán thành công");
+            txtNotificationTitle.setText(R.string.payment_successful);
         }
         if (txtNotificationMessage != null) {
-            txtNotificationMessage.setText("Đơn hàng của bạn đã được ghi nhận.");
+            txtNotificationMessage.setText(R.string.your_order_has_been_confirmed);
+        }
+        if (btnShopping != null) {
+            btnShopping.setVisibility(View.VISIBLE);
+        }
+        if (imgSuccess != null) {
+            imgSuccess.setVisibility(View.VISIBLE);
         }
     }
 
     private void showPermissionState() {
         if (txtNotificationMessage != null) {
-            txtNotificationMessage.setText("Hãy cấp quyền thông báo để hệ thống gửi xác nhận thanh toán.");
+            txtNotificationMessage.setText(R.string.grant_notification_permission);
         }
     }
 

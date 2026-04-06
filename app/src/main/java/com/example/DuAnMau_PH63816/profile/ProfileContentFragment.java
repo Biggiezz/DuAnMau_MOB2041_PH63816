@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.DuAnMau_PH63816.R;
@@ -29,7 +31,19 @@ public class ProfileContentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         bindCurrentUser(view);
         LinearLayout linearChagePass = view.findViewById(R.id.linearChagePass);
+        Button btnLogOut = view.findViewById(R.id.btnLogOut);
         linearChagePass.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChagePassWordScreen.class)));
+        btnLogOut.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setCancelable(false);
+            builder.setTitle("Đăng xuất");
+            builder.setMessage("Bạn có chắc muốn đăng xuất không?");
+
+            builder.setPositiveButton("Đồng ý", (dialog, which) -> System.exit(0));
+
+            builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        });
     }
 
     private void bindCurrentUser(View view) {

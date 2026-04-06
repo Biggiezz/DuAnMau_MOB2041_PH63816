@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.DuAnMau_PH63816.product.ProductContentFragment;
-import com.example.DuAnMau_PH63816.notification.config.NotificationContentFragment;
+import com.example.DuAnMau_PH63816.notification.fragment.NotificationContentFragment;
 import com.example.DuAnMau_PH63816.profile.ProfileContentFragment;
 
 public class CategoryBottomPagerAdapter extends FragmentStateAdapter {

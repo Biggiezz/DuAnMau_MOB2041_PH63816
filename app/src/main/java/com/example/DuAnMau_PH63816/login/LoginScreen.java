@@ -17,13 +17,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.common.Common;
 import com.example.DuAnMau_PH63816.create_account.CreateAccountActivity;
-import com.example.DuAnMau_PH63816.forgot.ForgotPasswordScreen;
 import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
 import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 
 public class LoginScreen extends AppCompatActivity {
     private EditText edtEmail, edtPassword;
-    private TextView tvForgotPassword, tvSignUp;
+    private TextView tvSignUp;
     private Button btnLogin;
     private StaffDAO staffDAO;
 
@@ -79,11 +78,13 @@ public class LoginScreen extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-        tvForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginScreen.this, ForgotPasswordScreen.class);
-            startActivity(intent);
-            finish();
-        });
+
+//        tvForgotPassword.setOnClickListener(v -> {
+//            Intent intent = new Intent(LoginScreen.this, ForgotPasswordScreen.class);
+//            startActivity(intent);
+//            finish();
+//        });
+
         tvSignUp.setOnClickListener(v -> {
             Intent intent = new Intent(LoginScreen.this, CreateAccountActivity.class);
             startActivity(intent);
@@ -93,7 +94,7 @@ public class LoginScreen extends AppCompatActivity {
 
     private void initUi() {
         edtEmail = findViewById(R.id.edtEmail);
-        tvForgotPassword = findViewById(R.id.tvForgotPassword);
+//        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvSignUp = findViewById(R.id.tvSignUp);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);

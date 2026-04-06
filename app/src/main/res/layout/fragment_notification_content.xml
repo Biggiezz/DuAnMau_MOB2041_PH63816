@@ -1,32 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp"
-    tools:context=".notification.config.NotificationContentFragment">
+    android:padding="16dp"
+    tools:context=".notification.fragment.NotificationContentFragment">
 
-    <TextView
-        android:id="@+id/txtNotificationTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/notification"
-        android:textColor="@color/color_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        tools:text="Thanh toán thành công" />
-
-    <TextView
-        android:id="@+id/txtNotificationMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/placeholder_coming_soon"
-        android:textColor="@color/color_subtitle"
-        android:textSize="16sp"
-        tools:text="Đơn hàng của bạn đã được ghi nhận." />
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgSuccess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:src="@drawable/ic_success" />
+
+        <TextView
+            android:id="@+id/txtNotificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification"
+            android:textColor="@color/color_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="Thanh toán thành công" />
+
+        <TextView
+            android:id="@+id/txtNotificationMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/placeholder_coming_soon"
+            android:textColor="@color/color_pay_success"
+            android:textSize="16sp"
+            tools:text="Cảm ơn bạn đã mua sắm tại JP Mart. Đơn hàng của bạn đang được xử lý." />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShopping"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/color_default"
+            android:padding="12dp"
+            android:text="Tiếp tục mua sắm"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_logo_payment" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:letterSpacing="0.15"
+        android:text="Tokyo Style • Vietnam Heart"
+        android:textColor="@color/color_pay_success" />
 
 </LinearLayout>
