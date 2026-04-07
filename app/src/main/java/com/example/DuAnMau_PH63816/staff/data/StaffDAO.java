@@ -87,11 +87,11 @@ public class StaffDAO {
         SQLiteDatabase sqLiteDatabase = staffDbHelper.getReadableDatabase();
 
         try (Cursor sql = sqLiteDatabase.rawQuery(
-                "SELECT staffCode, nameLogin, role FROM Staff WHERE nameLogin = ? AND password = ? LIMIT 1",
+                "SELECT staffCode, nameStaff, nameLogin, role FROM Staff WHERE nameLogin = ? AND password = ? LIMIT 1",
                 new String[]{userName, passWord}
         )) {
             if (sql.moveToFirst()) {
-                saveCurrentUserSession(sql.getInt(0), sql.getString(1), sql.getInt(2));
+                saveCurrentUserSession(sql.getInt(0), sql.getString(1), sql.getString(2), sql.getInt(3));
                 return true;
             }
             clearCurrentUserSession();
@@ -150,6 +150,64 @@ public class StaffDAO {
         return String.valueOf(staffCode);
     }
 
+    public String getCurrentStaffName() {
+        String staffName = sharedPreferences.getString("nameStaff", null);
+        if (staffName != null && !staffName.trim().isEmpty()) {
+            return staffName;
+        }
+
+        int staffCode = sharedPreferences.getInt("staffCode", -1);
+        if (staffCode <= 0) {
+            return null;
+        }
+
+        try (Cursor cursor = sqLiteDatabase.rawQuery(
+                "SELECT nameStaff FROM Staff WHERE staffCode = ? LIMIT 1",
+                new String[]{String.valueOf(staffCode)}
+        )) {
+            if (!cursor.moveToFirst()) {
+                return null;
+            }
+
+            String fallbackName = cursor.getString(0);
+            if (fallbackName == null || fallbackName.trim().isEmpty()) {
+                return null;
+            }
+
+            sharedPreferences.edit().putString("nameStaff", fallbackName).apply();
+            return fallbackName;
+        }
+    }
+
+    public Staff getCurrentStaff() {
+        return getStaffByCode(getCurrentStaffCode());
+    }
+
+    public Staff getStaffByCode(String staffCode) {
+        if (staffCode == null || staffCode.trim().isEmpty()) {
+            return null;
+        }
+
+        try (Cursor cursor = sqLiteDatabase.rawQuery(
+                "SELECT staffCode, nameStaff, nameLogin, password, phone, address, role FROM Staff WHERE staffCode = ? LIMIT 1",
+                new String[]{staffCode}
+        )) {
+            if (!cursor.moveToFirst()) {
+                return null;
+            }
+
+            Staff staff = new Staff();
+            staff.setStaffCode(cursor.getInt(0));
+            staff.setNameStaff(cursor.getString(1));
+            staff.setNameLogin(cursor.getString(2));
+            staff.setPassword(cursor.getString(3));
+            staff.setPhone(cursor.getString(4));
+            staff.setAddress(cursor.getString(5));
+            staff.setRole(cursor.getInt(6));
+            return staff;
+        }
+    }
+
     public boolean isUsernameExists(String userName) {
         SQLiteDatabase sqLiteDatabase = staffDbHelper.getReadableDatabase();
 
@@ -161,9 +219,10 @@ public class StaffDAO {
         }
     }
 
-    private void saveCurrentUserSession(int staffCode, String nameLogin, int role) {
+    private void saveCurrentUserSession(int staffCode, String nameStaff, String nameLogin, int role) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("staffCode", staffCode);
+        editor.putString("nameStaff", nameStaff);
         editor.putString("nameLogin", nameLogin);
         editor.putInt("role", role);
         editor.apply();
@@ -172,6 +231,7 @@ public class StaffDAO {
     private void clearCurrentUserSession() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("staffCode");
+        editor.remove("nameStaff");
         editor.remove("nameLogin");
         editor.remove("role");
         editor.apply();

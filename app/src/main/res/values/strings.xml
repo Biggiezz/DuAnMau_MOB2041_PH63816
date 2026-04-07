@@ -83,8 +83,11 @@
     <string name="customer_email" translatable="false">Email</string>
     <string name="cancel" translatable="false">Hủy</string>
     <string name="save" translatable="false">Lưu</string>
-    <string name="channel_name">JP Mart</string>
-    <string name="channel_description">Thông báo của JP Mart</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="channel_name" translatable="false">JP Mart</string>
+    <string name="channel_description" translatable="false">Thông báo của JP Mart</string>
+    <string name="dont_have_any_products" translatable="false">Bạn chưa có sản phẩm nào để thanh toán.</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="payment_successful" translatable="false">Thanh toán thành công</string>
+    <string name="your_order_has_been_confirmed" translatable="false">Đơn hàng của bạn đã được ghi nhận.</string>
+    <string name="grant_notification_permission" translatable="false">Hãy cấp quyền thông báo để hệ thống gửi xác nhận thanh toán.</string>
 </resources>

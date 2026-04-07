@@ -50,6 +50,8 @@
     <string name="action_log_in">Log In</string>
     <string name="jpmart">JPMart</string>
     <string name="create_account_subtitle">Join JP Mart to discover authentic Japanese goods.</string>
+    <string name="toast_added_to_cart">Đã thêm %1$s vào giỏ hàng</string>
+    <string name="toast_removed_from_cart">Đã giảm %1$s khỏi giỏ hàng</string>
     <string name="customer_info_format">ID: %1$s • %2$s</string>
     <string name="https_jpmart_vn">https://jpmart.vn</string>
     <string name="label_full_name">Full name</string>
@@ -74,4 +76,18 @@
     <string name="customer_email">Email</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="title_cart">Shopping cart</string>
+    <string name="cart_item_count_format">Bạn đang có %1$d sản phẩm</string>
+    <string name="cart_subtotal_label">Temporarily calculated</string>
+    <string name="cart_total_label">Total payment</string>
+    <string name="cart_checkout">Thanh toán</string>
+    <string name="cart_empty">There are no products in the shopping cart.</string>
+    <string name="cart_checkout_pending">The payment feature is currently being updated.</string>
+    <string name="channel_name">JP Mart</string>
+    <string name="dont_have_any_products" translatable="false">You don\'t have any products to pay for yet..</string>
+    <string name="channel_description">Announcement from JP Mart</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="payment_successful">Successful payment</string>
+    <string name="your_order_has_been_confirmed">Your order has been confirmed.</string>
+    <string name="grant_notification_permission">Please grant notification permission so the system can send payment confirmations.</string>
 </resources>

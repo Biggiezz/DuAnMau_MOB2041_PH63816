@@ -34,7 +34,7 @@
 
                 <ImageView
                     android:id="@+id/imgCartProduct"
-                    android:layout_width="24dp"
+                    android:layout_width="36dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/title_cart"

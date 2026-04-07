@@ -111,7 +111,7 @@ public class DetailProductScreen extends AppCompatActivity {
             rbOutOfStock.setChecked(true);
         }
 
-        currentImage = intent.getStringExtra(ProductExtras.IMAGE);
+        currentImage = ProductImageResolver.normalizeForStorage(this, name, intent.getStringExtra(ProductExtras.IMAGE));
         ProductAdapter.bindProductImage(imgProductCover, currentImage);
 
         if (btnUpdateProduct != null) {

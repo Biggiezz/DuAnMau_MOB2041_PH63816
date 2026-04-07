@@ -8,6 +8,7 @@ public class InvoiceDetail {
     private int quantity;
     private String totalPrice;
     private int imageRes;
+    private String image;
 
     public InvoiceDetail() {
     }
@@ -18,6 +19,15 @@ public class InvoiceDetail {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.imageRes = imageRes;
+    }
+
+    public InvoiceDetail(int invoiceId, String productName, int quantity, String totalPrice, String image) {
+        this.invoiceId = invoiceId;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.image = image;
+        this.imageRes = 0;
     }
 
     public int getId() {
@@ -66,5 +76,13 @@ public class InvoiceDetail {
 
     public void setImageRes(int imageRes) {
         this.imageRes = imageRes;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

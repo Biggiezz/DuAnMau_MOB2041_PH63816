@@ -2,6 +2,7 @@ package com.example.DuAnMau_PH63816.notification.fragment;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.notification.config.ConfigNotification;
+import com.example.DuAnMau_PH63816.product.ProductScreen;
 import com.google.android.material.button.MaterialButton;
 
 
@@ -50,6 +52,10 @@ public class NotificationContentFragment extends Fragment {
         btnShopping = view.findViewById(R.id.btnShopping);
         imgSuccess = view.findViewById(R.id.imgSuccess);
         showDefaultState();
+        btnShopping.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ProductScreen.class);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -81,11 +87,26 @@ public class NotificationContentFragment extends Fragment {
             return;
         }
 
+//        Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification);
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(requireContext(), ConfigNotification.CHANNEL_ID)
+
+                        /// icon hiển thị trên status bar
                         .setSmallIcon(R.drawable.ic_notification)
+
+                        /// tiêu đề của notification
                         .setContentTitle("JP Mart")
+
+                        /// nội dung cả notification
                         .setContentText("Thanh toán thành công")
+
+                        /// truyền 1 hình ảnh vào notification
+//                        .setStyle(new NotificationCompat.BigPictureStyle()
+//                                .bigLargeIcon(logo)
+//                                .bigLargeIcon((Bitmap) null)
+//                        )
+
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);
 
@@ -99,7 +120,7 @@ public class NotificationContentFragment extends Fragment {
             txtNotificationTitle.setText(R.string.notification);
         }
         if (txtNotificationMessage != null) {
-            txtNotificationMessage.setText(R.string.placeholder_coming_soon);
+            txtNotificationMessage.setText(R.string.dont_have_any_products);
         }
         if (btnShopping != null) {
             btnShopping.setVisibility(View.GONE);

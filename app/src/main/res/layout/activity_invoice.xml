@@ -96,17 +96,35 @@
         android:layout_height="1dp"
         android:background="#FFF1F5F9" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvInvoices"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        tools:listitem="@layout/item_invoice" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvInvoices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            tools:listitem="@layout/item_invoice" />
+
+        <TextView
+            android:id="@+id/txtInvoiceEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:text="Tài khoản này chưa có hóa đơn nào"
+            android:textColor="@color/color_subtitle"
+            android:textSize="16sp"
+            android:visibility="gone" />
+    </FrameLayout>
 
 <!--    &lt;!&ndash; BOTTOM MENU &ndash;&gt;-->
 <!--    <LinearLayout-->

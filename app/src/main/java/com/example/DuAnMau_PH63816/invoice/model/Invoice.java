@@ -13,6 +13,9 @@ public class Invoice {
     private String total;
     private String paymentMethod;
     private String staffName;
+    private String buyerName;
+    private String buyerPhone;
+    private String buyerAddress;
 
     public Invoice() {
     }
@@ -114,5 +117,29 @@ public class Invoice {
 
     public void setStaffName(String staffName) {
         this.staffName = staffName;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
+    public String getBuyerPhone() {
+        return buyerPhone;
+    }
+
+    public void setBuyerPhone(String buyerPhone) {
+        this.buyerPhone = buyerPhone;
+    }
+
+    public String getBuyerAddress() {
+        return buyerAddress;
+    }
+
+    public void setBuyerAddress(String buyerAddress) {
+        this.buyerAddress = buyerAddress;
     }
 }

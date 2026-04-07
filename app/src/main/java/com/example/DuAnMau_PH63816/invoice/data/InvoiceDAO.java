@@ -10,8 +10,19 @@ import com.example.DuAnMau_PH63816.customer.data.CustomerDAO;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
 import com.example.DuAnMau_PH63816.invoice.model.InvoiceDetail;
+import com.example.DuAnMau_PH63816.product.ProductImageResolver;
+import com.example.DuAnMau_PH63816.product.model.CartItem;
+import com.example.DuAnMau_PH63816.product.model.Product;
+import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
+import com.example.DuAnMau_PH63816.staff.model.Staff;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class InvoiceDAO {
 
@@ -19,80 +30,187 @@ public class InvoiceDAO {
     private final SQLiteDatabase sqLiteDatabase;
     private final CustomerDAO customerDAO;
     private final InvoiceDetailDAO invoiceDetailDAO;
+    private final StaffDAO staffDAO;
+    private final Context appContext;
 
     public InvoiceDAO(Context context) {
-        dbHelper = new InvoiceDbHelper(context);
+        appContext = context.getApplicationContext();
+        dbHelper = new InvoiceDbHelper(appContext);
         sqLiteDatabase = dbHelper.getWritableDatabase();
-        customerDAO = new CustomerDAO(context);
-        invoiceDetailDAO = new InvoiceDetailDAO(context);
+        customerDAO = new CustomerDAO(appContext);
+        invoiceDetailDAO = new InvoiceDetailDAO(appContext);
+        staffDAO = new StaffDAO(appContext);
         ensureSeedData();
+        backfillAccountBuyerSnapshots();
     }
 
     public ArrayList<Invoice> getAllInvoices() {
-        String sql = "SELECT * FROM Invoice ORDER BY id ASC";
-        Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
-        ArrayList<Invoice> list = new ArrayList<>();
-        ArrayList<Customer> customers = customerDAO.getAllCustomer();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Invoice ORDER BY id DESC", null);
+        ArrayList<Invoice> list = mapInvoices(cursor);
+        cursor.close();
+        return list;
+    }
 
-        if (cursor.moveToFirst()) {
-            do {
-                Invoice invoice = new Invoice();
-                invoice.setId(cursor.getInt(0));
-                invoice.setCode(cursor.getString(1));
-                invoice.setStatus(cursor.getString(2));
-                invoice.setCustomerId(cursor.getString(3));
-                invoice.setDate(cursor.getString(4));
-                invoice.setTotal(cursor.getString(5));
-                invoice.setPaymentMethod(cursor.getString(6));
-                invoice.setStaffName(cursor.getString(7));
-
-                Customer customer = getCustomerById(customers, invoice.getCustomerId());
-                if (customer != null) {
-                    invoice.setCustomerName(customer.getName());
-                    invoice.setCustomerPhone(customer.getPhone());
-                    invoice.setCustomerAddress(customer.getAddress());
-                }
-
-                list.add(invoice);
-            } while (cursor.moveToNext());
+    public ArrayList<Invoice> getVisibleInvoices() {
+        if (isCurrentUserAdmin()) {
+            return getAllInvoices();
         }
 
+        Cursor cursor = sqLiteDatabase.rawQuery(
+                "SELECT * FROM Invoice WHERE customerId = ? ORDER BY id DESC",
+                new String[]{getCurrentAccountCustomerId()}
+        );
+        ArrayList<Invoice> list = mapInvoices(cursor);
         cursor.close();
         return list;
     }
 
     public Invoice getInvoiceById(int invoiceId) {
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Invoice WHERE id = ?", new String[]{String.valueOf(invoiceId)});
+        Invoice invoice = mapSingleInvoice(cursor);
+        cursor.close();
+        return invoice;
+    }
+
+    public Invoice getVisibleInvoiceById(int invoiceId) {
+        if (isCurrentUserAdmin()) {
+            return getInvoiceById(invoiceId);
+        }
+
+        Cursor cursor = sqLiteDatabase.rawQuery(
+                "SELECT * FROM Invoice WHERE id = ? AND customerId = ?",
+                new String[]{String.valueOf(invoiceId), getCurrentAccountCustomerId()}
+        );
+        Invoice invoice = mapSingleInvoice(cursor);
+        cursor.close();
+        return invoice;
+    }
+
+    private ArrayList<Invoice> mapInvoices(Cursor cursor) {
+        ArrayList<Invoice> list = new ArrayList<>();
         ArrayList<Customer> customers = customerDAO.getAllCustomer();
 
         if (cursor.moveToFirst()) {
-            Invoice invoice = new Invoice();
-            invoice.setId(cursor.getInt(0));
-            invoice.setCode(cursor.getString(1));
-            invoice.setStatus(cursor.getString(2));
-            invoice.setCustomerId(cursor.getString(3));
-            invoice.setDate(cursor.getString(4));
-            invoice.setTotal(cursor.getString(5));
-            invoice.setPaymentMethod(cursor.getString(6));
-            invoice.setStaffName(cursor.getString(7));
+            do {
+                list.add(mapInvoice(cursor, customers));
+            } while (cursor.moveToNext());
+        }
+        return list;
+    }
 
-            Customer customer = getCustomerById(customers, invoice.getCustomerId());
-            if (customer != null) {
-                invoice.setCustomerName(customer.getName());
-                invoice.setCustomerPhone(customer.getPhone());
-                invoice.setCustomerAddress(customer.getAddress());
-            }
-
-            cursor.close();
-            return invoice;
+    private Invoice mapSingleInvoice(Cursor cursor) {
+        if (!cursor.moveToFirst()) {
+            return null;
         }
 
-        cursor.close();
-        return null;
+        ArrayList<Customer> customers = customerDAO.getAllCustomer();
+        return mapInvoice(cursor, customers);
     }
 
     public boolean insertInvoice(Invoice invoice) {
         return insertInvoiceAndGetId(invoice) != -1;
+    }
+
+    public boolean deleteInvoice(int invoiceId) {
+        if (invoiceId <= 0) {
+            return false;
+        }
+
+        sqLiteDatabase.beginTransaction();
+        try {
+            sqLiteDatabase.delete(
+                    "InvoiceDetail",
+                    "invoiceId = ?",
+                    new String[]{String.valueOf(invoiceId)}
+            );
+
+            int deletedRows = sqLiteDatabase.delete(
+                    "Invoice",
+                    "id = ?",
+                    new String[]{String.valueOf(invoiceId)}
+            );
+
+            if (deletedRows <= 0) {
+                return false;
+            }
+
+            sqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } finally {
+            sqLiteDatabase.endTransaction();
+        }
+    }
+
+    public int createPaidInvoiceFromCart(List<CartItem> cartItems) {
+        if (cartItems == null || cartItems.isEmpty()) {
+            return -1;
+        }
+
+        ArrayList<InvoiceDetail> details = new ArrayList<>();
+        long totalAmount = 0L;
+
+        for (CartItem cartItem : cartItems) {
+            if (cartItem == null || cartItem.getProduct() == null) {
+                continue;
+            }
+
+            Product product = cartItem.getProduct();
+            long unitPrice = parseAmount(product.getPriceLabel());
+            long lineTotal = unitPrice * cartItem.getQuantity();
+            totalAmount += lineTotal;
+
+            details.add(new InvoiceDetail(
+                    0,
+                    product.getName(),
+                    cartItem.getQuantity(),
+                    formatAmount(lineTotal),
+                    product.getImage()
+            ));
+        }
+
+        if (details.isEmpty()) {
+            return -1;
+        }
+
+        String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        Staff currentBuyer = staffDAO.getCurrentStaff();
+        Invoice invoice = new Invoice(
+                "",
+                "ĐÃ THANH TOÁN",
+                resolveCheckoutCustomerId(),
+                today,
+                formatAmount(totalAmount),
+                "Tiền mặt",
+                resolveCheckoutStaffName()
+        );
+        invoice.setBuyerName(resolveBuyerName(currentBuyer, invoice.getStaffName()));
+        invoice.setBuyerPhone(resolveBuyerPhone(currentBuyer));
+        invoice.setBuyerAddress(resolveBuyerAddress(currentBuyer));
+
+        sqLiteDatabase.beginTransaction();
+        try {
+            long rowId = insertInvoiceAndGetId(invoice);
+            if (rowId == -1) {
+                return -1;
+            }
+
+            int invoiceId = (int) rowId;
+            if (!updateInvoiceCode(invoiceId, buildInvoiceCode(invoiceId, today))) {
+                return -1;
+            }
+
+            for (InvoiceDetail detail : details) {
+                detail.setInvoiceId(invoiceId);
+                if (!insertInvoiceDetailInternal(detail)) {
+                    return -1;
+                }
+            }
+
+            sqLiteDatabase.setTransactionSuccessful();
+            return invoiceId;
+        } finally {
+            sqLiteDatabase.endTransaction();
+        }
     }
 
     private long insertInvoiceAndGetId(Invoice invoice) {
@@ -104,6 +222,9 @@ public class InvoiceDAO {
         contentValues.put("total", invoice.getTotal());
         contentValues.put("paymentMethod", invoice.getPaymentMethod());
         contentValues.put("staffName", invoice.getStaffName());
+        contentValues.put("buyerName", invoice.getBuyerName());
+        contentValues.put("buyerPhone", invoice.getBuyerPhone());
+        contentValues.put("buyerAddress", invoice.getBuyerAddress());
         return sqLiteDatabase.insert("Invoice", null, contentValues);
     }
 
@@ -114,6 +235,97 @@ public class InvoiceDAO {
             }
         }
         return null;
+    }
+
+    private Invoice mapInvoice(Cursor cursor, ArrayList<Customer> customers) {
+        Invoice invoice = new Invoice();
+        invoice.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+        invoice.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+        invoice.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
+        invoice.setCustomerId(cursor.getString(cursor.getColumnIndexOrThrow("customerId")));
+        invoice.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
+        invoice.setTotal(cursor.getString(cursor.getColumnIndexOrThrow("total")));
+        invoice.setPaymentMethod(cursor.getString(cursor.getColumnIndexOrThrow("paymentMethod")));
+        invoice.setStaffName(cursor.getString(cursor.getColumnIndexOrThrow("staffName")));
+        invoice.setBuyerName(getOptionalColumnValue(cursor, "buyerName"));
+        invoice.setBuyerPhone(getOptionalColumnValue(cursor, "buyerPhone"));
+        invoice.setBuyerAddress(getOptionalColumnValue(cursor, "buyerAddress"));
+
+        Customer customer = getCustomerById(customers, invoice.getCustomerId());
+        if (customer != null) {
+            invoice.setCustomerName(customer.getName());
+            invoice.setCustomerPhone(customer.getPhone());
+            invoice.setCustomerAddress(customer.getAddress());
+            return invoice;
+        }
+
+        if (!isBlank(invoice.getBuyerName()) || !isBlank(invoice.getBuyerPhone()) || !isBlank(invoice.getBuyerAddress())) {
+            invoice.setCustomerName(firstNonBlank(invoice.getBuyerName(), resolveFallbackCustomerName(invoice)));
+            invoice.setCustomerPhone(firstNonBlank(invoice.getBuyerPhone(), ""));
+            invoice.setCustomerAddress(firstNonBlank(invoice.getBuyerAddress(), ""));
+            return invoice;
+        }
+
+        Staff buyerStaff = getStaffByInvoiceCustomerId(invoice.getCustomerId());
+        if (buyerStaff != null) {
+            invoice.setCustomerName(resolveBuyerName(buyerStaff, resolveFallbackCustomerName(invoice)));
+            invoice.setCustomerPhone(resolveBuyerPhone(buyerStaff));
+            invoice.setCustomerAddress(resolveBuyerAddress(buyerStaff));
+            return invoice;
+        }
+
+        invoice.setCustomerName(resolveFallbackCustomerName(invoice));
+        invoice.setCustomerPhone("");
+        invoice.setCustomerAddress("");
+        return invoice;
+    }
+
+    private void backfillAccountBuyerSnapshots() {
+        try (Cursor cursor = sqLiteDatabase.rawQuery(
+                "SELECT id, customerId, buyerName, buyerPhone, buyerAddress FROM Invoice WHERE customerId LIKE 'ACC_%'",
+                null
+        )) {
+            if (!cursor.moveToFirst()) {
+                return;
+            }
+
+            do {
+                int invoiceId = cursor.getInt(0);
+                String customerId = cursor.getString(1);
+                String buyerName = cursor.getString(2);
+                String buyerPhone = cursor.getString(3);
+                String buyerAddress = cursor.getString(4);
+                if (!isBlank(buyerName) && !isBlank(buyerPhone) && !isBlank(buyerAddress)) {
+                    continue;
+                }
+
+                Staff buyerStaff = getStaffByInvoiceCustomerId(customerId);
+                if (buyerStaff == null) {
+                    continue;
+                }
+
+                ContentValues contentValues = new ContentValues();
+                if (isBlank(buyerName)) {
+                    contentValues.put("buyerName", resolveBuyerName(buyerStaff, null));
+                }
+                if (isBlank(buyerPhone)) {
+                    contentValues.put("buyerPhone", resolveBuyerPhone(buyerStaff));
+                }
+                if (isBlank(buyerAddress)) {
+                    contentValues.put("buyerAddress", resolveBuyerAddress(buyerStaff));
+                }
+                if (contentValues.size() == 0) {
+                    continue;
+                }
+
+                sqLiteDatabase.update(
+                        "Invoice",
+                        contentValues,
+                        "id = ?",
+                        new String[]{String.valueOf(invoiceId)}
+                );
+            } while (cursor.moveToNext());
+        }
     }
 
     private void ensureSeedData() {
@@ -169,7 +381,7 @@ public class InvoiceDAO {
     private void insertSeedDetails(int invoiceId, ArrayList<InvoiceDetail> details) {
         for (InvoiceDetail detail : details) {
             detail.setInvoiceId(invoiceId);
-            invoiceDetailDAO.insertInvoiceDetail(detail);
+            insertInvoiceDetailInternal(detail);
         }
     }
 
@@ -308,9 +520,171 @@ public class InvoiceDAO {
         return details;
     }
 
+    private boolean insertInvoiceDetailInternal(InvoiceDetail detail) {
+        String normalizedImage = resolveInvoiceDetailImage(detail);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("invoiceId", detail.getInvoiceId());
+        contentValues.put("productName", detail.getProductName());
+        contentValues.put("quantity", detail.getQuantity());
+        contentValues.put("totalPrice", detail.getTotalPrice());
+        contentValues.put("imageRes", ProductImageResolver.resolveDrawableResId(appContext, normalizedImage));
+        contentValues.put("image", normalizedImage);
+        return sqLiteDatabase.insert("InvoiceDetail", null, contentValues) != -1;
+    }
+
+    private String resolveInvoiceDetailImage(InvoiceDetail detail) {
+        String rawImage = detail.getImage();
+        if ((rawImage == null || rawImage.trim().isEmpty()) && detail.getImageRes() != 0) {
+            rawImage = String.valueOf(detail.getImageRes());
+        }
+        return ProductImageResolver.normalizeForStorage(appContext, detail.getProductName(), rawImage);
+    }
+
+    private boolean updateInvoiceCode(int invoiceId, String code) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("code", code);
+        return sqLiteDatabase.update(
+                "Invoice",
+                contentValues,
+                "id = ?",
+                new String[]{String.valueOf(invoiceId)}
+        ) > 0;
+    }
+
+    private String resolveCheckoutCustomerId() {
+        return getCurrentAccountCustomerId();
+    }
+
+    private String resolveCheckoutStaffName() {
+        String staffName = staffDAO.getCurrentStaffName();
+        if (staffName != null && !staffName.trim().isEmpty()) {
+            return staffName;
+        }
+        return "Phúc";
+    }
+
+    private String resolveFallbackCustomerName(Invoice invoice) {
+        if (invoice != null && !isBlank(invoice.getBuyerName())) {
+            return invoice.getBuyerName().trim();
+        }
+        if (invoice != null && invoice.getStaffName() != null && !invoice.getStaffName().trim().isEmpty()) {
+            return invoice.getStaffName();
+        }
+        return "Khách lẻ";
+    }
+
+    private Staff getStaffByInvoiceCustomerId(String customerId) {
+        if (customerId == null || !customerId.startsWith("ACC_")) {
+            return null;
+        }
+        String staffCode = customerId.substring(4).trim();
+        if (staffCode.isEmpty() || "GUEST".equalsIgnoreCase(staffCode)) {
+            return null;
+        }
+        return staffDAO.getStaffByCode(staffCode);
+    }
+
+    private String resolveBuyerName(Staff staff, String fallbackName) {
+        if (staff != null && !isBlank(staff.getNameStaff())) {
+            return staff.getNameStaff().trim();
+        }
+        if (!isBlank(fallbackName)) {
+            return fallbackName.trim();
+        }
+        return "Khách lẻ";
+    }
+
+    private String resolveBuyerPhone(Staff staff) {
+        if (staff == null) {
+            return "";
+        }
+        if (!isBlank(staff.getPhone())) {
+            return staff.getPhone().trim();
+        }
+        if (!isBlank(staff.getNameLogin()) && looksLikePhone(staff.getNameLogin())) {
+            return staff.getNameLogin().trim();
+        }
+        return "";
+    }
+
+    private String resolveBuyerAddress(Staff staff) {
+        if (staff == null || isBlank(staff.getAddress())) {
+            return "";
+        }
+        return staff.getAddress().trim();
+    }
+
+    private String getOptionalColumnValue(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        if (index < 0 || cursor.isNull(index)) {
+            return null;
+        }
+        return cursor.getString(index);
+    }
+
+    private String firstNonBlank(String primary, String fallback) {
+        if (!isBlank(primary)) {
+            return primary.trim();
+        }
+        return fallback == null ? "" : fallback;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private boolean looksLikePhone(String value) {
+        return value != null && value.trim().matches("[0-9+\\-\\s]{8,15}");
+    }
+
+    private boolean isCurrentUserAdmin() {
+        return appContext.getSharedPreferences("StaffData", Context.MODE_PRIVATE)
+                .getInt("role", 1) == 0;
+    }
+
+    private String getCurrentAccountCustomerId() {
+        String staffCode = staffDAO.getCurrentStaffCode();
+        if (staffCode != null && !staffCode.trim().isEmpty()) {
+            return "ACC_" + staffCode;
+        }
+        return "ACC_GUEST";
+    }
+
+    private String buildInvoiceCode(int invoiceId, String dateText) {
+        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        if (dateText != null && dateText.length() >= 4) {
+            year = dateText.substring(dateText.length() - 4);
+        }
+        return String.format(Locale.getDefault(), "HD-%s-%03d", year, invoiceId);
+    }
+
+    private long parseAmount(String amountText) {
+        if (amountText == null || amountText.trim().isEmpty()) {
+            return 0L;
+        }
+
+        String digits = amountText.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) {
+            return 0L;
+        }
+
+        try {
+            return Long.parseLong(digits);
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
+    }
+
+    private String formatAmount(long amount) {
+        return NumberFormat.getNumberInstance(Locale.GERMANY).format(amount) + "k";
+    }
+
     public void close() {
         if (invoiceDetailDAO != null) {
             invoiceDetailDAO.close();
+        }
+        if (staffDAO != null) {
+            staffDAO.close();
         }
         if (customerDAO != null) {
             customerDAO.close();

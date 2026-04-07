@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomCardView;
+import com.example.DuAnMau_PH63816.product.ProductImageResolver;
 import com.example.DuAnMau_PH63816.product.model.Product;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -105,25 +105,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     public static void bindProductImage(@NonNull ImageView target, String image) {
-        if (image != null) {
-            try {
-                int resId = Integer.parseInt(image);
-                Picasso.get()
-                        .load(resId)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_background)
-                        .fit()
-                        .into(target);
-            } catch (NumberFormatException ex) {
-                Picasso.get()
-                        .load(image)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_background)
-                        .fit()
-                        .into(target);
-            }
-        } else {
-            target.setImageResource(R.drawable.ic_launcher_background);
-        }
+        ProductImageResolver.loadInto(target, image);
     }
 }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
+import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.product.adapter.CartAdapter;
 import com.example.DuAnMau_PH63816.product.data.CartManager;
 import com.example.DuAnMau_PH63816.product.model.CartItem;
@@ -35,6 +36,7 @@ public class CartActivity extends AppCompatActivity {
     private TextView txtCartSubtotal;
     private TextView txtCartTotal;
     private View layoutCartSummary;
+    private InvoiceDAO invoiceDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class CartActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_cart);
         CartManager.initialize(this);
+        invoiceDAO = new InvoiceDAO(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -86,12 +89,19 @@ public class CartActivity extends AppCompatActivity {
                 return;
             }
 
+            int createdInvoiceId = invoiceDAO != null ? invoiceDAO.createPaidInvoiceFromCart(new ArrayList<>(CartManager.getItems())) : -1;
+            if (createdInvoiceId == -1) {
+                Toast.makeText(this, "Thanh toán thất bại, chưa tạo được hóa đơn", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             CartManager.clear();
             refreshCart();
 
             Intent intent = new Intent(this, HomePageScreen.class);
             intent.putExtra(BottomButtonNavigator.EXTRA_INITIAL_TAB, BottomButtonNavigator.TAB_NOTIFICATION);
             intent.putExtra("from_checkout", true);
+            intent.putExtra("created_invoice_id", createdInvoiceId);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
@@ -119,5 +129,13 @@ public class CartActivity extends AppCompatActivity {
         layoutCartSummary.setVisibility(hasItems ? View.VISIBLE : View.GONE);
         txtCartSubtotal.setText(CartManager.formatCurrency(CartManager.getSubtotal()));
         txtCartTotal.setText(CartManager.formatCurrency(CartManager.getSubtotal()));
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (invoiceDAO != null) {
+            invoiceDAO.close();
+        }
+        super.onDestroy();
     }
 }

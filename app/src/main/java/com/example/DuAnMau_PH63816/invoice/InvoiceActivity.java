@@ -2,7 +2,9 @@ package com.example.DuAnMau_PH63816.invoice;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,9 +22,12 @@ import java.util.ArrayList;
 
 public class InvoiceActivity extends AppCompatActivity {
 
+    private static final String EXTRA_CREATED_INVOICE_ID = "created_invoice_id";
+
     private final ArrayList<Invoice> invoices = new ArrayList<>();
     private InvoiceDAO invoiceDAO;
     private InvoiceAdapter adapter;
+    private TextView txtInvoiceEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +35,9 @@ public class InvoiceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_invoice);
 
         RecyclerView rvInvoices = findViewById(R.id.rvInvoices);
+        txtInvoiceEmpty = findViewById(R.id.txtInvoiceEmpty);
         Toolbar toolbarInvoiceScreen = findViewById(R.id.toolbarInvoice);
-        if (rvInvoices == null || toolbarInvoiceScreen == null) {
+        if (rvInvoices == null || toolbarInvoiceScreen == null || txtInvoiceEmpty == null) {
             Toast.makeText(this, "Khong the mo man hinh hoa don", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -46,6 +52,7 @@ public class InvoiceActivity extends AppCompatActivity {
             rvInvoices.setLayoutManager(new LinearLayoutManager(this));
             rvInvoices.setAdapter(adapter);
             loadInvoices();
+            showCheckoutMessageIfNeeded();
             BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
         } catch (RuntimeException exception) {
             Toast.makeText(this, "Du lieu hoa don dang loi, vui long mo lai", Toast.LENGTH_SHORT).show();
@@ -70,14 +77,31 @@ public class InvoiceActivity extends AppCompatActivity {
             return;
         }
         invoices.clear();
-        invoices.addAll(invoiceDAO.getAllInvoices());
+        invoices.addAll(invoiceDAO.getVisibleInvoices());
         adapter.notifyDataSetChanged();
+        updateEmptyState();
     }
 
     private void openDetail(Invoice invoice) {
         Intent intent = new Intent(this, DetailInvoiceActivity.class);
         intent.putExtra("invoice_id", invoice.getId());
         startActivity(intent);
+    }
+
+    private void showCheckoutMessageIfNeeded() {
+        int createdInvoiceId = getIntent().getIntExtra(EXTRA_CREATED_INVOICE_ID, -1);
+        if (createdInvoiceId == -1) {
+            return;
+        }
+        Toast.makeText(this, "Đã tạo hóa đơn mới #" + createdInvoiceId, Toast.LENGTH_SHORT).show();
+        getIntent().removeExtra(EXTRA_CREATED_INVOICE_ID);
+    }
+
+    private void updateEmptyState() {
+        if (txtInvoiceEmpty == null) {
+            return;
+        }
+        txtInvoiceEmpty.setVisibility(invoices.isEmpty() ? TextView.VISIBLE : TextView.GONE);
     }
 
     @Override

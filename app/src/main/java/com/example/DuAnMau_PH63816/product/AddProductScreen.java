@@ -51,9 +51,7 @@ public class AddProductScreen extends AppCompatActivity {
     }
 
     private void setListener() {
-        edtDate.setOnClickListener(v -> {
-            openDatePicker(this, edtDate);
-        });
+        edtDate.setOnClickListener(v -> openDatePicker(this, edtDate));
         btnAddProduct.setOnClickListener(v -> {
             String name = edtProductName.getText().toString().trim();
             String price = edtPrice.getText().toString().trim();
@@ -85,7 +83,7 @@ public class AddProductScreen extends AppCompatActivity {
             product.setName(name);
             product.setPriceLabel(formatPriceLabel(normalizedPrice));
             product.setStockLabel(STOCK_PREFIX + normalizedStock);
-            product.setImage(String.valueOf(R.drawable.ic_set_sushi));
+            product.setImage(ProductImageResolver.DEFAULT_IMAGE_NAME);
             product.setCategory(category);
             product.setUnit(unit);
             product.setDate(date);

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +18,7 @@ import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDetailDAO;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
 import com.example.DuAnMau_PH63816.invoice.model.InvoiceDetail;
+import com.example.DuAnMau_PH63816.product.ProductImageResolver;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.NumberFormat;
@@ -53,20 +55,21 @@ public class DetailInvoiceActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         int invoiceId = intent.getIntExtra("invoice_id", -1);
-        Invoice invoice = invoiceDAO.getInvoiceById(invoiceId);
+        Invoice invoice = invoiceDAO.getVisibleInvoiceById(invoiceId);
         if (invoice == null) {
+            Toast.makeText(this, "Bạn không có quyền xem hóa đơn này", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        ArrayList<InvoiceDetail> details = getInvoiceDetailsByInvoiceId(invoiceId);
+        ArrayList<InvoiceDetail> details = invoiceDetailDAO.getInvoiceDetailsByInvoiceId(invoiceId);
 
         tvInvoiceCode.setText(invoice.getCode());
         tvStatus.setText(invoice.getStatus());
         tvSubtotal.setText(calculateSubtotal(details));
         tvTotal.setText(invoice.getTotal());
-        tvCustomerName.setText(invoice.getCustomerName());
-        tvCustomerPhone.setText(invoice.getCustomerPhone());
-        tvCustomerAddress.setText(invoice.getCustomerAddress());
+        tvCustomerName.setText(resolveDisplayText(invoice.getCustomerName(), "Khách lẻ"));
+        tvCustomerPhone.setText(resolveDisplayText(invoice.getCustomerPhone(), "Chưa cập nhật số điện thoại"));
+        tvCustomerAddress.setText(resolveDisplayText(invoice.getCustomerAddress(), "Chưa cập nhật địa chỉ"));
         tvDate.setText("Ngày lập: " + invoice.getDate());
         bindItemViews(layoutItems, details);
 
@@ -107,25 +110,13 @@ public class DetailInvoiceActivity extends AppCompatActivity {
             TextView tvItemMeta = itemView.findViewById(R.id.tvItemMeta);
             TextView tvItemPrice = itemView.findViewById(R.id.tvItemPrice);
 
-            imgItem.setImageResource(detail.getImageRes());
+            ProductImageResolver.loadInto(imgItem, detail.getImage());
             tvItemName.setText(detail.getProductName());
             tvItemMeta.setText("x" + detail.getQuantity());
             tvItemPrice.setText(detail.getTotalPrice());
 
             layoutItems.addView(itemView);
         }
-    }
-
-    private ArrayList<InvoiceDetail> getInvoiceDetailsByInvoiceId(int invoiceId) {
-        ArrayList<InvoiceDetail> allDetails = invoiceDetailDAO.getAllInvoiceDetails();
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-
-        for (InvoiceDetail detail : allDetails) {
-            if (detail.getInvoiceId() == invoiceId) {
-                details.add(detail);
-            }
-        }
-        return details;
     }
 
     private String calculateSubtotal(ArrayList<InvoiceDetail> details) {
@@ -154,6 +145,13 @@ public class DetailInvoiceActivity extends AppCompatActivity {
 
     private String formatAmount(long amount) {
         return NumberFormat.getNumberInstance(Locale.GERMANY).format(amount) + "k";
+    }
+
+    private String resolveDisplayText(String value, String fallback) {
+        if (value == null || value.trim().isEmpty()) {
+            return fallback;
+        }
+        return value;
     }
 
     @Override

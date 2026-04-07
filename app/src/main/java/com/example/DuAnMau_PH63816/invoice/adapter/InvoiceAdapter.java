@@ -1,16 +1,20 @@
 package com.example.DuAnMau_PH63816.invoice.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
 import com.google.android.material.card.MaterialCardView;
 
@@ -63,11 +67,58 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.ViewHold
         }
 
         holder.itemView.setOnClickListener(v -> listener.onInvoiceClick(invoice));
+        holder.itemView.setOnLongClickListener(v -> {
+            if (!isAdmin(v.getContext())) {
+                return false;
+            }
+            showDeleteDialog(v.getContext(), holder.getBindingAdapterPosition());
+            return true;
+        });
     }
 
     @Override
     public int getItemCount() {
         return items != null ? items.size() : 0;
+    }
+
+    private void showDeleteDialog(Context context, int position) {
+        if (position == RecyclerView.NO_POSITION || position >= items.size()) {
+            return;
+        }
+
+        Invoice invoice = items.get(position);
+        new AlertDialog.Builder(context)
+                .setTitle("Xóa hóa đơn")
+                .setMessage("Bạn có muốn xóa hóa đơn " + invoice.getCode() + " không?")
+                .setPositiveButton("Xóa", (dialog, which) -> deleteInvoice(context, position))
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void deleteInvoice(Context context, int position) {
+        if (position == RecyclerView.NO_POSITION || position >= items.size()) {
+            return;
+        }
+
+        Invoice invoice = items.get(position);
+        InvoiceDAO invoiceDAO = new InvoiceDAO(context);
+        boolean deleted = invoiceDAO.deleteInvoice(invoice.getId());
+        invoiceDAO.close();
+
+        if (!deleted) {
+            Toast.makeText(context, "Xóa hóa đơn thất bại", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        items.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, items.size() - position);
+        Toast.makeText(context, "Đã xóa hóa đơn", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isAdmin(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("StaffData", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt("role", 1) == 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
