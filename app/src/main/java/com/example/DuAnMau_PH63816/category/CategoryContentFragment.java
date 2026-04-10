@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,40 +53,10 @@ public class CategoryContentFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        categoryAdapter = new CategoryAdapter(requireContext(), categoryList, new CategoryAdapter.OnCategoryActionListener() {
-            @Override
-            public void onEdit(Category category) {
-                Intent intent = new Intent(requireContext(), EditCategoryManagementScreen.class);
-                intent.putExtra(CategoryExtras.ID, category.getId());
-                intent.putExtra(CategoryExtras.NAME, category.getName());
-                intent.putExtra(CategoryExtras.PRODUCT_COUNT, category.getProductCount());
-                intent.putExtra(CategoryExtras.ICON, category.getIconResId());
-                intent.putExtra(CategoryExtras.DESCRIBE, category.getDescribe());
-                startActivity(intent);
-            }
-
-            @Override
-            public void onDelete(Category category) {
-                handleDelete(category);
-            }
-        });
-
+        categoryAdapter = new CategoryAdapter(requireContext(), categoryList, categoryDAO, tvCategoryCountBadge);
         rvCategories.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvCategories.setAdapter(categoryAdapter);
         loadCategories();
-    }
-
-    private void handleDelete(Category category) {
-        if (categoryDAO == null) {
-            showToast("Không tìm thấy danh mục");
-            return;
-        }
-        if (categoryDAO.deleteCategory(category)) {
-            loadCategories();
-            showToast("Đã xóa danh mục");
-        } else {
-            showToast("Xóa danh mục thất bại");
-        }
     }
 
     private void loadCategories() {
@@ -98,10 +67,6 @@ public class CategoryContentFragment extends Fragment {
         if (tvCategoryCountBadge != null) {
             tvCategoryCountBadge.setText(" " + categoryList.size() + " danh mục ");
         }
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

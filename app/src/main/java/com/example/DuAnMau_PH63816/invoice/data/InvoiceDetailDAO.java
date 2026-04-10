@@ -24,13 +24,16 @@ public class InvoiceDetailDAO {
     }
 
     public ArrayList<InvoiceDetail> getAllInvoiceDetails() {
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM InvoiceDetail ORDER BY id ASC", null);
         ArrayList<InvoiceDetail> list = new ArrayList<>();
+        String sql = "SELECT * FROM InvoiceDetail ORDER BY id ASC";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(mapDetail(cursor));
-            } while (cursor.moveToNext());
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(mapInvoiceDetail(cursor));
+                cursor.moveToNext();
+            }
         }
 
         cursor.close();
@@ -38,37 +41,23 @@ public class InvoiceDetailDAO {
     }
 
     public ArrayList<InvoiceDetail> getInvoiceDetailsByInvoiceId(int invoiceId) {
-        Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT * FROM InvoiceDetail WHERE invoiceId = ? ORDER BY id ASC",
-                new String[]{String.valueOf(invoiceId)}
-        );
         ArrayList<InvoiceDetail> list = new ArrayList<>();
+        String sql = "SELECT * FROM InvoiceDetail WHERE invoiceId = ? ORDER BY id ASC";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, new String[]{String.valueOf(invoiceId)});
 
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(mapDetail(cursor));
-            } while (cursor.moveToNext());
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(mapInvoiceDetail(cursor));
+                cursor.moveToNext();
+            }
         }
 
         cursor.close();
         return list;
     }
 
-    public boolean insertInvoiceDetail(InvoiceDetail detail) {
-        String normalizedImage = resolveNormalizedImage(detail);
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("invoiceId", detail.getInvoiceId());
-        contentValues.put("productName", detail.getProductName());
-        contentValues.put("quantity", detail.getQuantity());
-        contentValues.put("totalPrice", detail.getTotalPrice());
-        contentValues.put("imageRes", ProductImageResolver.resolveDrawableResId(appContext, normalizedImage));
-        contentValues.put("image", normalizedImage);
-
-        long kq = sqLiteDatabase.insert("InvoiceDetail", null, contentValues);
-        return kq != -1;
-    }
-
-    private InvoiceDetail mapDetail(Cursor cursor) {
+    private InvoiceDetail mapInvoiceDetail(Cursor cursor) {
         InvoiceDetail detail = new InvoiceDetail();
         detail.setId(cursor.getInt(0));
         detail.setInvoiceId(cursor.getInt(1));
@@ -76,77 +65,59 @@ public class InvoiceDetailDAO {
         detail.setQuantity(cursor.getInt(3));
         detail.setTotalPrice(cursor.getString(4));
 
-        int legacyImageRes = cursor.getInt(5);
-        String rawImage = getOptionalString(cursor, "image");
-        String normalizedImage = ProductImageResolver.normalizeForStorage(
-                appContext,
-                detail.getProductName(),
-                rawImage != null && !rawImage.trim().isEmpty()
-                        ? rawImage
-                        : (legacyImageRes != 0 ? String.valueOf(legacyImageRes) : null)
-        );
+        int oldImageRes = cursor.getInt(5);
+        String image = null;
+        int imageIndex = cursor.getColumnIndex("image");
+        if (imageIndex >= 0 && !cursor.isNull(imageIndex)) {
+            image = cursor.getString(imageIndex);
+        }
 
-        detail.setImage(normalizedImage);
-        detail.setImageRes(ProductImageResolver.resolveDrawableResId(appContext, normalizedImage));
+        if ((image == null || image.trim().isEmpty()) && oldImageRes != 0) {
+            image = String.valueOf(oldImageRes);
+        }
+
+        image = ProductImageResolver.normalizeForStorage(appContext, detail.getProductName(), image);
+        detail.setImage(image);
+        detail.setImageRes(ProductImageResolver.resolveDrawableResId(appContext, image));
         return detail;
     }
 
-    private String resolveNormalizedImage(InvoiceDetail detail) {
-        String rawImage = detail.getImage();
-        if ((rawImage == null || rawImage.trim().isEmpty()) && detail.getImageRes() != 0) {
-            rawImage = String.valueOf(detail.getImageRes());
-        }
-        return ProductImageResolver.normalizeForStorage(appContext, detail.getProductName(), rawImage);
-    }
-
-    private String getOptionalString(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        if (columnIndex < 0) {
-            return null;
-        }
-        return cursor.getString(columnIndex);
-    }
-
     private void migrateLegacyImageValues() {
-        Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT id, productName, imageRes, image FROM InvoiceDetail ORDER BY id ASC",
-                null
-        );
+        String sql = "SELECT id, productName, imageRes, image FROM InvoiceDetail ORDER BY id ASC";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
 
-        if (!cursor.moveToFirst()) {
-            cursor.close();
-            return;
-        }
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                int id = cursor.getInt(0);
+                String productName = cursor.getString(1);
+                int oldImageRes = cursor.getInt(2);
+                String image = cursor.getString(3);
 
-        do {
-            int detailId = cursor.getInt(0);
-            String productName = cursor.getString(1);
-            int legacyImageRes = cursor.getInt(2);
-            String rawImage = cursor.getString(3);
+                if ((image == null || image.trim().isEmpty()) && oldImageRes != 0) {
+                    image = String.valueOf(oldImageRes);
+                }
 
-            String normalizedImage = ProductImageResolver.normalizeForStorage(
-                    appContext,
-                    productName,
-                    rawImage != null && !rawImage.trim().isEmpty()
-                            ? rawImage
-                            : (legacyImageRes != 0 ? String.valueOf(legacyImageRes) : null)
-            );
-            int resolvedImageRes = ProductImageResolver.resolveDrawableResId(appContext, normalizedImage);
+                String newImage = ProductImageResolver.normalizeForStorage(appContext, productName, image);
+                int newImageRes = ProductImageResolver.resolveDrawableResId(appContext, newImage);
 
-            if (normalizedImage.equals(rawImage) && resolvedImageRes == legacyImageRes) {
-                continue;
+                boolean sameImage = false;
+                if (newImage == null && image == null) {
+                    sameImage = true;
+                } else if (newImage != null && newImage.equals(image)) {
+                    sameImage = true;
+                }
+
+                if (!sameImage || newImageRes != oldImageRes) {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("image", newImage);
+                    contentValues.put("imageRes", newImageRes);
+                    sqLiteDatabase.update("InvoiceDetail", contentValues, "id = ?", new String[]{String.valueOf(id)});
+                }
+
+                cursor.moveToNext();
             }
-
-            ContentValues values = new ContentValues();
-            values.put("image", normalizedImage);
-            values.put("imageRes", resolvedImageRes);
-            sqLiteDatabase.update(
-                    "InvoiceDetail",
-                    values,
-                    "id = ?",
-                    new String[]{String.valueOf(detailId)}
-            );
-        } while (cursor.moveToNext());
+        }
 
         cursor.close();
     }

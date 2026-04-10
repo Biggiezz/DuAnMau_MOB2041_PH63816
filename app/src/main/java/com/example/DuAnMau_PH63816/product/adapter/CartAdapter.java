@@ -1,18 +1,19 @@
 package com.example.DuAnMau_PH63816.product.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.product.CartActivity;
+import com.example.DuAnMau_PH63816.product.data.CartManager;
 import com.example.DuAnMau_PH63816.product.model.CartItem;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
@@ -20,25 +21,14 @@ import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
-    public interface OnCartActionListener {
-        void onAction(@NonNull Product product);
-    }
-
+    private final Context context;
     private final LayoutInflater inflater;
     private final List<CartItem> items;
-    private final OnCartActionListener decreaseListener;
-    private final OnCartActionListener increaseListener;
 
-    public CartAdapter(
-            Context context,
-            List<CartItem> items,
-            OnCartActionListener decreaseListener,
-            OnCartActionListener increaseListener
-    ) {
+    public CartAdapter(Context context, List<CartItem> items) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.items = items;
-        this.decreaseListener = decreaseListener;
-        this.increaseListener = increaseListener;
     }
 
     @NonNull
@@ -56,21 +46,31 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.txtCartProductPrice.setText(product.getPriceLabel().replace("k", "đ"));
         holder.txtQuantity.setText(String.valueOf(item.getQuantity()));
         ProductAdapter.bindProductImage(holder.imgCartProduct, product.getImage());
-        holder.imgCartProduct.setBackground(resolveImageBackground(position, holder.imgCartProduct.getContext()));
-        holder.btnDecreaseQuantity.setOnClickListener(v -> decreaseListener.onAction(product));
-        holder.btnIncreaseQuantity.setOnClickListener(v -> increaseListener.onAction(product));
+        holder.imgCartProduct.setBackgroundResource(position % 2 == 0
+                ? R.drawable.bg_cart_product_image
+                : R.drawable.bg_cart_product_image_alt);
+        holder.btnDecreaseQuantity.setOnClickListener(v -> {
+            CartManager.decreaseQuantity(product);
+            refreshCart();
+        });
+        holder.btnIncreaseQuantity.setOnClickListener(v -> {
+            if (!CartManager.increaseQuantity(product)) {
+                Toast.makeText(context, "Sản phẩm đã hết tồn trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            refreshCart();
+        });
     }
 
     @Override
     public int getItemCount() {
-        return items != null ? items.size() : 0;
+        return items.size();
     }
 
-    private Drawable resolveImageBackground(int position, Context context) {
-        int backgroundRes = position % 2 == 0
-                ? R.drawable.bg_cart_product_image
-                : R.drawable.bg_cart_product_image_alt;
-        return ContextCompat.getDrawable(context, backgroundRes);
+    private void refreshCart() {
+        if (context instanceof CartActivity) {
+            ((CartActivity) context).refreshCart();
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

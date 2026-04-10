@@ -5,12 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class CategoryDbHelper extends SQLiteOpenHelper {
-
-    private static final String DB_NAME = "Category.db";
-    private static final int DB_VERSION = 3;
-
     public CategoryDbHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, "Category.db", null, 3);
     }
 
     @Override

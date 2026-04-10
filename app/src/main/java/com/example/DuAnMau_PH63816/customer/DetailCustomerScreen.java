@@ -2,7 +2,6 @@ package com.example.DuAnMau_PH63816.customer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -23,6 +22,9 @@ import com.example.DuAnMau_PH63816.customer.model.Customer;
 
 public class DetailCustomerScreen extends AppCompatActivity {
 
+    private EditText edtCustomerName, edtPhone, edtEmail, edtAddress, edtAmount;
+    private RadioButton rbVip, rbMember;
+    private TextView tvCustomerCode, tvCustomerNameBig, tvCustomerTypeBig;
     private CustomerDAO customerDAO;
 
     @Override
@@ -36,58 +38,72 @@ public class DetailCustomerScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        bindDataFromIntent();
+        initUi();
+        loadData();
     }
 
-    private void bindDataFromIntent() {
-        Intent intent = getIntent();
-        if (intent == null) return;
-
+    private void initUi() {
         Toolbar toolbarDetailCustomerScreen = findViewById(R.id.toolbarDetailCustomerScreen);
-        EditText edtCustomerName = findViewById(R.id.edtCustomerName);
-        EditText edtPhone = findViewById(R.id.edtPhone);
-        EditText edtEmail = findViewById(R.id.edtEmail);
-        EditText edtAddress = findViewById(R.id.edtAddress);
-        EditText edtAmount = findViewById(R.id.edtAmount);
-        RadioButton rbVip = findViewById(R.id.rbVIP);
-        RadioButton rbMember = findViewById(R.id.rbMember);
-        TextView edtCustomerCode = findViewById(R.id.tvCustomerCode);
-        TextView tvCustomerNameBig = findViewById(R.id.tvCustomerNameBig);
-        TextView tvCustomerTypeBig = findViewById(R.id.tvCustomerTypeBig);
+        edtCustomerName = findViewById(R.id.edtCustomerName);
+        edtPhone = findViewById(R.id.edtPhone);
+        edtEmail = findViewById(R.id.edtEmail);
+        edtAddress = findViewById(R.id.edtAddress);
+        edtAmount = findViewById(R.id.edtAmount);
+        rbVip = findViewById(R.id.rbVIP);
+        rbMember = findViewById(R.id.rbMember);
+        tvCustomerCode = findViewById(R.id.tvCustomerCode);
+        tvCustomerNameBig = findViewById(R.id.tvCustomerNameBig);
+        tvCustomerTypeBig = findViewById(R.id.tvCustomerTypeBig);
         Button btnUpdate = findViewById(R.id.btnUpdate);
         Button btnDelete = findViewById(R.id.btnDelete);
 
+        setSupportActionBar(toolbarDetailCustomerScreen);
+        toolbarDetailCustomerScreen.setNavigationOnClickListener(v -> finish());
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
+        rbVip.setOnClickListener(v -> tvCustomerTypeBig.setText("Khách hàng VIP"));
+        rbMember.setOnClickListener(v -> tvCustomerTypeBig.setText("Khách hàng Member"));
+        btnUpdate.setOnClickListener(v -> updateCustomer());
+        btnDelete.setOnClickListener(v -> deleteCustomer());
+    }
+
+    private void loadData() {
+        Intent intent = getIntent();
 
         String customerName = intent.getStringExtra(CustomerExtras.NAME_BIG);
-        if (customerName != null && tvCustomerNameBig != null) {
+        if (customerName != null) {
             tvCustomerNameBig.setText(customerName);
         }
 
         String name = intent.getStringExtra(CustomerExtras.NAME);
-        if (name != null && edtCustomerName != null) {
+        if (name != null) {
             edtCustomerName.setText(name);
         }
+
         String phone = intent.getStringExtra(CustomerExtras.PHONE);
-        if (phone != null && edtPhone != null) {
+        if (phone != null) {
             edtPhone.setText(phone);
         }
+
         String email = intent.getStringExtra(CustomerExtras.EMAIL);
-        if (email != null && edtEmail != null) {
+        if (email != null) {
             edtEmail.setText(email);
         }
+
         String address = intent.getStringExtra(CustomerExtras.ADDRESS);
-        if (address != null && edtAddress != null) {
+        if (address != null) {
             edtAddress.setText(address);
         }
+
         String id = intent.getStringExtra(CustomerExtras.ID);
-        if (id != null && edtCustomerCode != null) {
-            edtCustomerCode.setText(id);
+        if (id != null) {
+            tvCustomerCode.setText(id);
         }
 
         String price = intent.getStringExtra(CustomerExtras.PRICE);
-        if (price != null && edtAmount != null) {
+        if (price != null) {
             edtAmount.setText(price);
         }
+
         int status = intent.getIntExtra(CustomerExtras.STATUS, 1);
         if (status == 0) {
             rbVip.setChecked(true);
@@ -96,44 +112,45 @@ public class DetailCustomerScreen extends AppCompatActivity {
             rbMember.setChecked(true);
             tvCustomerTypeBig.setText("Khách hàng Member");
         }
+    }
 
-        if (toolbarDetailCustomerScreen != null) {
-            setSupportActionBar(toolbarDetailCustomerScreen);
-            toolbarDetailCustomerScreen.setNavigationOnClickListener(v -> finish());
+    private void updateCustomer() {
+        String updatedId = tvCustomerCode.getText().toString().trim();
+        String updatedName = edtCustomerName.getText().toString().trim();
+        String updatedPhone = edtPhone.getText().toString().trim();
+        String updatedEmail = edtEmail.getText().toString().trim();
+        String updatedAddress = edtAddress.getText().toString().trim();
+        String updatedPrice = edtAmount.getText().toString().trim();
+
+        if (updatedId.isEmpty() || updatedName.isEmpty() || updatedPhone.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập mã, tên và số điện thoại", Toast.LENGTH_SHORT).show();
+            return;
         }
-        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
-        btnUpdate.setOnClickListener(v -> {
-            String updatedId = edtCustomerCode.getText().toString().trim();
-            String updatedName = edtCustomerName.getText().toString().trim();
-            String updatedPhone = edtPhone.getText().toString().trim();
-            String updatedEmail = edtEmail.getText().toString().trim();
-            String updatedAddress = edtAddress.getText().toString().trim();
-            String updatedPrice = edtAmount.getText().toString().trim();
 
-            if (updatedId.isEmpty() || updatedName.isEmpty() || updatedPhone.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập mã, tên và số điện thoại", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        int customerStatus = rbVip.isChecked() ? 0 : 1;
+        if (!rbVip.isChecked() && !rbMember.isChecked()) {
+            customerStatus = 1;
+        }
 
-            int customerStatus = rbVip.isChecked() ? 0 : 1;
-            Customer customer = new Customer(updatedId, updatedName, updatedPhone, updatedEmail, updatedAddress, updatedPrice, customerStatus);
-            if (customerDAO.updateCustomer(customer)) {
-                Toast.makeText(this, "Cập nhật khách hàng thành công", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Không thể cập nhật khách hàng", Toast.LENGTH_SHORT).show();
-            }
-        });
-        btnDelete.setOnClickListener(v -> {
-            String customerId = edtCustomerCode.getText().toString().trim();
-            Customer customer = customerDAO.getCustomerById(customerId);
-            if (customer != null && customerDAO.deleteCustomer(customer)) {
-                Toast.makeText(this, "Đã xóa khách hàng", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Không thể xóa khách hàng", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Customer customer = new Customer(updatedId, updatedName, updatedPhone, updatedEmail, updatedAddress, updatedPrice, customerStatus);
+        if (customerDAO.updateCustomer(customer)) {
+            Toast.makeText(this, "Cập nhật khách hàng thành công", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Không thể cập nhật khách hàng", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void deleteCustomer() {
+        String customerId = tvCustomerCode.getText().toString().trim();
+        Customer customer = customerDAO.getCustomerById(customerId);
+
+        if (customer != null && customerDAO.deleteCustomer(customer)) {
+            Toast.makeText(this, "Đã xóa khách hàng", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Không thể xóa khách hàng", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

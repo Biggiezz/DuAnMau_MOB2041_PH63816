@@ -17,48 +17,6 @@
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/title_product"
         app:titleTextColor="@android:color/black">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <FrameLayout
-                android:id="@+id/layoutCartAction"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:foreground="?attr/selectableItemBackgroundBorderless">
-
-                <ImageView
-                    android:id="@+id/imgCartProduct"
-                    android:layout_width="36dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/title_cart"
-                    android:src="@drawable/ic_cart" />
-
-                <TextView
-                    android:id="@+id/txtCartBadge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_gravity="top|end"
-                    android:background="@drawable/bg_cart_badge"
-                    android:gravity="center"
-                    android:minWidth="18dp"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="2"
-                    tools:visibility="visible" />
-            </FrameLayout>
-
-        </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <View

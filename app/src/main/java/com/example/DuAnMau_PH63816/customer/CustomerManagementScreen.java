@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -26,81 +26,55 @@ import java.util.ArrayList;
 public class CustomerManagementScreen extends AppCompatActivity {
 
     private final ArrayList<Customer> customers = new ArrayList<>();
-    private CustomerAdapter adapter;
+    private RecyclerView rvCustomer;
     private CustomerDAO customerDAO;
+    private CustomerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_customer_management_screen);
-        if (!ensureAdminAccess()) {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("StaffData", MODE_PRIVATE);
+        int role = sharedPreferences.getInt("role", 1);
+        if (role != 0) {
+            Toast.makeText(this, "Bạn không có quyền truy cập chức năng này", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         customerDAO = new CustomerDAO(this);
-        setupUi();
-    }
-
-    private boolean ensureAdminAccess() {
-        SharedPreferences sharedPreferences = getSharedPreferences("StaffData", MODE_PRIVATE);
-        int role = sharedPreferences.getInt("role", 1);
-        if (role == 0) {
-            return true;
-        }
-        Toast.makeText(this, "Bạn không có quyền truy cập chức năng này", Toast.LENGTH_SHORT).show();
-        finish();
-        return false;
-    }
-
-    private void setupUi() {
-        FloatingActionButton floatAddCustomer = findViewById(R.id.fabAddCustomer);
-        RecyclerView rvCustomer = findViewById(R.id.rvCustomer);
-        Toolbar toolbarCustomerManagementScreen = findViewById(R.id.toolbarCustomerManagementScreen);
-
-        if (toolbarCustomerManagementScreen != null) {
-            setSupportActionBar(toolbarCustomerManagementScreen);
-            toolbarCustomerManagementScreen.setNavigationOnClickListener(v -> finish());
-        }
-
-        adapter = new CustomerAdapter(
-                this,
-                customers,
-                new CustomerAdapter.OnCustomerClickListener() {
-                    @Override
-                    public void onDetail(@NonNull Customer customer) {
-                        openCustomerDetail(customer);
-                    }
-
-                    @Override
-                    public void onEdit(@NonNull Customer customer) {
-                        openCustomerDetail(customer);
-                    }
-                }
-        );
-        rvCustomer.setLayoutManager(new LinearLayoutManager(this));
-        rvCustomer.setAdapter(adapter);
+        initUi();
+        setupRecyclerView();
         loadCustomers();
+    }
+
+    private void initUi() {
+        Toolbar toolbarCustomerManagementScreen = findViewById(R.id.toolbarCustomerManagementScreen);
+        rvCustomer = findViewById(R.id.rvCustomer);
+        FloatingActionButton fabAddCustomer = findViewById(R.id.fabAddCustomer);
+
+        setSupportActionBar(toolbarCustomerManagementScreen);
+        toolbarCustomerManagementScreen.setNavigationOnClickListener(v -> finish());
         BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
 
-        floatAddCustomer.setOnClickListener(v -> startActivity(new Intent(CustomerManagementScreen.this, AddCustomerScreen.class)));
+        fabAddCustomer.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddCustomerScreen.class);
+            startActivity(intent);
+        });
     }
 
-    private void openCustomerDetail(@NonNull Customer customer) {
-        Intent intent = new Intent(CustomerManagementScreen.this, DetailCustomerScreen.class);
-        intent.putExtra(CustomerExtras.NAME, customer.getName());
-        intent.putExtra(CustomerExtras.NAME_BIG, customer.getName());
-        intent.putExtra(CustomerExtras.ID, customer.getId());
-        intent.putExtra(CustomerExtras.EMAIL, customer.getEmail());
-        intent.putExtra(CustomerExtras.PHONE, customer.getPhone());
-        intent.putExtra(CustomerExtras.ADDRESS, customer.getAddress());
-        intent.putExtra(CustomerExtras.PRICE, customer.getPrice());
-        intent.putExtra(CustomerExtras.STATUS, customer.getStatus());
-        startActivity(intent);
+    private void setupRecyclerView() {
+        adapter = new CustomerAdapter(this, customers);
+        rvCustomer.setLayoutManager(new LinearLayoutManager(this));
+        rvCustomer.setAdapter(adapter);
     }
 
     private void loadCustomers() {

@@ -48,11 +48,11 @@ public class StatisticalScreen extends AppCompatActivity {
 
     private void initUi() {
         Toolbar toolbar = findViewById(R.id.toolbarStatisticalScreen);
-        btnShowList = findViewById(R.id.btnShowList);
-        imgStartDate = findViewById(R.id.imgStartDate);
-        imgEndDate = findViewById(R.id.imgEndDate);
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
+        imgStartDate = findViewById(R.id.imgStartDate);
+        imgEndDate = findViewById(R.id.imgEndDate);
+        btnShowList = findViewById(R.id.btnShowList);
         tvRevenueStatistics = findViewById(R.id.tvRevenueStatistics);
 
         if (toolbar != null) {
@@ -60,64 +60,64 @@ public class StatisticalScreen extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(v -> finish());
         }
     }
+
     private void initListener() {
         imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
         imgEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
-        btnShowList.setOnClickListener(v -> thongKeDoanhThu());
+        btnShowList.setOnClickListener(v -> tinhDoanhThu());
     }
-    private void thongKeDoanhThu() {
-        String startDateText = tvStartDate.getText().toString().trim();
-        String endDateText = tvEndDate.getText().toString().trim();
 
-        if (startDateText.isEmpty() || endDateText.isEmpty()) {
+    private void tinhDoanhThu() {
+        String tuNgayText = tvStartDate.getText().toString().trim();
+        String denNgayText = tvEndDate.getText().toString().trim();
+
+        if (tuNgayText.isEmpty() || denNgayText.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn đầy đủ từ ngày hoặc đến ngày", Toast.LENGTH_LONG).show();
             return;
         }
-        Date startDate = parseDate(startDateText);
-        Date endDate = parseDate(endDateText);
-        if (startDate == null || endDate == null) {
+
+        Date tuNgay = parseDate(tuNgayText);
+        Date denNgay = parseDate(denNgayText);
+
+        if (tuNgay == null || denNgay == null) {
             Toast.makeText(this, "Định dạng ngày không hợp lệ", Toast.LENGTH_LONG).show();
             return;
         }
-        if (startDate.after(endDate)) {
+
+        if (tuNgay.after(denNgay)) {
             Toast.makeText(this, "Từ ngày không được lớn hơn đến ngày", Toast.LENGTH_LONG).show();
             return;
         }
+
         long tongDoanhThu = 0L;
+
         for (Invoice invoice : invoiceDAO.getAllInvoices()) {
-            Date invoiceDate = parseDate(invoice.getDate());
-            if (invoiceDate != null && !invoiceDate.before(startDate) && !invoiceDate.after(endDate)) {
+            Date ngayHoaDon = parseDate(invoice.getDate());
+
+            if (ngayHoaDon != null && !ngayHoaDon.before(tuNgay) && !ngayHoaDon.after(denNgay)) {
                 tongDoanhThu += parseAmount(invoice.getTotal());
             }
         }
+
         if (tongDoanhThu == 0L) {
             Toast.makeText(this, "Không có hóa đơn trong khoảng thời gian này", Toast.LENGTH_SHORT).show();
         }
+
         tvRevenueStatistics.setText(
                 NumberFormat.getInstance(new Locale("vi", "VN")).format(tongDoanhThu) + " VND"
         );
     }
 
-    private long parseAmount(String totalText) {
-        if (totalText == null || totalText.trim().isEmpty()) {
-            return 0L;
-        }
-
-        String normalized = totalText.trim().toLowerCase(Locale.getDefault())
-                .replace("vnd", "")
-                .replace("đ", "")
-                .replace("k", "")
-                .replace(".", "")
-                .replace(",", "")
-                .trim();
-
-        if (normalized.isEmpty()) {
-            return 0L;
-        }
-
+    private long parseAmount(String text) {
         try {
-            return Long.parseLong(normalized);
-        } catch (NumberFormatException exception) {
+            return Long.parseLong(text.toLowerCase(Locale.getDefault())
+                    .replace("vnd", "")
+                    .replace("đ", "")
+                    .replace("k", "")
+                    .replace(".", "")
+                    .replace(",", "")
+                    .trim());
+        } catch (Exception exception) {
             return 0L;
         }
     }

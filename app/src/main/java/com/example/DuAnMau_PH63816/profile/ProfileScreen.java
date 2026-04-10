@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.DuAnMau_PH63816.R;
@@ -23,46 +19,31 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
 
+    private Toolbar toolbarProfileScreen;
     private ViewPager2 viewPagerProfile;
     private TextView txtCartBadgeProfile;
+    private View layoutCartActionProfile;
+    private TabLayout tabLayoutBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile_screen);
+
         CartManager.initialize(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootProfile), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
         initUi();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateCartBadge();
-    }
+        setSupportActionBar(toolbarProfileScreen);
+        toolbarProfileScreen.setNavigationOnClickListener(v -> finish());
 
-    private void initUi() {
-        Toolbar toolbarProfileScreen = findViewById(R.id.toolbarProfileScreen);
-        View layoutCartActionProfile = findViewById(R.id.layoutCartActionProfile);
-        TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
-        txtCartBadgeProfile = findViewById(R.id.txtCartBadgeProfile);
-        viewPagerProfile = findViewById(R.id.viewPagerProfile);
-        if (toolbarProfileScreen != null) {
-            setSupportActionBar(toolbarProfileScreen);
-            toolbarProfileScreen.setNavigationOnClickListener(v -> finish());
-        }
         layoutCartActionProfile.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
+
         viewPagerProfile.setAdapter(new BottomTabPagerAdapter(this));
         viewPagerProfile.setCurrentItem(3, false);
-        if (toolbarProfileScreen != null) {
-            toolbarProfileScreen.setTitle(getToolbarTitleRes(3));
-        }
-        new TabLayoutMediator(tabLayout, viewPagerProfile, (tab, position) -> {
+        toolbarProfileScreen.setTitle(R.string.setting);
+
+        new TabLayoutMediator(tabLayoutBottom, viewPagerProfile, (tab, position) -> {
             if (position == 0) {
                 tab.setText(R.string.tab_home);
                 tab.setIcon(R.drawable.ic_homepage);
@@ -77,46 +58,51 @@ public class ProfileScreen extends AppCompatActivity implements BottomTabHost {
                 tab.setIcon(R.drawable.ic_setting);
             }
         }).attach();
+
         viewPagerProfile.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                toolbarProfileScreen.setTitle(getToolbarTitleRes(position));
+                if (position == 0) {
+                    toolbarProfileScreen.setTitle(R.string.home_toolbar_title);
+                } else if (position == 1) {
+                    toolbarProfileScreen.setTitle(R.string.title_product);
+                } else if (position == 2) {
+                    toolbarProfileScreen.setTitle(R.string.notification);
+                } else {
+                    toolbarProfileScreen.setTitle(R.string.setting);
+                }
             }
         });
+
         updateCartBadge();
     }
 
-    private int getToolbarTitleRes(int position) {
-        if (position == 0) {
-            return R.string.home_toolbar_title;
-        }
-        if (position == 1) {
-            return R.string.title_product;
-        }
-        if (position == 2) {
-            return R.string.notification;
-        }
-        return R.string.setting;
+    private void initUi() {
+        toolbarProfileScreen = findViewById(R.id.toolbarProfileScreen);
+        layoutCartActionProfile = findViewById(R.id.layoutCartActionProfile);
+        tabLayoutBottom = findViewById(R.id.tabLayoutBottom);
+        viewPagerProfile = findViewById(R.id.viewPagerProfile);
+        txtCartBadgeProfile = findViewById(R.id.txtCartBadgeProfile);
     }
 
     @Override
     public void openBottomTab(int position) {
-        if (viewPagerProfile != null) {
-            viewPagerProfile.setCurrentItem(position, true);
-        }
+        viewPagerProfile.setCurrentItem(position, true);
     }
 
     private void updateCartBadge() {
-        if (txtCartBadgeProfile == null) {
-            return;
-        }
         int totalQuantity = CartManager.getTotalQuantity();
         if (totalQuantity > 0) {
             txtCartBadgeProfile.setVisibility(View.VISIBLE);
             txtCartBadgeProfile.setText(String.valueOf(totalQuantity));
-            return;
+        } else {
+            txtCartBadgeProfile.setVisibility(View.GONE);
         }
-        txtCartBadgeProfile.setVisibility(View.GONE);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCartBadge();
+    }
 }

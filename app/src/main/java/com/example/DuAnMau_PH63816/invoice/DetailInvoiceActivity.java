@@ -27,6 +27,10 @@ import java.util.Locale;
 
 public class DetailInvoiceActivity extends AppCompatActivity {
 
+    private TextView tvInvoiceCode, tvStatus, tvSubtotal, tvTotal;
+    private TextView tvCustomerName, tvCustomerPhone, tvCustomerAddress, tvDate;
+    private LinearLayout layoutItems;
+    private MaterialCardView cardStatus;
     private InvoiceDAO invoiceDAO;
     private InvoiceDetailDAO invoiceDetailDAO;
 
@@ -35,24 +39,30 @@ public class DetailInvoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_invoice);
 
-        Toolbar toolbarDetailInvoiceActivity = findViewById(R.id.toolbarDetailInvoiceActivity);
-        TextView tvInvoiceCode = findViewById(R.id.tvInvoiceCode);
-        TextView tvStatus = findViewById(R.id.tvStatus);
-        TextView tvSubtotal = findViewById(R.id.tvSubtotal);
-        TextView tvTotal = findViewById(R.id.tvTotal);
-        TextView tvCustomerName = findViewById(R.id.tvCustomerName);
-        TextView tvCustomerPhone = findViewById(R.id.tvCustomerPhone);
-        TextView tvCustomerAddress = findViewById(R.id.tvCustomerAddress);
-        TextView tvDate = findViewById(R.id.tvDate);
-        LinearLayout layoutItems = findViewById(R.id.layoutItems);
-        MaterialCardView cardStatus = findViewById(R.id.cardStatus);
         invoiceDAO = new InvoiceDAO(this);
         invoiceDetailDAO = new InvoiceDetailDAO(this);
-        if (toolbarDetailInvoiceActivity != null) {
-            setSupportActionBar(toolbarDetailInvoiceActivity);
-            toolbarDetailInvoiceActivity.setNavigationOnClickListener(v -> navigateBack());
-        }
+        initUi();
+        loadInvoice();
+    }
 
+    private void initUi() {
+        Toolbar toolbarDetailInvoiceActivity = findViewById(R.id.toolbarDetailInvoiceActivity);
+        tvInvoiceCode = findViewById(R.id.tvInvoiceCode);
+        tvStatus = findViewById(R.id.tvStatus);
+        tvSubtotal = findViewById(R.id.tvSubtotal);
+        tvTotal = findViewById(R.id.tvTotal);
+        tvCustomerName = findViewById(R.id.tvCustomerName);
+        tvCustomerPhone = findViewById(R.id.tvCustomerPhone);
+        tvCustomerAddress = findViewById(R.id.tvCustomerAddress);
+        tvDate = findViewById(R.id.tvDate);
+        layoutItems = findViewById(R.id.layoutItems);
+        cardStatus = findViewById(R.id.cardStatus);
+
+        setSupportActionBar(toolbarDetailInvoiceActivity);
+        toolbarDetailInvoiceActivity.setNavigationOnClickListener(v -> navigateBack());
+    }
+
+    private void loadInvoice() {
         Intent intent = getIntent();
         int invoiceId = intent.getIntExtra("invoice_id", -1);
         Invoice invoice = invoiceDAO.getVisibleInvoiceById(invoiceId);
@@ -71,11 +81,12 @@ public class DetailInvoiceActivity extends AppCompatActivity {
         tvCustomerPhone.setText(resolveDisplayText(invoice.getCustomerPhone(), "Chưa cập nhật số điện thoại"));
         tvCustomerAddress.setText(resolveDisplayText(invoice.getCustomerAddress(), "Chưa cập nhật địa chỉ"));
         tvDate.setText("Ngày lập: " + invoice.getDate());
-        bindItemViews(layoutItems, details);
+        bindItemViews(details);
 
         if ("ĐÃ THANH TOÁN".equals(invoice.getStatus())) {
             cardStatus.setCardBackgroundColor(Color.parseColor("#DCFCE7"));
             tvStatus.setTextColor(Color.parseColor("#16A34A"));
+            tvTotal.setTextColor(getColor(R.color.color_default));
         } else if ("ĐÃ HỦY".equals(invoice.getStatus())) {
             cardStatus.setCardBackgroundColor(Color.parseColor("#F1F5F9"));
             tvStatus.setTextColor(Color.parseColor("#64748B"));
@@ -85,7 +96,6 @@ public class DetailInvoiceActivity extends AppCompatActivity {
             tvStatus.setTextColor(Color.parseColor("#EA580C"));
             tvTotal.setTextColor(getColor(R.color.color_default));
         }
-
     }
 
     private void navigateBack() {
@@ -100,7 +110,7 @@ public class DetailInvoiceActivity extends AppCompatActivity {
         finish();
     }
 
-    private void bindItemViews(LinearLayout layoutItems, ArrayList<InvoiceDetail> details) {
+    private void bindItemViews(ArrayList<InvoiceDetail> details) {
         layoutItems.removeAllViews();
 
         for (InvoiceDetail detail : details) {

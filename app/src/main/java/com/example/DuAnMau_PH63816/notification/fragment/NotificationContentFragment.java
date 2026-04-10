@@ -1,11 +1,13 @@
 package com.example.DuAnMau_PH63816.notification.fragment;
 
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,15 +18,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.notification.config.ConfigNotification;
 import com.example.DuAnMau_PH63816.product.ProductScreen;
 import com.google.android.material.button.MaterialButton;
-
 
 public class NotificationContentFragment extends Fragment {
 
@@ -36,49 +33,43 @@ public class NotificationContentFragment extends Fragment {
     private MaterialButton btnShopping;
     private ImageView imgSuccess;
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_notification_content, container, false);
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initUi(view);
+        showDefaultState();
+    }
+
+    private void initUi(View view) {
         txtNotificationTitle = view.findViewById(R.id.txtNotificationTitle);
         txtNotificationMessage = view.findViewById(R.id.txtNotificationMessage);
         btnShopping = view.findViewById(R.id.btnShopping);
         imgSuccess = view.findViewById(R.id.imgSuccess);
-        showDefaultState();
-        btnShopping.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ProductScreen.class);
-            startActivity(intent);
-        });
+        btnShopping.setOnClickListener(v -> startActivity(new Intent(requireContext(), ProductScreen.class)));
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        boolean fromCheckout = requireActivity()
-                .getIntent()
-                .getBooleanExtra("from_checkout", false);
-        if (!fromCheckout) {
+        boolean fromCheckout = requireActivity().getIntent().getBooleanExtra("from_checkout", false);
+        if (fromCheckout) {
+            showCheckoutState();
+            showCheckoutNotification();
+        } else {
             showDefaultState();
-            return;
         }
-        showCheckoutState();
-        maybeShowCheckoutNotification();
     }
 
-    private void maybeShowCheckoutNotification() {
+    private void showCheckoutNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-        ) != PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
                     new String[]{Manifest.permission.POST_NOTIFICATIONS},
                     REQUEST_POST_NOTIFICATIONS
@@ -87,68 +78,33 @@ public class NotificationContentFragment extends Fragment {
             return;
         }
 
-//        Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), ConfigNotification.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("JP Mart")
+                .setContentText("Thanh toán thành công")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(requireContext(), ConfigNotification.CHANNEL_ID)
-
-                        /// icon hiển thị trên status bar
-                        .setSmallIcon(R.drawable.ic_notification)
-
-                        /// tiêu đề của notification
-                        .setContentTitle("JP Mart")
-
-                        /// nội dung cả notification
-                        .setContentText("Thanh toán thành công")
-
-                        /// truyền 1 hình ảnh vào notification
-//                        .setStyle(new NotificationCompat.BigPictureStyle()
-//                                .bigLargeIcon(logo)
-//                                .bigLargeIcon((Bitmap) null)
-//                        )
-
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true);
-
-        NotificationManagerCompat.from(requireContext())
-                .notify(CHECKOUT_NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(requireContext()).notify(CHECKOUT_NOTIFICATION_ID, builder.build());
         requireActivity().getIntent().removeExtra("from_checkout");
     }
 
     private void showDefaultState() {
-        if (txtNotificationTitle != null) {
-            txtNotificationTitle.setText(R.string.notification);
-        }
-        if (txtNotificationMessage != null) {
-            txtNotificationMessage.setText(R.string.dont_have_any_products);
-        }
-        if (btnShopping != null) {
-            btnShopping.setVisibility(View.GONE);
-        }
-        if (imgSuccess != null) {
-            imgSuccess.setVisibility(View.GONE);
-        }
+        txtNotificationTitle.setText(R.string.notification);
+        txtNotificationMessage.setText(R.string.dont_have_any_products);
+        btnShopping.setVisibility(View.GONE);
+        imgSuccess.setVisibility(View.GONE);
     }
 
     private void showCheckoutState() {
-        if (txtNotificationTitle != null) {
-            txtNotificationTitle.setText(R.string.payment_successful);
-        }
-        if (txtNotificationMessage != null) {
-            txtNotificationMessage.setText(R.string.your_order_has_been_confirmed);
-        }
-        if (btnShopping != null) {
-            btnShopping.setVisibility(View.VISIBLE);
-        }
-        if (imgSuccess != null) {
-            imgSuccess.setVisibility(View.VISIBLE);
-        }
+        txtNotificationTitle.setText(R.string.payment_successful);
+        txtNotificationMessage.setText(R.string.your_order_has_been_confirmed);
+        btnShopping.setVisibility(View.VISIBLE);
+        imgSuccess.setVisibility(View.VISIBLE);
     }
 
     private void showPermissionState() {
-        if (txtNotificationMessage != null) {
-            txtNotificationMessage.setText(R.string.grant_notification_permission);
-        }
+        txtNotificationMessage.setText(R.string.grant_notification_permission);
     }
 
     @Override
@@ -158,7 +114,7 @@ public class NotificationContentFragment extends Fragment {
             return;
         }
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            maybeShowCheckoutNotification();
+            showCheckoutNotification();
             return;
         }
         showPermissionState();

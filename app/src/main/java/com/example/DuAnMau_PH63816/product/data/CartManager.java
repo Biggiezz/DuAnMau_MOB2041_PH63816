@@ -21,7 +21,9 @@ public final class CartManager {
 
     private static final LinkedHashMap<Integer, CartItem> ITEMS = new LinkedHashMap<>();
     private static CartDbHelper dbHelper;
+    private static Context appContext;
     private static boolean isLoaded = false;
+    private static String currentOwnerKey;
 
     private CartManager() {
     }
@@ -31,17 +33,25 @@ public final class CartManager {
             return;
         }
 
+        appContext = context.getApplicationContext();
+
         if (dbHelper == null) {
-            dbHelper = new CartDbHelper(context.getApplicationContext());
+            dbHelper = new CartDbHelper(appContext);
         }
 
-        if (!isLoaded) {
+        String resolvedOwnerKey = resolveCurrentOwnerKey();
+        if (!isLoaded || !resolvedOwnerKey.equals(currentOwnerKey)) {
+            currentOwnerKey = resolvedOwnerKey;
             loadFromDatabase();
         }
     }
 
-    public static void addProduct(@NonNull Product product) {
+    public static boolean addProduct(@NonNull Product product) {
         ensureLoaded();
+
+        if (getAvailableStock(product) <= 0) {
+            return false;
+        }
 
         int productId = getProductKey(product);
         CartItem item = ITEMS.get(productId);
@@ -55,6 +65,7 @@ public final class CartManager {
         }
 
         saveItem(item);
+        return true;
     }
 
     private static Product coppyProduct(Product product) {
@@ -78,14 +89,14 @@ public final class CartManager {
         return product.getName().hashCode();
     }
 
-    public static void increaseQuantity(@NonNull Product product) {
-        addProduct(product);
+    public static boolean increaseQuantity(@NonNull Product product) {
+        return addProduct(product);
     }
 
     public static void decreaseQuantity(@NonNull Product product) {
         ensureLoaded();
 
-        int productId = product.getId();
+        int productId = getProductKey(product);
         CartItem item = ITEMS.get(productId);
 
         if (item == null) {
@@ -106,7 +117,7 @@ public final class CartManager {
     public static void removeProduct(@NonNull Product product) {
         ensureLoaded();
 
-        int productId = product.getId();
+        int productId = getProductKey(product);
         ITEMS.remove(productId);
         deleteItem(productId);
     }
@@ -118,13 +129,33 @@ public final class CartManager {
 
         SQLiteDatabase database = getDatabase();
         if (database != null) {
-            database.delete("Cart", null, null);
+            database.delete("Cart", "ownerKey = ?", new String[]{requireOwnerKey()});
         }
     }
 
     public static List<CartItem> getItems() {
         ensureLoaded();
         return new ArrayList<>(ITEMS.values());
+    }
+
+    public static int getQuantityForProduct(@NonNull Product product) {
+        ensureLoaded();
+
+        CartItem item = ITEMS.get(getProductKey(product));
+        if (item == null) {
+            return 0;
+        }
+        return item.getQuantity();
+    }
+
+    public static int getAvailableStock(@NonNull Product product) {
+        int baseStock = parseStock(product.getStockLabel());
+        int reserved = getQuantityForProduct(product);
+        return Math.max(0, baseStock - reserved);
+    }
+
+    public static String getAvailableStockLabel(@NonNull Product product) {
+        return formatStockLabel(getAvailableStock(product));
     }
 
     public static int getTotalQuantity() {
@@ -164,10 +195,13 @@ public final class CartManager {
             return;
         }
 
-        try (Cursor cursor = database.rawQuery("SELECT * FROM Cart ORDER BY productId ASC", null)) {
+        try (Cursor cursor = database.rawQuery(
+                "SELECT * FROM Cart WHERE ownerKey = ? ORDER BY productId ASC",
+                new String[]{requireOwnerKey()}
+        )) {
             while (cursor.moveToNext()) {
                 CartItem item = mapCartItem(cursor);
-                ITEMS.put(item.getProduct().getId(), item);
+                ITEMS.put(getProductKey(item.getProduct()), item);
             }
 
             isLoaded = true;
@@ -201,8 +235,7 @@ public final class CartManager {
         Product product = item.getProduct();
 
         ContentValues values = new ContentValues();
-        /// nếu id = 0 thì nhiều sản phẩm sẽ đè lên nhau
-//        values.put("productId", product.getId());
+        values.put("ownerKey", requireOwnerKey());
         values.put("productId", getProductKey(product));
         values.put("name", product.getName());
         values.put("priceLabel", product.getPriceLabel());
@@ -223,7 +256,11 @@ public final class CartManager {
             return;
         }
 
-        database.delete("Cart", "productId = ?", new String[]{String.valueOf(productId)});
+        database.delete(
+                "Cart",
+                "ownerKey = ? AND productId = ?",
+                new String[]{requireOwnerKey(), String.valueOf(productId)}
+        );
     }
 
     private static SQLiteDatabase getDatabase() {
@@ -234,6 +271,9 @@ public final class CartManager {
     }
 
     private static void ensureLoaded() {
+        if (appContext != null) {
+            initialize(appContext);
+        }
         if (dbHelper == null) return;
         if (!isLoaded) {
             loadFromDatabase();
@@ -253,12 +293,59 @@ public final class CartManager {
             return 0;
         }
 
-        String cleanPrice = priceLabel.replace("đ", "").replace("k", "").replace("K", "").replace(".", "").replace(",", "").replace(" ", "").trim();
+        String cleanPrice = priceLabel
+                .replace("đ", "")
+                .replace("k", "")
+                .replace("K", "")
+                .replace(".", "")
+                .replace(",", "")
+                .replace(" ", "").trim();
 
         try {
             return Long.parseLong(cleanPrice);
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    private static int parseStock(String stockLabel) {
+        if (stockLabel == null || stockLabel.trim().isEmpty()) {
+            return 0;
+        }
+
+        String digits = stockLabel.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private static String formatStockLabel(int stock) {
+        return " · Tồn: " + Math.max(0, stock);
+    }
+
+    private static String resolveCurrentOwnerKey() {
+        if (appContext == null) {
+            return "ACC_GUEST";
+        }
+
+        int staffCode = appContext.getSharedPreferences("StaffData", Context.MODE_PRIVATE)
+                .getInt("staffCode", -1);
+        if (staffCode <= 0) {
+            return "ACC_GUEST";
+        }
+        return "ACC_" + staffCode;
+    }
+
+    private static String requireOwnerKey() {
+        if (currentOwnerKey == null || currentOwnerKey.trim().isEmpty()) {
+            currentOwnerKey = resolveCurrentOwnerKey();
+        }
+        return currentOwnerKey;
     }
 }

@@ -10,19 +10,16 @@
     android:fitsSystemWindows="true"
     tools:context=".invoice.DetailInvoiceActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarDetailInvoiceActivity"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="Chi tiết hóa đơn"
-        app:titleTextColor="@android:color/black" />
+    <LinearLayout
+        style="@style/PageHeaderContainer"
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#1A000000" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarDetailInvoiceActivity"
+            style="@style/PageToolbar"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Chi tiết hóa đơn" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"

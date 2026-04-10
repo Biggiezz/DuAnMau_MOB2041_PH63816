@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.DuAnMau_PH63816.product.ProductImageResolver;
 import com.example.DuAnMau_PH63816.product.model.Product;
+import com.example.DuAnMau_PH63816.product.model.CartItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDAO {
 
@@ -88,6 +90,48 @@ public class ProductDAO {
     public boolean deleteProduct(Product product) {
         int kq = sqLiteDatabase.delete("Product", "id = ?", new String[]{String.valueOf(product.getId())});
         return kq > 0;
+    }
+
+    public boolean applyCheckoutStock(List<CartItem> cartItems) {
+        if (cartItems == null || cartItems.isEmpty()) {
+            return true;
+        }
+
+        sqLiteDatabase.beginTransaction();
+        try {
+            for (CartItem item : cartItems) {
+                if (item == null || item.getProduct() == null) {
+                    continue;
+                }
+
+                Product product = item.getProduct();
+                if (product.getId() <= 0) {
+                    continue;
+                }
+
+                int currentStock = getCurrentStock(product.getId());
+                if (currentStock < item.getQuantity()) {
+                    return false;
+                }
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("stockLabel", formatStockLabel(currentStock - item.getQuantity()));
+                int updatedRows = sqLiteDatabase.update(
+                        "Product",
+                        contentValues,
+                        "id = ?",
+                        new String[]{String.valueOf(product.getId())}
+                );
+                if (updatedRows <= 0) {
+                    return false;
+                }
+            }
+
+            sqLiteDatabase.setTransactionSuccessful();
+            return true;
+        } finally {
+            sqLiteDatabase.endTransaction();
+        }
     }
 
     private void ensureSeedData() {
@@ -187,5 +231,38 @@ public class ProductDAO {
                     new String[]{String.valueOf(product.getId())}
             );
         }
+    }
+
+    private int getCurrentStock(int productId) {
+        try (Cursor cursor = sqLiteDatabase.rawQuery(
+                "SELECT stockLabel FROM Product WHERE id = ? LIMIT 1",
+                new String[]{String.valueOf(productId)}
+        )) {
+            if (!cursor.moveToFirst()) {
+                return 0;
+            }
+            return parseStockLabel(cursor.getString(0));
+        }
+    }
+
+    private int parseStockLabel(String stockLabel) {
+        if (stockLabel == null || stockLabel.trim().isEmpty()) {
+            return 0;
+        }
+
+        String digits = stockLabel.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private String formatStockLabel(int stock) {
+        return " · Tồn: " + Math.max(0, stock);
     }
 }

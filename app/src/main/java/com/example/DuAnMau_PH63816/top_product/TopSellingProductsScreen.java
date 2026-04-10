@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class TopSellingProductsScreen extends AppCompatActivity {
 
     private TextView tvStartDate, tvEndDate;
     private EditText edtItemCount;
+    private ImageView imgStartDate, imgEndDate;
     private RecyclerView rcvTopProducts;
     private TopSellingProductAdapter adapter;
     private InvoiceDAO invoiceDAO;
@@ -70,9 +72,11 @@ public class TopSellingProductsScreen extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbarTopSellingProductsScreen);
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
+        imgStartDate = findViewById(R.id.imgStartDate);
+        imgEndDate = findViewById(R.id.imgEndDate);
         edtItemCount = findViewById(R.id.edtItemCount);
-        rcvTopProducts = findViewById(R.id.rcvTopProducts);
         btnShowList = findViewById(R.id.btnShowList);
+        rcvTopProducts = findViewById(R.id.rcvTopProducts);
 
         /// Gắn adapter cho RecyclerView để hiển thị danh sách top sản phẩm.
         adapter = new TopSellingProductAdapter(this, new ArrayList<>());
@@ -81,16 +85,16 @@ public class TopSellingProductsScreen extends AppCompatActivity {
         rcvTopProducts.setNestedScrollingEnabled(false);
         rcvTopProducts.setVisibility(View.GONE);
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
         BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
     }
 
     private void setListener() {
         tvStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
         tvEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
+        imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
+        imgEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
         btnShowList.setOnClickListener(v -> xuLyBtnShowList());
     }
 
@@ -102,6 +106,7 @@ public class TopSellingProductsScreen extends AppCompatActivity {
         /// Kiểm tra người dùng đã nhập đủ thông tin trước khi thống kê.
         if (startDateText.isEmpty() || endDateText.isEmpty() || itemCountText.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            rcvTopProducts.setVisibility(View.GONE);
             return;
         }
 
@@ -118,13 +123,13 @@ public class TopSellingProductsScreen extends AppCompatActivity {
             return;
         }
 
-        int limit = Integer.parseInt(itemCountText);
-//        try {
-//            limit = Integer.parseInt(itemCountText);
-//        } catch (NumberFormatException e) {
-//            Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+        int limit;
+        try {
+            limit = Integer.parseInt(itemCountText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (limit <= 0) {
             Toast.makeText(this, "Số lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();
@@ -159,13 +164,16 @@ public class TopSellingProductsScreen extends AppCompatActivity {
                 continue;
             }
 
-            TopSellingProductItem item = map.computeIfAbsent(productName, n ->
-                    new TopSellingProductItem(n, detail.getImageRes(), 0, 0));
+            TopSellingProductItem item = map.get(productName);
+            if (item == null) {
+                item = new TopSellingProductItem(productName, detail.getImageRes(), 0, 0);
+                map.put(productName, item);
+            }
 
             item.setSoldQuantity(item.getSoldQuantity() + detail.getQuantity());
             item.setRevenue(item.getRevenue() + parseAmount(detail.getTotalPrice()));
         }
-        /// Chuyển map thành list để hiển thị
+
         List<TopSellingProductItem> list = new ArrayList<>(map.values());
 
         /// Sắp xếp giảm dần theo số lượng bán, nếu bằng nhau thì doanh thu lớn hơn đứng trước

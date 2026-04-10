@@ -22,6 +22,7 @@ import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.product.adapter.CartAdapter;
 import com.example.DuAnMau_PH63816.product.data.CartManager;
+import com.example.DuAnMau_PH63816.product.data.ProductDAO;
 import com.example.DuAnMau_PH63816.product.model.CartItem;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.List;
 public class CartActivity extends AppCompatActivity {
 
     private final List<CartItem> cartItems = new ArrayList<>();
+    private RecyclerView rvCartProducts;
     private CartAdapter cartAdapter;
     private TextView txtCartItemCount;
     private TextView txtCartEmpty;
@@ -37,6 +39,7 @@ public class CartActivity extends AppCompatActivity {
     private TextView txtCartTotal;
     private View layoutCartSummary;
     private InvoiceDAO invoiceDAO;
+    private ProductDAO productDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +48,21 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
         CartManager.initialize(this);
         invoiceDAO = new InvoiceDAO(this);
+        productDAO = new ProductDAO(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        initUi();
+        setupRecyclerView();
+        refreshCart();
+    }
+
+    private void initUi() {
         Toolbar toolbar = findViewById(R.id.toolbarCart);
-        RecyclerView rvCartProducts = findViewById(R.id.rvCartProducts);
+        rvCartProducts = findViewById(R.id.rvCartProducts);
         Button btnCheckout = findViewById(R.id.btnCheckout);
         txtCartItemCount = findViewById(R.id.txtCartItemCount);
         txtCartEmpty = findViewById(R.id.txtCartEmpty);
@@ -60,53 +70,51 @@ public class CartActivity extends AppCompatActivity {
         txtCartTotal = findViewById(R.id.txtCartTotal);
         layoutCartSummary = findViewById(R.id.layoutCartSummary);
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-            }
-            toolbar.setNavigationOnClickListener(v -> finish());
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        toolbar.setNavigationOnClickListener(v -> finish());
+        btnCheckout.setOnClickListener(v -> checkout());
+    }
 
-        cartAdapter = new CartAdapter(
-                this,
-                cartItems,
-                product -> {
-                    CartManager.decreaseQuantity(product);
-                    refreshCart();
-                },
-                product -> {
-                    CartManager.increaseQuantity(product);
-                    refreshCart();
-                }
-        );
+    private void setupRecyclerView() {
+        cartAdapter = new CartAdapter(this, cartItems);
+
         rvCartProducts.setLayoutManager(new LinearLayoutManager(this));
         rvCartProducts.setAdapter(cartAdapter);
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
+    }
 
-        btnCheckout.setOnClickListener(v -> {
-            if (CartManager.getItems().isEmpty()) {
-                Toast.makeText(this, getString(R.string.cart_empty), Toast.LENGTH_LONG).show();
-                return;
-            }
+    private void checkout() {
+        ArrayList<CartItem> checkoutItems = new ArrayList<>(CartManager.getItems());
+        if (checkoutItems.isEmpty()) {
+            Toast.makeText(this, getString(R.string.cart_empty), Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            int createdInvoiceId = invoiceDAO != null ? invoiceDAO.createPaidInvoiceFromCart(new ArrayList<>(CartManager.getItems())) : -1;
-            if (createdInvoiceId == -1) {
-                Toast.makeText(this, "Thanh toán thất bại, chưa tạo được hóa đơn", Toast.LENGTH_LONG).show();
-                return;
-            }
+        int createdInvoiceId = invoiceDAO.createPaidInvoiceFromCart(checkoutItems);
+        if (createdInvoiceId == -1) {
+            Toast.makeText(this, "Thanh toán thất bại, chưa tạo được hóa đơn", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            CartManager.clear();
-            refreshCart();
+        if (!productDAO.applyCheckoutStock(checkoutItems)) {
+            invoiceDAO.deleteInvoice(createdInvoiceId);
+            Toast.makeText(this, "Thanh toán thất bại, không cập nhật được tồn kho", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            Intent intent = new Intent(this, HomePageScreen.class);
-            intent.putExtra(BottomButtonNavigator.EXTRA_INITIAL_TAB, BottomButtonNavigator.TAB_NOTIFICATION);
-            intent.putExtra("from_checkout", true);
-            intent.putExtra("created_invoice_id", createdInvoiceId);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
-        });
+        CartManager.clear();
+        refreshCart();
 
+        Intent intent = new Intent(this, HomePageScreen.class);
+        intent.putExtra(BottomButtonNavigator.EXTRA_INITIAL_TAB, BottomButtonNavigator.TAB_NOTIFICATION);
+        intent.putExtra("from_checkout", true);
+        intent.putExtra("created_invoice_id", createdInvoiceId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -115,7 +123,7 @@ public class CartActivity extends AppCompatActivity {
         refreshCart();
     }
 
-    private void refreshCart() {
+    public void refreshCart() {
         cartItems.clear();
         cartItems.addAll(CartManager.getItems());
         cartAdapter.notifyDataSetChanged();
@@ -133,6 +141,9 @@ public class CartActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (productDAO != null) {
+            productDAO.close();
+        }
         if (invoiceDAO != null) {
             invoiceDAO.close();
         }

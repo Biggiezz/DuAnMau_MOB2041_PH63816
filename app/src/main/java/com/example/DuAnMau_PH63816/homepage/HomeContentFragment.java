@@ -34,64 +34,31 @@ public class HomeContentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindProductNavigation(view);
-        bindCategoryNavigation(view);
-        bindCustomerNavigation(view);
-        bindPersonnelNavigation(view);
-        bindInvoiceNavigation(view);
-        bindTopCustomerNavigation(view);
-        bindStatisticalNavigation(view);
-        bindBestSellingNavigation(view);
-    }
+        ImageView imgProduct = view.findViewById(R.id.imgProduct);
+        ImageView imgCategory = view.findViewById(R.id.imgCategory);
+        ImageView imgCustomer = view.findViewById(R.id.imgCustomer);
+        ImageView imgPersonnel = view.findViewById(R.id.imgPersonnel);
+        ImageView imgInvoice = view.findViewById(R.id.imgInvoice);
+        ImageView imgTopCustomer = view.findViewById(R.id.imgTopCustomer);
+        ImageView imgStatistical = view.findViewById(R.id.imgStatistical);
+        ImageView imgBestSelling = view.findViewById(R.id.imgBestSelling);
+        View layoutCustomer = view.findViewById(R.id.layoutCustomer);
+        View layoutPersonnel = view.findViewById(R.id.layoutPersonnel);
 
-    private void bindProductNavigation(View root) {
-        ImageView imageView = root.findViewById(R.id.imgProduct);
-        imageView.setOnClickListener(v -> openProductTab());
-    }
+        imgProduct.setOnClickListener(v -> openProductTab());
+        imgCategory.setOnClickListener(v -> startActivity(new Intent(requireContext(), CategoryManagementScreen.class)));
+        imgInvoice.setOnClickListener(v -> startActivity(new Intent(requireContext(), InvoiceActivity.class)));
+        imgTopCustomer.setOnClickListener(v -> startActivity(new Intent(requireContext(), TopCustomerBuyingProductsScreen.class)));
+        imgStatistical.setOnClickListener(v -> startActivity(new Intent(requireContext(), StatisticalScreen.class)));
+        imgBestSelling.setOnClickListener(v -> startActivity(new Intent(requireContext(), TopSellingProductsScreen.class)));
 
-    private void bindCategoryNavigation(View root) {
-        ImageView imageView = root.findViewById(R.id.imgCategory);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), CategoryManagementScreen.class)));
-    }
-
-    private void bindCustomerNavigation(View root) {
-        View container = root.findViewById(R.id.layoutCustomer);
-        if (!isAdmin()) {
-            hideAdminContainer(container);
-            return;
+        if (isAdmin()) {
+            imgCustomer.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomerManagementScreen.class)));
+            imgPersonnel.setOnClickListener(v -> startActivity(new Intent(requireContext(), StaffManagementScreen.class)));
+        } else {
+            hideAdminContainer(layoutCustomer);
+            hideAdminContainer(layoutPersonnel);
         }
-        ImageView imageView = root.findViewById(R.id.imgCustomer);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomerManagementScreen.class)));
-    }
-
-    private void bindPersonnelNavigation(View root) {
-        View container = root.findViewById(R.id.layoutPersonnel);
-        if (!isAdmin()) {
-            hideAdminContainer(container);
-            return;
-        }
-        ImageView imageView = root.findViewById(R.id.imgPersonnel);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), StaffManagementScreen.class)));
-    }
-
-    private void bindInvoiceNavigation(View root) {
-        ImageView imageView = root.findViewById(R.id.imgInvoice);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), InvoiceActivity.class)));
-    }
-
-    private void bindTopCustomerNavigation(View root) {
-        ImageView imageView = root.findViewById(R.id.imgTopCustomer);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), TopCustomerBuyingProductsScreen.class)));
-    }
-
-    private void bindStatisticalNavigation(View root) {
-        ImageView imageView = root.findViewById(R.id.imgStatistical);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), StatisticalScreen.class)));
-    }
-
-    private void bindBestSellingNavigation(View root) {
-        ImageView imageView = root.findViewById(R.id.imgBestSelling);
-        imageView.setOnClickListener(v -> startActivity(new Intent(requireContext(), TopSellingProductsScreen.class)));
     }
 
     private boolean isAdmin() {

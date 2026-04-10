@@ -12,8 +12,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.DuAnMau_PH63816.R;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class CategoryManagementScreen extends AppCompatActivity {
+
+    private Toolbar toolbarCategoryManagementScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,33 +33,33 @@ public class CategoryManagementScreen extends AppCompatActivity {
     }
 
     private void initUi() {
-        Toolbar toolbarCategoryManagementScreen = findViewById(R.id.toolbarCategoryManagementScreen);
-        TabLayout tabLayout = findViewById(R.id.tabLayoutBottom);
+        toolbarCategoryManagementScreen = findViewById(R.id.toolbarCategoryManagementScreen);
+        TabLayout tabLayoutBottom = findViewById(R.id.tabLayoutBottom);
         ViewPager2 viewPagerCategory = findViewById(R.id.viewPagerCategory);
-        if (toolbarCategoryManagementScreen != null) {
-            setSupportActionBar(toolbarCategoryManagementScreen);
-            toolbarCategoryManagementScreen.setNavigationOnClickListener(v -> finish());
-        }
+
+        setSupportActionBar(toolbarCategoryManagementScreen);
+        toolbarCategoryManagementScreen.setNavigationOnClickListener(v -> finish());
+
         viewPagerCategory.setAdapter(new CategoryBottomPagerAdapter(this));
         viewPagerCategory.setCurrentItem(0, false);
-        if (toolbarCategoryManagementScreen != null) {
-            toolbarCategoryManagementScreen.setTitle(getToolbarTitleRes(0));
-        }
-//        new TabLayoutMediator(tabLayout, viewPagerCategory, (tab, position) -> {
-//            if (position == 0) {
-//                tab.setText(R.string.home_label_category);
-//                tab.setIcon(R.drawable.btn_category);
-//            } else if (position == 1) {
-//                tab.setText(R.string.tab_cart);
-//                tab.setIcon(R.drawable.ic_product);
-//            } else if (position == 2) {
-//                tab.setText(R.string.tab_notification);
-//                tab.setIcon(R.drawable.ic_notification);
-//            } else {
-//                tab.setText(R.string.tab_profile);
-//                tab.setIcon(R.drawable.ic_setting);
-//            }
-//        }).attach();
+        toolbarCategoryManagementScreen.setTitle(getToolbarTitleRes(0));
+
+        new TabLayoutMediator(tabLayoutBottom, viewPagerCategory, (tab, position) -> {
+            if (position == 0) {
+                tab.setText(R.string.home_label_category);
+                tab.setIcon(R.drawable.btn_category);
+            } else if (position == 1) {
+                tab.setText(R.string.tab_cart);
+                tab.setIcon(R.drawable.ic_product);
+            } else if (position == 2) {
+                tab.setText(R.string.tab_notification);
+                tab.setIcon(R.drawable.ic_notification);
+            } else {
+                tab.setText(R.string.tab_profile);
+                tab.setIcon(R.drawable.ic_setting);
+            }
+        }).attach();
+
         viewPagerCategory.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

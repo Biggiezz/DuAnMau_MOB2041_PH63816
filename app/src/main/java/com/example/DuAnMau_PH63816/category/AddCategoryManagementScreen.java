@@ -22,6 +22,9 @@ import com.example.DuAnMau_PH63816.category.model.Category;
 import java.util.List;
 
 public class AddCategoryManagementScreen extends AppCompatActivity {
+
+    private EditText edtNameCategory, edtCodeCategory, edtCountCategory, edtDescribeCategory;
+    private Spinner spinnerCategoryIcon;
     private CategoryDAO categoryDAO;
     private int selectedIconResId = R.drawable.btn_category;
 
@@ -41,68 +44,28 @@ public class AddCategoryManagementScreen extends AppCompatActivity {
 
     private void initUi() {
         Toolbar toolbarAddCategory = findViewById(R.id.toolbarAddCategoryManagementScreen);
-        EditText edtNameCategory = findViewById(R.id.edtNameCategory);
-        EditText edtCodeCategory = findViewById(R.id.edtCodeCategory);
-        EditText edtCountCategory = findViewById(R.id.edtCountCategory);
-        EditText edtDescribeCategory = findViewById(R.id.edtDescribeCategory);
-        Spinner spinnerCategoryIcon = findViewById(R.id.spinnerCategoryIcon);
+        edtNameCategory = findViewById(R.id.edtNameCategory);
+        edtCodeCategory = findViewById(R.id.edtCodeCategory);
+        edtCountCategory = findViewById(R.id.edtCountCategory);
+        edtDescribeCategory = findViewById(R.id.edtDescribeCategory);
+        spinnerCategoryIcon = findViewById(R.id.spinnerCategoryIcon);
         Button btnAddCategory = findViewById(R.id.btnAddCategory);
-        setupIconSpinner(spinnerCategoryIcon, selectedIconResId);
-        if (toolbarAddCategory != null) {
-            setSupportActionBar(toolbarAddCategory);
-            toolbarAddCategory.setNavigationOnClickListener(v -> finish());
-        }
-        btnAddCategory.setOnClickListener(v -> {
-            String name = edtNameCategory.getText().toString().trim();
-            String code = edtCodeCategory.getText().toString().trim();
-            String count = edtCountCategory.getText().toString().trim();
-            String describe = edtDescribeCategory.getText().toString().trim();
-            if (name.isEmpty() || code.isEmpty() || count.isEmpty() || describe.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập tên, mã, số lượng và mô tả", Toast.LENGTH_LONG).show();
-                return;
-            }
-            if (categoryDAO.isCategoryIdExists(code)) {
-                Toast.makeText(this, "Mã danh mục đã tồn tại", Toast.LENGTH_LONG).show();
-                return;
-            }
-            int categoryId;
-            int productCount;
-            try {
-                categoryId = Integer.parseInt(code);
-                productCount = Integer.parseInt(count);
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Mã danh mục và số lượng phải là số", Toast.LENGTH_LONG).show();
-                return;
-            }
 
-            Category category = new Category();
-            category.setId(categoryId);
-            category.setName(name);
-            category.setProductCount(productCount);
-            category.setIconResId(selectedIconResId);
-            category.setDescribe(describe);
-            if (categoryDAO.insertCategory(category)) {
-                Toast.makeText(this, "Thêm danh mục thành công", Toast.LENGTH_LONG).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Thêm danh mục thất bại", Toast.LENGTH_LONG).show();
-            }
-        });
+        setSupportActionBar(toolbarAddCategory);
+        toolbarAddCategory.setNavigationOnClickListener(v -> finish());
+        setupIconSpinner();
+        btnAddCategory.setOnClickListener(v -> saveCategory());
     }
 
-    private void setupIconSpinner(Spinner spinner, int preselectedIconResId) {
-        if (spinner == null) {
-            return;
-        }
-
+    private void setupIconSpinner() {
         List<CategoryIconSpinnerAdapter.CategoryIconItem> iconItems = CategoryIconSpinnerAdapter.createDefaultItems();
         CategoryIconSpinnerAdapter adapter = new CategoryIconSpinnerAdapter(this, iconItems);
-        spinner.setAdapter(adapter);
+        spinnerCategoryIcon.setAdapter(adapter);
 
-        int selectedPosition = CategoryIconSpinnerAdapter.findPositionByIconResId(iconItems, preselectedIconResId);
+        int selectedPosition = CategoryIconSpinnerAdapter.findPositionByIconResId(iconItems, selectedIconResId);
         selectedIconResId = iconItems.get(selectedPosition).getIconResId();
-        spinner.setSelection(selectedPosition, false);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerCategoryIcon.setSelection(selectedPosition, false);
+        spinnerCategoryIcon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                 CategoryIconSpinnerAdapter.CategoryIconItem selectedItem = (CategoryIconSpinnerAdapter.CategoryIconItem) parent.getItemAtPosition(position);
@@ -113,6 +76,47 @@ public class AddCategoryManagementScreen extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void saveCategory() {
+        String name = edtNameCategory.getText().toString().trim();
+        String code = edtCodeCategory.getText().toString().trim();
+        String count = edtCountCategory.getText().toString().trim();
+        String describe = edtDescribeCategory.getText().toString().trim();
+
+        if (name.isEmpty() || code.isEmpty() || count.isEmpty() || describe.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập tên, mã, số lượng và mô tả", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (categoryDAO.isCategoryIdExists(code)) {
+            Toast.makeText(this, "Mã danh mục đã tồn tại", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int categoryId;
+        int productCount;
+        try {
+            categoryId = Integer.parseInt(code);
+            productCount = Integer.parseInt(count);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Mã danh mục và số lượng phải là số", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Category category = new Category();
+        category.setId(categoryId);
+        category.setName(name);
+        category.setProductCount(productCount);
+        category.setIconResId(selectedIconResId);
+        category.setDescribe(describe);
+
+        if (categoryDAO.insertCategory(category)) {
+            Toast.makeText(this, "Thêm danh mục thành công", Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Thêm danh mục thất bại", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

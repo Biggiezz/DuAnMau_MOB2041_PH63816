@@ -7,20 +7,16 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <!-- TOOLBAR -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarEditStaffScreen"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="Chỉnh sửa nhân viên"
-        app:titleTextColor="@android:color/black" />
+    <LinearLayout
+        style="@style/PageHeaderContainer"
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#1A000000" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarEditStaffScreen"
+            style="@style/PageToolbar"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Chỉnh sửa nhân viên" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"

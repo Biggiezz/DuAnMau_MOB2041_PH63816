@@ -21,17 +21,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class InvoiceDAO {
 
+    private final Context appContext;
     private final InvoiceDbHelper dbHelper;
     private final SQLiteDatabase sqLiteDatabase;
     private final CustomerDAO customerDAO;
     private final InvoiceDetailDAO invoiceDetailDAO;
     private final StaffDAO staffDAO;
-    private final Context appContext;
 
     public InvoiceDAO(Context context) {
         appContext = context.getApplicationContext();
@@ -45,70 +44,91 @@ public class InvoiceDAO {
     }
 
     public ArrayList<Invoice> getAllInvoices() {
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Invoice ORDER BY id DESC", null);
-        ArrayList<Invoice> list = mapInvoices(cursor);
+        ArrayList<Invoice> list = new ArrayList<>();
+        ArrayList<Customer> customerList = customerDAO.getAllCustomer();
+        String sql = "SELECT * FROM Invoice ORDER BY id DESC";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(mapInvoice(cursor, customerList));
+                cursor.moveToNext();
+            }
+        }
+
         cursor.close();
         return list;
     }
 
     public ArrayList<Invoice> getVisibleInvoices() {
-        if (isCurrentUserAdmin()) {
+        int role = appContext.getSharedPreferences("StaffData", Context.MODE_PRIVATE).getInt("role", 1);
+        if (role == 0) {
             return getAllInvoices();
         }
 
-        Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT * FROM Invoice WHERE customerId = ? ORDER BY id DESC",
-                new String[]{getCurrentAccountCustomerId()}
-        );
-        ArrayList<Invoice> list = mapInvoices(cursor);
+        String staffCode = staffDAO.getCurrentStaffCode();
+        String customerId = "ACC_GUEST";
+        if (!isBlank(staffCode)) {
+            customerId = "ACC_" + staffCode;
+        }
+
+        ArrayList<Invoice> list = new ArrayList<>();
+        ArrayList<Customer> customerList = customerDAO.getAllCustomer();
+        String sql = "SELECT * FROM Invoice WHERE customerId = ? ORDER BY id DESC";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, new String[]{customerId});
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(mapInvoice(cursor, customerList));
+                cursor.moveToNext();
+            }
+        }
+
         cursor.close();
         return list;
     }
 
     public Invoice getInvoiceById(int invoiceId) {
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM Invoice WHERE id = ?", new String[]{String.valueOf(invoiceId)});
-        Invoice invoice = mapSingleInvoice(cursor);
+        Invoice invoice = null;
+        ArrayList<Customer> customerList = customerDAO.getAllCustomer();
+        String sql = "SELECT * FROM Invoice WHERE id = ?";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, new String[]{String.valueOf(invoiceId)});
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            invoice = mapInvoice(cursor, customerList);
+        }
+
         cursor.close();
         return invoice;
     }
 
     public Invoice getVisibleInvoiceById(int invoiceId) {
-        if (isCurrentUserAdmin()) {
+        int role = appContext.getSharedPreferences("StaffData", Context.MODE_PRIVATE).getInt("role", 1);
+        if (role == 0) {
             return getInvoiceById(invoiceId);
         }
 
-        Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT * FROM Invoice WHERE id = ? AND customerId = ?",
-                new String[]{String.valueOf(invoiceId), getCurrentAccountCustomerId()}
-        );
-        Invoice invoice = mapSingleInvoice(cursor);
+        String staffCode = staffDAO.getCurrentStaffCode();
+        String customerId = "ACC_GUEST";
+        if (!isBlank(staffCode)) {
+            customerId = "ACC_" + staffCode;
+        }
+
+        Invoice invoice = null;
+        ArrayList<Customer> customerList = customerDAO.getAllCustomer();
+        String sql = "SELECT * FROM Invoice WHERE id = ? AND customerId = ?";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, new String[]{String.valueOf(invoiceId), customerId});
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            invoice = mapInvoice(cursor, customerList);
+        }
+
         cursor.close();
         return invoice;
-    }
-
-    private ArrayList<Invoice> mapInvoices(Cursor cursor) {
-        ArrayList<Invoice> list = new ArrayList<>();
-        ArrayList<Customer> customers = customerDAO.getAllCustomer();
-
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(mapInvoice(cursor, customers));
-            } while (cursor.moveToNext());
-        }
-        return list;
-    }
-
-    private Invoice mapSingleInvoice(Cursor cursor) {
-        if (!cursor.moveToFirst()) {
-            return null;
-        }
-
-        ArrayList<Customer> customers = customerDAO.getAllCustomer();
-        return mapInvoice(cursor, customers);
-    }
-
-    public boolean insertInvoice(Invoice invoice) {
-        return insertInvoiceAndGetId(invoice) != -1;
     }
 
     public boolean deleteInvoice(int invoiceId) {
@@ -118,36 +138,25 @@ public class InvoiceDAO {
 
         sqLiteDatabase.beginTransaction();
         try {
-            sqLiteDatabase.delete(
-                    "InvoiceDetail",
-                    "invoiceId = ?",
-                    new String[]{String.valueOf(invoiceId)}
-            );
-
-            int deletedRows = sqLiteDatabase.delete(
-                    "Invoice",
-                    "id = ?",
-                    new String[]{String.valueOf(invoiceId)}
-            );
-
-            if (deletedRows <= 0) {
-                return false;
+            sqLiteDatabase.delete("InvoiceDetail", "invoiceId = ?", new String[]{String.valueOf(invoiceId)});
+            int kq = sqLiteDatabase.delete("Invoice", "id = ?", new String[]{String.valueOf(invoiceId)});
+            if (kq > 0) {
+                sqLiteDatabase.setTransactionSuccessful();
+                return true;
             }
-
-            sqLiteDatabase.setTransactionSuccessful();
-            return true;
+            return false;
         } finally {
             sqLiteDatabase.endTransaction();
         }
     }
 
-    public int createPaidInvoiceFromCart(List<CartItem> cartItems) {
+    public int createPaidInvoiceFromCart(ArrayList<CartItem> cartItems) {
         if (cartItems == null || cartItems.isEmpty()) {
             return -1;
         }
 
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        long totalAmount = 0L;
+        ArrayList<InvoiceDetail> detailList = new ArrayList<>();
+        long tongTien = 0;
 
         for (CartItem cartItem : cartItems) {
             if (cartItem == null || cartItem.getProduct() == null) {
@@ -155,37 +164,59 @@ public class InvoiceDAO {
             }
 
             Product product = cartItem.getProduct();
-            long unitPrice = parseAmount(product.getPriceLabel());
-            long lineTotal = unitPrice * cartItem.getQuantity();
-            totalAmount += lineTotal;
+            long donGia = parseAmount(product.getPriceLabel());
+            long thanhTien = donGia * cartItem.getQuantity();
+            tongTien += thanhTien;
 
-            details.add(new InvoiceDetail(
+            detailList.add(new InvoiceDetail(
                     0,
                     product.getName(),
                     cartItem.getQuantity(),
-                    formatAmount(lineTotal),
+                    formatAmount(thanhTien),
                     product.getImage()
             ));
         }
 
-        if (details.isEmpty()) {
+        if (detailList.isEmpty()) {
             return -1;
         }
 
+        String staffCode = staffDAO.getCurrentStaffCode();
+        String customerId = "ACC_GUEST";
+        if (!isBlank(staffCode)) {
+            customerId = "ACC_" + staffCode;
+        }
+
         String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        Staff currentBuyer = staffDAO.getCurrentStaff();
-        Invoice invoice = new Invoice(
-                "",
-                "ĐÃ THANH TOÁN",
-                resolveCheckoutCustomerId(),
-                today,
-                formatAmount(totalAmount),
-                "Tiền mặt",
-                resolveCheckoutStaffName()
-        );
-        invoice.setBuyerName(resolveBuyerName(currentBuyer, invoice.getStaffName()));
-        invoice.setBuyerPhone(resolveBuyerPhone(currentBuyer));
-        invoice.setBuyerAddress(resolveBuyerAddress(currentBuyer));
+        String staffName = staffDAO.getCurrentStaffName();
+        if (isBlank(staffName)) {
+            staffName = "Phúc";
+        }
+
+        Staff buyer = staffDAO.getCurrentStaff();
+        Invoice invoice = new Invoice("", "ĐÃ THANH TOÁN", customerId, today, formatAmount(tongTien), "Tiền mặt", staffName);
+
+        if (buyer != null && !isBlank(buyer.getNameStaff())) {
+            invoice.setBuyerName(buyer.getNameStaff().trim());
+        } else if (!isBlank(staffName)) {
+            invoice.setBuyerName(staffName.trim());
+        } else {
+            invoice.setBuyerName("Khách lẻ");
+        }
+
+        if (buyer != null && !isBlank(buyer.getPhone())) {
+            invoice.setBuyerPhone(buyer.getPhone().trim());
+        } else if (buyer != null && !isBlank(buyer.getNameLogin()) && looksLikePhone(buyer.getNameLogin())) {
+            invoice.setBuyerPhone(buyer.getNameLogin().trim());
+        } else {
+            invoice.setBuyerPhone("");
+        }
+
+        if (buyer != null && !isBlank(buyer.getAddress())) {
+            invoice.setBuyerAddress(buyer.getAddress().trim());
+        } else {
+            invoice.setBuyerAddress("");
+        }
 
         sqLiteDatabase.beginTransaction();
         try {
@@ -195,13 +226,21 @@ public class InvoiceDAO {
             }
 
             int invoiceId = (int) rowId;
-            if (!updateInvoiceCode(invoiceId, buildInvoiceCode(invoiceId, today))) {
+            String nam = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+            if (today.length() >= 4) {
+                nam = today.substring(today.length() - 4);
+            }
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("code", String.format(Locale.getDefault(), "HD-%s-%03d", nam, invoiceId));
+            int kq = sqLiteDatabase.update("Invoice", contentValues, "id = ?", new String[]{String.valueOf(invoiceId)});
+            if (kq <= 0) {
                 return -1;
             }
 
-            for (InvoiceDetail detail : details) {
+            for (InvoiceDetail detail : detailList) {
                 detail.setInvoiceId(invoiceId);
-                if (!insertInvoiceDetailInternal(detail)) {
+                if (!insertInvoiceDetail(detail)) {
                     return -1;
                 }
             }
@@ -211,6 +250,100 @@ public class InvoiceDAO {
         } finally {
             sqLiteDatabase.endTransaction();
         }
+    }
+
+    private Invoice mapInvoice(Cursor cursor, ArrayList<Customer> customerList) {
+        Invoice invoice = new Invoice();
+        invoice.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+        invoice.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+        invoice.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
+        invoice.setCustomerId(cursor.getString(cursor.getColumnIndexOrThrow("customerId")));
+        invoice.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
+        invoice.setTotal(cursor.getString(cursor.getColumnIndexOrThrow("total")));
+        invoice.setPaymentMethod(cursor.getString(cursor.getColumnIndexOrThrow("paymentMethod")));
+        invoice.setStaffName(cursor.getString(cursor.getColumnIndexOrThrow("staffName")));
+
+        int buyerNameIndex = cursor.getColumnIndex("buyerName");
+        if (buyerNameIndex >= 0 && !cursor.isNull(buyerNameIndex)) {
+            invoice.setBuyerName(cursor.getString(buyerNameIndex));
+        }
+
+        int buyerPhoneIndex = cursor.getColumnIndex("buyerPhone");
+        if (buyerPhoneIndex >= 0 && !cursor.isNull(buyerPhoneIndex)) {
+            invoice.setBuyerPhone(cursor.getString(buyerPhoneIndex));
+        }
+
+        int buyerAddressIndex = cursor.getColumnIndex("buyerAddress");
+        if (buyerAddressIndex >= 0 && !cursor.isNull(buyerAddressIndex)) {
+            invoice.setBuyerAddress(cursor.getString(buyerAddressIndex));
+        }
+
+        for (Customer customer : customerList) {
+            if (invoice.getCustomerId() != null && invoice.getCustomerId().equals(customer.getId())) {
+                invoice.setCustomerName(customer.getName());
+                invoice.setCustomerPhone(customer.getPhone());
+                invoice.setCustomerAddress(customer.getAddress());
+                return invoice;
+            }
+        }
+
+        if (!isBlank(invoice.getBuyerName()) || !isBlank(invoice.getBuyerPhone()) || !isBlank(invoice.getBuyerAddress())) {
+            if (!isBlank(invoice.getBuyerName())) {
+                invoice.setCustomerName(invoice.getBuyerName().trim());
+            } else if (!isBlank(invoice.getStaffName())) {
+                invoice.setCustomerName(invoice.getStaffName().trim());
+            } else {
+                invoice.setCustomerName("Khách lẻ");
+            }
+
+            if (!isBlank(invoice.getBuyerPhone())) {
+                invoice.setCustomerPhone(invoice.getBuyerPhone().trim());
+            } else {
+                invoice.setCustomerPhone("");
+            }
+
+            if (!isBlank(invoice.getBuyerAddress())) {
+                invoice.setCustomerAddress(invoice.getBuyerAddress().trim());
+            } else {
+                invoice.setCustomerAddress("");
+            }
+            return invoice;
+        }
+
+        Staff buyerStaff = getStaffByInvoiceCustomerId(invoice.getCustomerId());
+        if (buyerStaff != null) {
+            if (!isBlank(buyerStaff.getNameStaff())) {
+                invoice.setCustomerName(buyerStaff.getNameStaff().trim());
+            } else if (!isBlank(invoice.getStaffName())) {
+                invoice.setCustomerName(invoice.getStaffName().trim());
+            } else {
+                invoice.setCustomerName("Khách lẻ");
+            }
+
+            if (!isBlank(buyerStaff.getPhone())) {
+                invoice.setCustomerPhone(buyerStaff.getPhone().trim());
+            } else if (!isBlank(buyerStaff.getNameLogin()) && looksLikePhone(buyerStaff.getNameLogin())) {
+                invoice.setCustomerPhone(buyerStaff.getNameLogin().trim());
+            } else {
+                invoice.setCustomerPhone("");
+            }
+
+            if (!isBlank(buyerStaff.getAddress())) {
+                invoice.setCustomerAddress(buyerStaff.getAddress().trim());
+            } else {
+                invoice.setCustomerAddress("");
+            }
+            return invoice;
+        }
+
+        if (!isBlank(invoice.getStaffName())) {
+            invoice.setCustomerName(invoice.getStaffName().trim());
+        } else {
+            invoice.setCustomerName("Khách lẻ");
+        }
+        invoice.setCustomerPhone("");
+        invoice.setCustomerAddress("");
+        return invoice;
     }
 
     private long insertInvoiceAndGetId(Invoice invoice) {
@@ -228,108 +361,90 @@ public class InvoiceDAO {
         return sqLiteDatabase.insert("Invoice", null, contentValues);
     }
 
-    private Customer getCustomerById(ArrayList<Customer> customers, String customerId) {
-        for (Customer customer : customers) {
-            if (customer.getId().equals(customerId)) {
-                return customer;
-            }
+    private boolean insertInvoiceDetail(InvoiceDetail detail) {
+        String image = detail.getImage();
+        if ((image == null || image.trim().isEmpty()) && detail.getImageRes() != 0) {
+            image = String.valueOf(detail.getImageRes());
         }
-        return null;
+        image = ProductImageResolver.normalizeForStorage(appContext, detail.getProductName(), image);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("invoiceId", detail.getInvoiceId());
+        contentValues.put("productName", detail.getProductName());
+        contentValues.put("quantity", detail.getQuantity());
+        contentValues.put("totalPrice", detail.getTotalPrice());
+        contentValues.put("imageRes", ProductImageResolver.resolveDrawableResId(appContext, image));
+        contentValues.put("image", image);
+        long kq = sqLiteDatabase.insert("InvoiceDetail", null, contentValues);
+        return kq != -1;
     }
-
-    private Invoice mapInvoice(Cursor cursor, ArrayList<Customer> customers) {
-        Invoice invoice = new Invoice();
-        invoice.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        invoice.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
-        invoice.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
-        invoice.setCustomerId(cursor.getString(cursor.getColumnIndexOrThrow("customerId")));
-        invoice.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
-        invoice.setTotal(cursor.getString(cursor.getColumnIndexOrThrow("total")));
-        invoice.setPaymentMethod(cursor.getString(cursor.getColumnIndexOrThrow("paymentMethod")));
-        invoice.setStaffName(cursor.getString(cursor.getColumnIndexOrThrow("staffName")));
-        invoice.setBuyerName(getOptionalColumnValue(cursor, "buyerName"));
-        invoice.setBuyerPhone(getOptionalColumnValue(cursor, "buyerPhone"));
-        invoice.setBuyerAddress(getOptionalColumnValue(cursor, "buyerAddress"));
-
-        Customer customer = getCustomerById(customers, invoice.getCustomerId());
-        if (customer != null) {
-            invoice.setCustomerName(customer.getName());
-            invoice.setCustomerPhone(customer.getPhone());
-            invoice.setCustomerAddress(customer.getAddress());
-            return invoice;
-        }
-
-        if (!isBlank(invoice.getBuyerName()) || !isBlank(invoice.getBuyerPhone()) || !isBlank(invoice.getBuyerAddress())) {
-            invoice.setCustomerName(firstNonBlank(invoice.getBuyerName(), resolveFallbackCustomerName(invoice)));
-            invoice.setCustomerPhone(firstNonBlank(invoice.getBuyerPhone(), ""));
-            invoice.setCustomerAddress(firstNonBlank(invoice.getBuyerAddress(), ""));
-            return invoice;
-        }
-
-        Staff buyerStaff = getStaffByInvoiceCustomerId(invoice.getCustomerId());
-        if (buyerStaff != null) {
-            invoice.setCustomerName(resolveBuyerName(buyerStaff, resolveFallbackCustomerName(invoice)));
-            invoice.setCustomerPhone(resolveBuyerPhone(buyerStaff));
-            invoice.setCustomerAddress(resolveBuyerAddress(buyerStaff));
-            return invoice;
-        }
-
-        invoice.setCustomerName(resolveFallbackCustomerName(invoice));
-        invoice.setCustomerPhone("");
-        invoice.setCustomerAddress("");
-        return invoice;
-    }
-
     private void backfillAccountBuyerSnapshots() {
-        try (Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT id, customerId, buyerName, buyerPhone, buyerAddress FROM Invoice WHERE customerId LIKE 'ACC_%'",
-                null
-        )) {
-            if (!cursor.moveToFirst()) {
-                return;
-            }
+        String sql = "SELECT id, customerId, buyerName, buyerPhone, buyerAddress FROM Invoice WHERE customerId LIKE 'ACC_%'";
+        Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
 
-            do {
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
                 int invoiceId = cursor.getInt(0);
                 String customerId = cursor.getString(1);
                 String buyerName = cursor.getString(2);
                 String buyerPhone = cursor.getString(3);
                 String buyerAddress = cursor.getString(4);
                 if (!isBlank(buyerName) && !isBlank(buyerPhone) && !isBlank(buyerAddress)) {
+                    cursor.moveToNext();
                     continue;
                 }
 
                 Staff buyerStaff = getStaffByInvoiceCustomerId(customerId);
                 if (buyerStaff == null) {
+                    cursor.moveToNext();
                     continue;
                 }
 
                 ContentValues contentValues = new ContentValues();
                 if (isBlank(buyerName)) {
-                    contentValues.put("buyerName", resolveBuyerName(buyerStaff, null));
+                    if (!isBlank(buyerStaff.getNameStaff())) {
+                        contentValues.put("buyerName", buyerStaff.getNameStaff().trim());
+                    } else {
+                        contentValues.put("buyerName", "Khách lẻ");
+                    }
                 }
                 if (isBlank(buyerPhone)) {
-                    contentValues.put("buyerPhone", resolveBuyerPhone(buyerStaff));
+                    if (!isBlank(buyerStaff.getPhone())) {
+                        contentValues.put("buyerPhone", buyerStaff.getPhone().trim());
+                    } else if (!isBlank(buyerStaff.getNameLogin()) && looksLikePhone(buyerStaff.getNameLogin())) {
+                        contentValues.put("buyerPhone", buyerStaff.getNameLogin().trim());
+                    } else {
+                        contentValues.put("buyerPhone", "");
+                    }
                 }
                 if (isBlank(buyerAddress)) {
-                    contentValues.put("buyerAddress", resolveBuyerAddress(buyerStaff));
-                }
-                if (contentValues.size() == 0) {
-                    continue;
+                    if (!isBlank(buyerStaff.getAddress())) {
+                        contentValues.put("buyerAddress", buyerStaff.getAddress().trim());
+                    } else {
+                        contentValues.put("buyerAddress", "");
+                    }
                 }
 
-                sqLiteDatabase.update(
-                        "Invoice",
-                        contentValues,
-                        "id = ?",
-                        new String[]{String.valueOf(invoiceId)}
-                );
-            } while (cursor.moveToNext());
+                if (contentValues.size() > 0) {
+                    sqLiteDatabase.update("Invoice", contentValues, "id = ?", new String[]{String.valueOf(invoiceId)});
+                }
+
+                cursor.moveToNext();
+            }
         }
+        cursor.close();
     }
 
     private void ensureSeedData() {
-        if (!getAllInvoices().isEmpty()) {
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT COUNT(*) FROM Invoice", null);
+        boolean isEmpty = true;
+        if (cursor.moveToFirst()) {
+            isEmpty = cursor.getInt(0) == 0;
+        }
+        cursor.close();
+
+        if (!isEmpty) {
             return;
         }
         /// Mốc ngày demo nhanh cho màn thống kê:
@@ -353,224 +468,104 @@ public class InvoiceDAO {
         /// - 01/05/2026 -> 31/05/2026: nhiều khách mua nhất
         /// - 01/01/2026 -> 31/03/2026: dễ thấy dữ liệu theo quý
         /// - 28/05/2026 -> 31/05/2026: dễ demo top khách hàng cuối tháng
-        insertSeedInvoice(new Invoice("HD-2026-001", "CHỜ THANH TOÁN", "KH001", "10/03/2026", "545.000k", "Tiền mặt", "Phúc"), getInvoice1Details());
-        insertSeedInvoice(new Invoice("HD-2026-002", "ĐÃ THANH TOÁN", "KH002", "09/05/2026", "850.000k", "Chuyển khoản", "Linh"), getInvoice2Details());
-        insertSeedInvoice(new Invoice("HD-2026-003", "ĐÃ HỦY", "KH003", "08/07/2026", "940.000k", "Tiền mặt", "Hà"), getInvoice3Details());
-        insertSeedInvoice(new Invoice("HD-2026-004", "ĐÃ THANH TOÁN", "KH001", "12/03/2026", "420.000k", "Tiền mặt", "Phúc"), getInvoice4Details());
-        insertSeedInvoice(new Invoice("HD-2026-005", "ĐÃ THANH TOÁN", "KH002", "14/05/2026", "675.000k", "Chuyển khoản", "Linh"), getInvoice5Details());
-        insertSeedInvoice(new Invoice("HD-2026-006", "CHỜ THANH TOÁN", "KH003", "16/08/2026", "180.000k", "Tiền mặt", "Hà"), getInvoice6Details());
-        insertSeedInvoice(new Invoice("HD-2026-007", "ĐÃ THANH TOÁN", "KH001", "20/02/2026", "1.250.000k", "Chuyển khoản", "Phúc"), getInvoice7Details());
-        insertSeedInvoice(new Invoice("HD-2026-008", "ĐÃ THANH TOÁN", "KH002", "23/05/2026", "560.000k", "Tiền mặt", "Linh"), getInvoice8Details());
-        insertSeedInvoice(new Invoice("HD-2026-009", "ĐÃ THANH TOÁN", "KH003", "24/01/2026", "935.000k", "Tiền mặt", "Hà"), getInvoice9Details());
-        insertSeedInvoice(new Invoice("HD-2026-010", "ĐÃ THANH TOÁN", "KH001", "25/05/2026", "1.175.000k", "Chuyển khoản", "Phúc"), getInvoice10Details());
-        insertSeedInvoice(new Invoice("HD-2026-011", "ĐÃ THANH TOÁN", "KH002", "26/04/2026", "1.190.000k", "Tiền mặt", "Linh"), getInvoice11Details());
-        insertSeedInvoice(new Invoice("HD-2026-012", "ĐÃ THANH TOÁN", "KH003", "27/05/2026", "760.000k", "Chuyển khoản", "Hà"), getInvoice12Details());
-        insertSeedInvoice(new Invoice("HD-2026-013", "ĐÃ THANH TOÁN", "KH001", "28/05/2026", "980.000k", "Tiền mặt", "Phúc"), getInvoice13Details());
-        insertSeedInvoice(new Invoice("HD-2026-014", "ĐÃ THANH TOÁN", "KH002", "29/05/2026", "745.000k", "Chuyển khoản", "Linh"), getInvoice14Details());
-        insertSeedInvoice(new Invoice("HD-2026-015", "ĐÃ THANH TOÁN", "KH003", "30/05/2026", "1.060.000k", "Tiền mặt", "Hà"), getInvoice15Details());
-        insertSeedInvoice(new Invoice("HD-2026-016", "ĐÃ THANH TOÁN", "KH001", "31/05/2026", "635.000k", "Chuyển khoản", "Phúc"), getInvoice16Details());
+        insertSeedInvoice(new Invoice("HD-2026-001", "CHỜ THANH TOÁN", "KH001", "10/03/2026", "545.000k", "Tiền mặt", "Phúc"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Kem Matcha Premium", 1, "45.000k", R.drawable.ic_icream_matcha));
+
+        insertSeedInvoice(new Invoice("HD-2026-002", "ĐÃ THANH TOÁN", "KH002", "09/05/2026", "850.000k", "Chuyển khoản", "Linh"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
+
+        insertSeedInvoice(new Invoice("HD-2026-003", "ĐÃ HỦY", "KH003", "08/07/2026", "940.000k", "Tiền mặt", "Hà"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi),
+                new InvoiceDetail(0, "Kem Matcha Premium", 2, "90.000k", R.drawable.ic_icream_matcha));
+
+        insertSeedInvoice(new Invoice("HD-2026-004", "ĐÃ THANH TOÁN", "KH001", "12/03/2026", "420.000k", "Tiền mặt", "Phúc"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Kem Matcha Premium", 2, "90.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.img_nuoc_suoi));
+
+        insertSeedInvoice(new Invoice("HD-2026-005", "ĐÃ THANH TOÁN", "KH002", "14/05/2026", "675.000k", "Chuyển khoản", "Linh"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi),
+                new InvoiceDetail(0, "Voucher giảm giá", 1, "-175.000k", R.drawable.logo));
+
+        insertSeedInvoice(new Invoice("HD-2026-006", "CHỜ THANH TOÁN", "KH003", "16/08/2026", "180.000k", "Tiền mặt", "Hà"),
+                new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha));
+
+        insertSeedInvoice(new Invoice("HD-2026-007", "ĐÃ THANH TOÁN", "KH001", "20/02/2026", "1.250.000k", "Chuyển khoản", "Phúc"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo));
+
+        insertSeedInvoice(new Invoice("HD-2026-008", "ĐÃ THANH TOÁN", "KH002", "23/05/2026", "560.000k", "Tiền mặt", "Linh"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
+
+        insertSeedInvoice(new Invoice("HD-2026-009", "ĐÃ THANH TOÁN", "KH003", "24/01/2026", "935.000k", "Tiền mặt", "Hà"),
+                new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.img_nuoc_suoi),
+                new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad),
+                new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.img_tra_dao));
+
+        insertSeedInvoice(new Invoice("HD-2026-010", "ĐÃ THANH TOÁN", "KH001", "25/05/2026", "1.175.000k", "Chuyển khoản", "Phúc"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi),
+                new InvoiceDetail(0, "Kem Matcha Premium", 1, "45.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi),
+                new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "190.000k", R.drawable.img_takoyaki),
+                new InvoiceDetail(0, "Trà đào cam sả", 1, "30.000k", R.drawable.img_tra_dao));
+
+        insertSeedInvoice(new Invoice("HD-2026-011", "ĐÃ THANH TOÁN", "KH002", "26/04/2026", "1.190.000k", "Tiền mặt", "Linh"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 3, "750.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo),
+                new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi),
+                new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad),
+                new InvoiceDetail(0, "Topping trứng ngâm", 1, "20.000k", R.drawable.img_trung_ngam));
+
+        insertSeedInvoice(new Invoice("HD-2026-012", "ĐÃ THANH TOÁN", "KH003", "27/05/2026", "760.000k", "Chuyển khoản", "Hà"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi),
+                new InvoiceDetail(0, "Voucher giảm giá", 1, "-120.000k", R.drawable.logo),
+                new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo),
+                new InvoiceDetail(0, "Topping trứng ngâm", 2, "50.000k", R.drawable.img_trung_ngam),
+                new InvoiceDetail(0, "Trà đào cam sả", 3, "165.000k", R.drawable.img_tra_dao),
+                new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "160.000k", R.drawable.img_takoyaki));
+
+        insertSeedInvoice(new Invoice("HD-2026-013", "ĐÃ THANH TOÁN", "KH001", "28/05/2026", "980.000k", "Tiền mặt", "Phúc"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi),
+                new InvoiceDetail(0, "Nước suối", 2, "40.000k", R.drawable.img_nuoc_suoi),
+                new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.img_tra_dao),
+                new InvoiceDetail(0, "Topping trứng ngâm", 1, "35.000k", R.drawable.img_trung_ngam));
+
+        insertSeedInvoice(new Invoice("HD-2026-014", "ĐÃ THANH TOÁN", "KH002", "29/05/2026", "745.000k", "Chuyển khoản", "Linh"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha),
+                new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.img_takoyaki),
+                new InvoiceDetail(0, "Nước suối", 1, "15.000k", R.drawable.img_nuoc_suoi));
+
+        insertSeedInvoice(new Invoice("HD-2026-015", "ĐÃ THANH TOÁN", "KH003", "30/05/2026", "1.060.000k", "Tiền mặt", "Hà"),
+                new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi),
+                new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad),
+                new InvoiceDetail(0, "Nước suối", 2, "45.000k", R.drawable.img_nuoc_suoi));
+
+        insertSeedInvoice(new Invoice("HD-2026-016", "ĐÃ THANH TOÁN", "KH001", "31/05/2026", "635.000k", "Chuyển khoản", "Phúc"),
+                new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen),
+                new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.img_takoyaki),
+                new InvoiceDetail(0, "Trà đào cam sả", 1, "40.000k", R.drawable.img_tra_dao));
     }
 
-    private void insertSeedInvoice(Invoice invoice, ArrayList<InvoiceDetail> details) {
+    private void insertSeedInvoice(Invoice invoice, InvoiceDetail... details) {
         long invoiceId = insertInvoiceAndGetId(invoice);
-        if (invoiceId != -1) {
-            insertSeedDetails((int) invoiceId, details);
+        if (invoiceId == -1) {
+            return;
         }
-    }
 
-    private void insertSeedDetails(int invoiceId, ArrayList<InvoiceDetail> details) {
         for (InvoiceDetail detail : details) {
-            detail.setInvoiceId(invoiceId);
-            insertInvoiceDetailInternal(detail);
+            detail.setInvoiceId((int) invoiceId);
+            insertInvoiceDetail(detail);
         }
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice1Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 1, "45.000k", R.drawable.ic_icream_matcha));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice2Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice3Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 2, "90.000k", R.drawable.ic_icream_matcha));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice4Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 2, "90.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.img_nuoc_suoi));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice5Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Voucher giảm giá", 1, "-175.000k", R.drawable.logo));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice6Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice7Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice8Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice9Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "80.000k", R.drawable.img_nuoc_suoi));
-        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.img_tra_dao));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice10Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 1, "45.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "190.000k", R.drawable.img_takoyaki));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "30.000k", R.drawable.img_tra_dao));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice11Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 3, "750.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
-        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad));
-        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 1, "20.000k", R.drawable.img_trung_ngam));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice12Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 1, "250.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 4, "180.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Nước suối", 3, "60.000k", R.drawable.img_nuoc_suoi));
-        details.add(new InvoiceDetail(0, "Voucher giảm giá", 1, "-120.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Phụ phí phục vụ", 1, "15.000k", R.drawable.logo));
-        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 2, "50.000k", R.drawable.img_trung_ngam));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 3, "165.000k", R.drawable.img_tra_dao));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 2, "160.000k", R.drawable.img_takoyaki));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice13Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "40.000k", R.drawable.img_nuoc_suoi));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "55.000k", R.drawable.img_tra_dao));
-        details.add(new InvoiceDetail(0, "Topping trứng ngâm", 1, "35.000k", R.drawable.img_trung_ngam));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice14Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Kem Matcha Premium", 3, "135.000k", R.drawable.ic_icream_matcha));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.img_takoyaki));
-        details.add(new InvoiceDetail(0, "Nước suối", 1, "15.000k", R.drawable.img_nuoc_suoi));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice15Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Sushi Set Omakase", 1, "850.000k", R.drawable.ic_set_sushi));
-        details.add(new InvoiceDetail(0, "Salad cá hồi", 1, "165.000k", R.drawable.img_salad));
-        details.add(new InvoiceDetail(0, "Nước suối", 2, "45.000k", R.drawable.img_nuoc_suoi));
-        return details;
-    }
-
-    private ArrayList<InvoiceDetail> getInvoice16Details() {
-        ArrayList<InvoiceDetail> details = new ArrayList<>();
-        details.add(new InvoiceDetail(0, "Mì Ramen Tonkotsu", 2, "500.000k", R.drawable.ic_ramen));
-        details.add(new InvoiceDetail(0, "Takoyaki sốt mayo", 1, "95.000k", R.drawable.img_takoyaki));
-        details.add(new InvoiceDetail(0, "Trà đào cam sả", 1, "40.000k", R.drawable.img_tra_dao));
-        return details;
-    }
-
-    private boolean insertInvoiceDetailInternal(InvoiceDetail detail) {
-        String normalizedImage = resolveInvoiceDetailImage(detail);
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("invoiceId", detail.getInvoiceId());
-        contentValues.put("productName", detail.getProductName());
-        contentValues.put("quantity", detail.getQuantity());
-        contentValues.put("totalPrice", detail.getTotalPrice());
-        contentValues.put("imageRes", ProductImageResolver.resolveDrawableResId(appContext, normalizedImage));
-        contentValues.put("image", normalizedImage);
-        return sqLiteDatabase.insert("InvoiceDetail", null, contentValues) != -1;
-    }
-
-    private String resolveInvoiceDetailImage(InvoiceDetail detail) {
-        String rawImage = detail.getImage();
-        if ((rawImage == null || rawImage.trim().isEmpty()) && detail.getImageRes() != 0) {
-            rawImage = String.valueOf(detail.getImageRes());
-        }
-        return ProductImageResolver.normalizeForStorage(appContext, detail.getProductName(), rawImage);
-    }
-
-    private boolean updateInvoiceCode(int invoiceId, String code) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("code", code);
-        return sqLiteDatabase.update(
-                "Invoice",
-                contentValues,
-                "id = ?",
-                new String[]{String.valueOf(invoiceId)}
-        ) > 0;
-    }
-
-    private String resolveCheckoutCustomerId() {
-        return getCurrentAccountCustomerId();
-    }
-
-    private String resolveCheckoutStaffName() {
-        String staffName = staffDAO.getCurrentStaffName();
-        if (staffName != null && !staffName.trim().isEmpty()) {
-            return staffName;
-        }
-        return "Phúc";
-    }
-
-    private String resolveFallbackCustomerName(Invoice invoice) {
-        if (invoice != null && !isBlank(invoice.getBuyerName())) {
-            return invoice.getBuyerName().trim();
-        }
-        if (invoice != null && invoice.getStaffName() != null && !invoice.getStaffName().trim().isEmpty()) {
-            return invoice.getStaffName();
-        }
-        return "Khách lẻ";
     }
 
     private Staff getStaffByInvoiceCustomerId(String customerId) {
@@ -584,78 +579,12 @@ public class InvoiceDAO {
         return staffDAO.getStaffByCode(staffCode);
     }
 
-    private String resolveBuyerName(Staff staff, String fallbackName) {
-        if (staff != null && !isBlank(staff.getNameStaff())) {
-            return staff.getNameStaff().trim();
-        }
-        if (!isBlank(fallbackName)) {
-            return fallbackName.trim();
-        }
-        return "Khách lẻ";
-    }
-
-    private String resolveBuyerPhone(Staff staff) {
-        if (staff == null) {
-            return "";
-        }
-        if (!isBlank(staff.getPhone())) {
-            return staff.getPhone().trim();
-        }
-        if (!isBlank(staff.getNameLogin()) && looksLikePhone(staff.getNameLogin())) {
-            return staff.getNameLogin().trim();
-        }
-        return "";
-    }
-
-    private String resolveBuyerAddress(Staff staff) {
-        if (staff == null || isBlank(staff.getAddress())) {
-            return "";
-        }
-        return staff.getAddress().trim();
-    }
-
-    private String getOptionalColumnValue(Cursor cursor, String columnName) {
-        int index = cursor.getColumnIndex(columnName);
-        if (index < 0 || cursor.isNull(index)) {
-            return null;
-        }
-        return cursor.getString(index);
-    }
-
-    private String firstNonBlank(String primary, String fallback) {
-        if (!isBlank(primary)) {
-            return primary.trim();
-        }
-        return fallback == null ? "" : fallback;
-    }
-
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
 
     private boolean looksLikePhone(String value) {
         return value != null && value.trim().matches("[0-9+\\-\\s]{8,15}");
-    }
-
-    private boolean isCurrentUserAdmin() {
-        return appContext.getSharedPreferences("StaffData", Context.MODE_PRIVATE)
-                .getInt("role", 1) == 0;
-    }
-
-    private String getCurrentAccountCustomerId() {
-        String staffCode = staffDAO.getCurrentStaffCode();
-        if (staffCode != null && !staffCode.trim().isEmpty()) {
-            return "ACC_" + staffCode;
-        }
-        return "ACC_GUEST";
-    }
-
-    private String buildInvoiceCode(int invoiceId, String dateText) {
-        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-        if (dateText != null && dateText.length() >= 4) {
-            year = dateText.substring(dateText.length() - 4);
-        }
-        return String.format(Locale.getDefault(), "HD-%s-%03d", year, invoiceId);
     }
 
     private long parseAmount(String amountText) {

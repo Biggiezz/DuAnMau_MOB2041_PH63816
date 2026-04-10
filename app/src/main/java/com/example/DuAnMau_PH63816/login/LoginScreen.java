@@ -21,6 +21,7 @@ import com.example.DuAnMau_PH63816.homepage.HomePageScreen;
 import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 
 public class LoginScreen extends AppCompatActivity {
+
     private EditText edtEmail, edtPassword;
     private TextView tvSignUp;
     private Button btnLogin;
@@ -36,67 +37,66 @@ public class LoginScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        initUi();
+
         staffDAO = new StaffDAO(this);
-        Toolbar toolbarLoginScreen = findViewById(R.id.toolbarLoginScreen);
-        if (toolbarLoginScreen != null) {
-            setSupportActionBar(toolbarLoginScreen);
-            toolbarLoginScreen.setNavigationOnClickListener(v -> finish());
-        }
-        btnLogin.setOnClickListener(v -> {
-            String userName = edtEmail.getText().toString().trim();
-            String password = edtPassword.getText().toString().trim();
-
-            edtEmail.setError(null);
-            edtPassword.setError(null);
-
-            boolean hasError = false;
-            if (userName.isEmpty()) {
-                edtEmail.setError("Vui lòng nhập tên đăng nhập");
-                hasError = true;
-            }
-            if (password.isEmpty()) {
-                edtPassword.setError("Vui lòng nhập mật khẩu");
-                hasError = true;
-            }
-            if (userName.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Vui lòng không bỏ trống tên đăng nhâp và mật khẩu", Toast.LENGTH_LONG).show();
-                return;
-            }
-            if (hasError) {
-                return;
-            }
-
-            if (!staffDAO.KiemTraDangNhap(userName, password)) {
-                Toast.makeText(LoginScreen.this, "Sai tên đăng nhập hoặc mật khẩu", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Common.maNhanVien = staffDAO.getCurrentStaffCode();
-            Toast.makeText(LoginScreen.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginScreen.this, HomePageScreen.class);
-            startActivity(intent);
-            finish();
-        });
-
-//        tvForgotPassword.setOnClickListener(v -> {
-//            Intent intent = new Intent(LoginScreen.this, ForgotPasswordScreen.class);
-//            startActivity(intent);
-//            finish();
-//        });
-
-        tvSignUp.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginScreen.this, CreateAccountActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        initUi();
     }
 
     private void initUi() {
+        Toolbar toolbarLoginScreen = findViewById(R.id.toolbarLoginScreen);
         edtEmail = findViewById(R.id.edtEmail);
-//        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
-        tvSignUp = findViewById(R.id.tvSignUp);
         edtPassword = findViewById(R.id.edtPassword);
+        tvSignUp = findViewById(R.id.tvSignUp);
         btnLogin = findViewById(R.id.btnLogin);
+
+        setSupportActionBar(toolbarLoginScreen);
+        toolbarLoginScreen.setNavigationOnClickListener(v -> finish());
+        btnLogin.setOnClickListener(v -> login());
+        tvSignUp.setOnClickListener(v -> openSignUp());
+    }
+
+    private void login() {
+        String userName = edtEmail.getText().toString().trim();
+        String password = edtPassword.getText().toString().trim();
+
+        edtEmail.setError(null);
+        edtPassword.setError(null);
+
+        boolean isEmpty = false;
+        if (userName.isEmpty()) {
+            edtEmail.setError("Vui lòng nhập tên đăng nhập");
+            isEmpty = true;
+        }
+        if (password.isEmpty()) {
+            edtPassword.setError("Vui lòng nhập mật khẩu");
+            isEmpty = true;
+        }
+        if (isEmpty) {
+            Toast.makeText(this, "Vui lòng không bỏ trống tên đăng nhập và mật khẩu", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!staffDAO.KiemTraDangNhap(userName, password)) {
+            Toast.makeText(this, "Sai tên đăng nhập hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Common.maNhanVien = staffDAO.getCurrentStaffCode();
+        Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, HomePageScreen.class));
+        finish();
+    }
+
+    private void openSignUp() {
+        startActivity(new Intent(this, CreateAccountActivity.class));
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (staffDAO != null) {
+            staffDAO.close();
+        }
+        super.onDestroy();
     }
 }

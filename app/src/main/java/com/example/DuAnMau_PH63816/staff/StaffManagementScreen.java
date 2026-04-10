@@ -1,12 +1,11 @@
 package com.example.DuAnMau_PH63816.staff;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -14,12 +13,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.common.BottomButtonNavigator;
 import com.example.DuAnMau_PH63816.staff.adapter.StaffAdapter;
 import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 import com.example.DuAnMau_PH63816.staff.model.Staff;
 import com.google.android.material.button.MaterialButton;
+
 import java.util.ArrayList;
 
 public class StaffManagementScreen extends AppCompatActivity {
@@ -35,7 +36,12 @@ public class StaffManagementScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_staff_management_screen);
-        if (!ensureAdminAccess()) {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("StaffData", MODE_PRIVATE);
+        int role = sharedPreferences.getInt("role", 1);
+        if (role != 0) {
+            Toast.makeText(this, "Bạn không có quyền truy cập chức năng này", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -44,96 +50,37 @@ public class StaffManagementScreen extends AppCompatActivity {
             return insets;
         });
 
-        initViews();
-        setupRecyclerView();
-        setListeners();
-    }
-
-    private boolean ensureAdminAccess() {
-        SharedPreferences sharedPreferences = getSharedPreferences("StaffData", MODE_PRIVATE);
-        int role = sharedPreferences.getInt("role", 1);
-        if (role == 0) {
-            return true;
-        }
-        Toast.makeText(this, "Bạn không có quyền truy cập chức năng này", Toast.LENGTH_SHORT).show();
-        finish();
-        return false;
-    }
-
-    private void initViews() {
-        rvStaff = findViewById(R.id.rvStaff);
-        btnAddStaff = findViewById(R.id.btnAddStaff);
-        Toolbar toolbarStaffManagementScreen = findViewById(R.id.toolbarStaffManagementScreen);
-        if (toolbarStaffManagementScreen != null) {
-            setSupportActionBar(toolbarStaffManagementScreen);
-            toolbarStaffManagementScreen.setNavigationOnClickListener(v -> finish());
-        }
-        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
         staffDAO = new StaffDAO(this);
-    }
-
-    private void setupRecyclerView() {
-        staffAdapter = new StaffAdapter(this, staffList, new StaffAdapter.OnStaffActionListener() {
-            @Override
-            public void onEdit(@NonNull Staff staff) {
-                openEditStaff(staff);
-            }
-
-            @Override
-            public void onDelete(@NonNull Staff staff) {
-                showDeleteDialog(staff);
-            }
-        });
-
-        rvStaff.setLayoutManager(new LinearLayoutManager(this));
-        rvStaff.setAdapter(staffAdapter);
+        initUi();
+        setupRecyclerView();
         loadStaff();
     }
 
-    private void openEditStaff(Staff staff) {
-        Intent intent = new Intent(StaffManagementScreen.this, EditStaffScreen.class);
-        intent.putExtra(StaffExtras.ID, staff.getStaffCode());
-        intent.putExtra(StaffExtras.NAME, staff.getNameStaff());
-        intent.putExtra(StaffExtras.LOGIN, staff.getNameLogin());
-        intent.putExtra(StaffExtras.PASSWORD, staff.getPassword());
-        intent.putExtra(StaffExtras.PHONE, staff.getPhone());
-        intent.putExtra(StaffExtras.ADDRESS, staff.getAddress());
-        intent.putExtra(StaffExtras.IMAGE, staff.getImage());
-        intent.putExtra(StaffExtras.ROLE, staff.getRole());
-        startActivity(intent);
+    private void initUi() {
+        Toolbar toolbarStaffManagementScreen = findViewById(R.id.toolbarStaffManagementScreen);
+        rvStaff = findViewById(R.id.rvStaff);
+        btnAddStaff = findViewById(R.id.btnAddStaff);
+
+        setSupportActionBar(toolbarStaffManagementScreen);
+        toolbarStaffManagementScreen.setNavigationOnClickListener(v -> finish());
+        BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
+
+        btnAddStaff.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddStaffScreen.class);
+            startActivity(intent);
+        });
     }
 
-    private void showDeleteDialog(Staff staff) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setCancelable(false);
-        dialog.setTitle("Bạn có muốn xóa không?");
-        dialog.setMessage("Bạn có chắc chắn muốn xóa chứ");
-        dialog.setPositiveButton("Đồng ý", (dialog1, which) -> {
-            if (staffDAO != null && staffDAO.deleteStaff(staff)) {
-                loadStaff();
-                Toast.makeText(this, "Đã xóa nhân viên", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
-            }
-            dialog1.dismiss();
-        });
-        dialog.setNegativeButton("Không", (dialog12, which) -> dialog12.dismiss());
-        dialog.show();
+    private void setupRecyclerView() {
+        staffAdapter = new StaffAdapter(this, staffList);
+        rvStaff.setLayoutManager(new LinearLayoutManager(this));
+        rvStaff.setAdapter(staffAdapter);
     }
 
     private void loadStaff() {
         staffList.clear();
         staffList.addAll(staffDAO.getAllStaff());
-        if (staffAdapter != null) {
-            staffAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void setListeners() {
-        btnAddStaff.setOnClickListener(v -> {
-            Intent intent = new Intent(StaffManagementScreen.this, AddStaffScreen.class);
-            startActivity(intent);
-        });
+        staffAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -7,23 +7,20 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".product.DetailProductScreen"
     tools:ignore="HardcodedText,ContentDescription,UseCompoundDrawables">
 
-    <!-- TOOLBAR -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarDetailProductScreen"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="Chỉnh sửa sản phẩm"
-        app:titleTextColor="@android:color/black" />
+    <LinearLayout
+        style="@style/PageHeaderContainer"
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#1A000000" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarDetailProductScreen"
+            style="@style/PageToolbar"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Chỉnh sửa sản phẩm" />
+    </LinearLayout>
 
     <!-- CONTENT -->
     <ScrollView
@@ -226,9 +223,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/color_default"
+                android:padding="12dp"
                 android:text="Cập nhật sản phẩm"
                 android:textAllCaps="false"
-                android:padding="12dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp" />
@@ -239,8 +236,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/bg_warning"
-                android:text="Xóa sản phẩm"
                 android:padding="12dp"
+                android:text="Xóa sản phẩm"
                 android:textAllCaps="false"
                 android:textColor="@color/txt_warning"
                 android:textSize="16sp"

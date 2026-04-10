@@ -9,19 +9,16 @@
     android:orientation="vertical"
     tools:context=".category.EditCategoryManagementScreen">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarAddCategoryManagementScreen"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="Chỉnh sửa danh mục"
-        app:titleTextColor="@android:color/black" />
+    <LinearLayout
+        style="@style/PageHeaderContainer"
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#1A000000" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarAddCategoryManagementScreen"
+            style="@style/PageToolbar"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Chỉnh sửa danh mục" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

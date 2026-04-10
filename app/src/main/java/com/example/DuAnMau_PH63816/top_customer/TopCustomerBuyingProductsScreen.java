@@ -1,7 +1,7 @@
 package com.example.DuAnMau_PH63816.top_customer;
 
-import static com.example.DuAnMau_PH63816.common.OpenDatePicker.openDatePicker;
 import static com.example.DuAnMau_PH63816.common.OpenDatePicker.formatDate;
+import static com.example.DuAnMau_PH63816.common.OpenDatePicker.openDatePicker;
 import static com.example.DuAnMau_PH63816.common.OpenDatePicker.parseDate;
 
 import android.os.Bundle;
@@ -56,52 +56,15 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        initUi();
+
         invoiceDAO = new InvoiceDAO(this);
-
-        adapter = new TopCustomerAdapter(this, new ArrayList<>());
-        rcvTopCustomer.setLayoutManager(new LinearLayoutManager(this));
-        rcvTopCustomer.setAdapter(adapter);
-        rcvTopCustomer.setVisibility(View.GONE);
-
+        initUi();
         setDefaultDate();
-
-        imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
-        imgEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
-        btnShowList.setOnClickListener(v -> {
-            if (tvStartDate.getText().toString().trim().isEmpty()
-                    || tvEndDate.getText().toString().trim().isEmpty()
-                    || edtCustomerCount.getText().toString().trim().isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-                rcvTopCustomer.setVisibility(View.GONE);
-                return;
-            }
-
-            Date startDate = parseDate(tvStartDate.getText().toString().trim());
-            Date endDate = parseDate(tvEndDate.getText().toString().trim());
-            if (startDate == null || endDate == null) {
-                Toast.makeText(this, "Ngày không hợp lệ", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (startDate.after(endDate)) {
-                Toast.makeText(this, "Từ ngày không được lớn hơn đến ngày", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            int limit;
-            try {
-                limit = Integer.parseInt(edtCustomerCount.getText().toString().trim());
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            hienThiTopKhachHang(startDate, endDate, limit);
-        });
+        setListener();
     }
 
     private void initUi() {
+        Toolbar toolbar = findViewById(R.id.toolbarTopCustomerBuyingProductsScreen);
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
         imgStartDate = findViewById(R.id.imgStartDate);
@@ -109,26 +72,71 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
         edtCustomerCount = findViewById(R.id.edtCustomerCount);
         btnShowList = findViewById(R.id.btnShowList);
         rcvTopCustomer = findViewById(R.id.rcvTopCustomer);
-        Toolbar toolbar = findViewById(R.id.toolbarTopCustomerBuyingProductsScreen);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
+
+        adapter = new TopCustomerAdapter(this, new ArrayList<>());
+        rcvTopCustomer.setLayoutManager(new LinearLayoutManager(this));
+        rcvTopCustomer.setAdapter(adapter);
+        rcvTopCustomer.setNestedScrollingEnabled(false);
+        rcvTopCustomer.setVisibility(View.GONE);
+
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
         BottomButtonNavigator.bindDefaultButtons(this, BottomButtonNavigator.TAB_HOME);
     }
 
-    private void hienThiTopKhachHang(Date startDate, Date endDate, int limit) {
+    private void setListener() {
+        imgStartDate.setOnClickListener(v -> openDatePicker(this, tvStartDate));
+        imgEndDate.setOnClickListener(v -> openDatePicker(this, tvEndDate));
+        btnShowList.setOnClickListener(v -> xuLyBtnShowList());
+    }
+
+    private void xuLyBtnShowList() {
+        String startDateText = tvStartDate.getText().toString().trim();
+        String endDateText = tvEndDate.getText().toString().trim();
+        String countText = edtCustomerCount.getText().toString().trim();
+
+        if (startDateText.isEmpty() || endDateText.isEmpty() || countText.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            rcvTopCustomer.setVisibility(View.GONE);
+            return;
+        }
+
+        Date startDate = parseDate(startDateText);
+        Date endDate = parseDate(endDateText);
+
+        if (startDate == null || endDate == null) {
+            Toast.makeText(this, "Ngày không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (startDate.after(endDate)) {
+            Toast.makeText(this, "Từ ngày không được lớn hơn đến ngày", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int limit;
+        try {
+            limit = Integer.parseInt(countText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (limit <= 0) {
+            Toast.makeText(this, "Số lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
         /// Tạo map để lưu trữ khách hàng và tổng chi tiêu.
         Map<String, TopCustomerItem> map = new HashMap<>();
+        ArrayList<Invoice> invoiceList = invoiceDAO.getAllInvoices();
 
-        /// Gom nhóm theo khách hàng và cộng dồn số lần mua, tổng chi tiêu.
-        for (Invoice invoice : invoiceDAO.getAllInvoices()) {
-            Date invoiceDate = parseDate(invoice.getDate());
-            if (invoiceDate == null) {
+        for (Invoice invoice : invoiceList) {
+            if (!"ĐÃ THANH TOÁN".equals(invoice.getStatus())) {
                 continue;
             }
 
-            if (!"ĐÃ THANH TOÁN".equals(invoice.getStatus())) {
+            Date invoiceDate = parseDate(invoice.getDate());
+            if (invoiceDate == null) {
                 continue;
             }
 
@@ -138,7 +146,7 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
 
             String customerId = invoice.getCustomerId();
             String customerName = invoice.getCustomerName();
-            if (customerId == null || customerName == null) {
+            if (customerId == null || customerName == null || customerName.trim().isEmpty()) {
                 continue;
             }
 
@@ -177,8 +185,8 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
         Date minDate = null;
         Date maxDate = null;
 
-        /// Lấy khoảng ngày mặc định từ các hóa đơn đã thanh toán để demo nhanh hơn.
-        for (Invoice invoice : invoiceDAO.getAllInvoices()) {
+        ArrayList<Invoice> invoiceList = invoiceDAO.getAllInvoices();
+        for (Invoice invoice : invoiceList) {
             if (!"ĐÃ THANH TOÁN".equals(invoice.getStatus())) {
                 continue;
             }
@@ -227,10 +235,10 @@ public class TopCustomerBuyingProductsScreen extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (invoiceDAO != null) {
             invoiceDAO.close();
         }
+        super.onDestroy();
     }
 
     public static String formatCurrency(long amount) {

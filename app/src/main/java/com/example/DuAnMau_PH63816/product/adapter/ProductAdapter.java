@@ -1,17 +1,21 @@
 package com.example.DuAnMau_PH63816.product.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
 import com.example.DuAnMau_PH63816.custom.CustomCardView;
+import com.example.DuAnMau_PH63816.product.DetailProductScreen;
 import com.example.DuAnMau_PH63816.product.ProductImageResolver;
+import com.example.DuAnMau_PH63816.product.ProductExtras;
+import com.example.DuAnMau_PH63816.product.data.CartManager;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
 import java.util.List;
@@ -19,38 +23,16 @@ import java.util.List;
 /// extend adapter cua recycler view vao class nay
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
-    public interface OnProductClickListener {
-        void onProductClick(@NonNull Product product);
-    }
-
-    public interface OnAddToCartClickListener {
-        void onAddToCartClick(@NonNull Product product, @NonNull View addIconView);
-    }
-
-    public interface OnRemoveFromCartClickListener {
-        void onRemoveFromCartClick(@NonNull Product product);
-    }
-
     /// khai bao context va list de lay du lieu
+    private final Context context;
     private final LayoutInflater inflater;
     private final List<Product> items;
-    private final OnProductClickListener listener;
-    private final OnAddToCartClickListener addToCartListener;
-    private final OnRemoveFromCartClickListener removeFromCartListener;
 
     /// khoi tao context va list de lay du lieu
-    public ProductAdapter(
-            Context context,
-            List<Product> items,
-            OnProductClickListener listener,
-            OnAddToCartClickListener addToCartListener,
-            OnRemoveFromCartClickListener removeFromCartListener
-    ) {
+    public ProductAdapter(Context context, List<Product> items) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.items = items;
-        this.listener = listener;
-        this.addToCartListener = addToCartListener;
-        this.removeFromCartListener = removeFromCartListener;
     }
 
     @NonNull
@@ -70,20 +52,37 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         holder.cardView.setTitle(product.getName());
         holder.cardView.setSubtitle(product.getPriceLabel());
-        holder.cardView.setSubtitle2(product.getStockLabel());
+        holder.cardView.setSubtitle2(CartManager.getAvailableStockLabel(product));
 
         bindProductImage(holder.imgIcon, product.getImage());
 
-        holder.cardView.setOnClickListener(v -> listener.onProductClick(product));
+        holder.cardView.setOnClickListener(v -> openDetail(product));
         holder.cardView.setOnEditClickListener(v -> {
-            if (addToCartListener != null) {
-                addToCartListener.onAddToCartClick(product, v);
+            if (!CartManager.addProduct(product)) {
+                Toast.makeText(context, "Sản phẩm đã hết tồn trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            v.animate()
+                    .scaleX(1.12f)
+                    .scaleY(1.12f)
+                    .alpha(0.7f)
+                    .setDuration(120)
+                    .withEndAction(() -> v.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .alpha(1f)
+                            .setDuration(120)
+                            .start())
+                    .start();
+
+            notifyDataSetChanged();
+            Toast.makeText(context, context.getString(R.string.toast_added_to_cart, product.getName()), Toast.LENGTH_SHORT).show();
         });
         holder.cardView.setOnRemoveClickListener(v -> {
-            if (removeFromCartListener != null) {
-                removeFromCartListener.onRemoveFromCartClick(product);
-            }
+            CartManager.decreaseQuantity(product);
+            notifyDataSetChanged();
+            Toast.makeText(context, context.getString(R.string.toast_removed_from_cart, product.getName()), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -106,5 +105,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public static void bindProductImage(@NonNull ImageView target, String image) {
         ProductImageResolver.loadInto(target, image);
+    }
+
+    private void openDetail(Product product) {
+        Intent intent = new Intent(context, DetailProductScreen.class);
+        intent.putExtra(ProductExtras.NAME, product.getName());
+        intent.putExtra(ProductExtras.PRICE, product.getPriceLabel());
+        intent.putExtra(ProductExtras.STOCK, product.getStockLabel());
+        intent.putExtra(ProductExtras.IMAGE, product.getImage());
+        intent.putExtra(ProductExtras.ID, product.getId());
+        intent.putExtra(ProductExtras.CATEGORY, product.getCategory());
+        intent.putExtra(ProductExtras.UNIT, product.getUnit());
+        intent.putExtra(ProductExtras.DATE, product.getDate());
+        intent.putExtra(ProductExtras.STATUS, product.getStatus());
+        context.startActivity(intent);
     }
 }

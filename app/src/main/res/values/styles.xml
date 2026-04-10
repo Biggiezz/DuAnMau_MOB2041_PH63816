@@ -31,6 +31,26 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="PageHeaderContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+    <style name="PageToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="contentInsetStart">4dp</item>
+        <item name="contentInsetStartWithNavigation">4dp</item>
+        <item name="contentInsetEnd">8dp</item>
+        <item name="titleMarginStart">8dp</item>
+        <item name="titleTextColor">@color/color_title</item>
+    </style>
+
     <style name="StatusRadio">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

@@ -33,6 +33,10 @@
     <string name="login_forgot_password" translatable="false">Quên mật khẩu?</string>
     <string name="toast_notification" translatable="false">Thông báo</string>
     <string name="title_cart" translatable="false">Giỏ hàng</string>
+    <string name="action_search" translatable="false">Tìm kiếm</string>
+    <string name="product_search_hint" translatable="false">Tìm kiếm theo tên, danh mục hoặc đơn vị</string>
+    <string name="product_list_empty" translatable="false">Chưa có sản phẩm nào trong danh sách.</string>
+    <string name="product_search_empty" translatable="false">Không tìm thấy sản phẩm phù hợp với từ khóa "%1$s".</string>
     <string name="cart_item_count_format" translatable="false">Bạn đang có %1$d sản phẩm</string>
     <string name="cart_subtotal_label" translatable="false">Tạm tính</string>
     <string name="cart_total_label" translatable="false">Tổng thanh toán</string>

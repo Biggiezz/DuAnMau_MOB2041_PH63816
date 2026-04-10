@@ -2,6 +2,7 @@ package com.example.DuAnMau_PH63816.invoice.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -14,26 +15,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.invoice.DetailInvoiceActivity;
 import com.example.DuAnMau_PH63816.invoice.data.InvoiceDAO;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.ViewHolder> {
 
-    public interface OnInvoiceClickListener {
-        void onInvoiceClick(@NonNull Invoice invoice);
-    }
-
+    private final Context context;
     private final LayoutInflater inflater;
-    private final List<Invoice> items;
-    private final OnInvoiceClickListener listener;
+    private final ArrayList<Invoice> items;
 
-    public InvoiceAdapter(Context context, List<Invoice> items, OnInvoiceClickListener listener) {
+    public InvoiceAdapter(Context context, List<Invoice> items) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
-        this.items = items;
-        this.listener = listener;
+        if (items instanceof ArrayList) {
+            this.items = (ArrayList<Invoice>) items;
+        } else {
+            this.items = new ArrayList<>(items);
+        }
     }
 
     @NonNull
@@ -66,7 +69,7 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.ViewHold
             holder.tvTotal.setTextColor(holder.itemView.getContext().getColor(R.color.color_default));
         }
 
-        holder.itemView.setOnClickListener(v -> listener.onInvoiceClick(invoice));
+        holder.itemView.setOnClickListener(v -> openDetail(invoice));
         holder.itemView.setOnLongClickListener(v -> {
             if (!isAdmin(v.getContext())) {
                 return false;
@@ -78,7 +81,13 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return items != null ? items.size() : 0;
+        return items.size();
+    }
+
+    private void openDetail(Invoice invoice) {
+        Intent intent = new Intent(context, DetailInvoiceActivity.class);
+        intent.putExtra("invoice_id", invoice.getId());
+        context.startActivity(intent);
     }
 
     private void showDeleteDialog(Context context, int position) {
