@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 import com.example.DuAnMau_PH63816.product.model.CartItem;
 import com.example.DuAnMau_PH63816.product.model.Product;
 
@@ -20,7 +21,7 @@ import java.util.Locale;
 public final class CartManager {
 
     private static final LinkedHashMap<Integer, CartItem> ITEMS = new LinkedHashMap<>();
-    private static CartDbHelper dbHelper;
+    private static AppDbHelper dbHelper;
     private static Context appContext;
     private static boolean isLoaded = false;
     private static String currentOwnerKey;
@@ -36,7 +37,7 @@ public final class CartManager {
         appContext = context.getApplicationContext();
 
         if (dbHelper == null) {
-            dbHelper = new CartDbHelper(appContext);
+            dbHelper = new AppDbHelper(appContext);
         }
 
         String resolvedOwnerKey = resolveCurrentOwnerKey();

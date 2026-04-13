@@ -6,18 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.DuAnMau_PH63816.R;
-import com.example.DuAnMau_PH63816.category.data.CategoryDbHelper;
 import com.example.DuAnMau_PH63816.category.model.Category;
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 
 import java.util.ArrayList;
 
 public class CategoryDAO {
 
-    private final CategoryDbHelper dbHelper;
+    private final AppDbHelper dbHelper;
     private final SQLiteDatabase sqLiteDatabase;
 
     public CategoryDAO(Context context) {
-        dbHelper = new CategoryDbHelper(context);
+        dbHelper = new AppDbHelper(context.getApplicationContext());
         sqLiteDatabase = dbHelper.getWritableDatabase();
         ensureSeedData();
     }

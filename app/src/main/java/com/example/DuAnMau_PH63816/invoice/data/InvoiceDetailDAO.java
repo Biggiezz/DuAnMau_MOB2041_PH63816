@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 import com.example.DuAnMau_PH63816.invoice.model.InvoiceDetail;
 import com.example.DuAnMau_PH63816.product.ProductImageResolver;
 
@@ -12,13 +13,13 @@ import java.util.ArrayList;
 
 public class InvoiceDetailDAO {
 
-    private final InvoiceDbHelper dbHelper;
+    private final AppDbHelper dbHelper;
     private final SQLiteDatabase sqLiteDatabase;
     private final Context appContext;
 
     public InvoiceDetailDAO(Context context) {
         appContext = context.getApplicationContext();
-        dbHelper = new InvoiceDbHelper(appContext);
+        dbHelper = new AppDbHelper(appContext);
         sqLiteDatabase = dbHelper.getWritableDatabase();
         migrateLegacyImageValues();
     }

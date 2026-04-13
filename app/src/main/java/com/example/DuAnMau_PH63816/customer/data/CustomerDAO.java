@@ -5,16 +5,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
 
 import java.util.ArrayList;
 
 public class CustomerDAO {
-    private final CustomerDbHelper dbHelper;
+    private final AppDbHelper dbHelper;
     private final SQLiteDatabase sqLiteDatabase;
 
     public CustomerDAO(Context context) {
-        dbHelper = new CustomerDbHelper(context);
+        dbHelper = new AppDbHelper(context.getApplicationContext());
         sqLiteDatabase = dbHelper.getWritableDatabase();
         ensureSeedData();
     }

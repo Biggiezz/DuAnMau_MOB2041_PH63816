@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 import com.example.DuAnMau_PH63816.customer.data.CustomerDAO;
 import com.example.DuAnMau_PH63816.customer.model.Customer;
 import com.example.DuAnMau_PH63816.invoice.model.Invoice;
@@ -26,7 +27,7 @@ import java.util.Locale;
 public class InvoiceDAO {
 
     private final Context appContext;
-    private final InvoiceDbHelper dbHelper;
+    private final AppDbHelper dbHelper;
     private final SQLiteDatabase sqLiteDatabase;
     private final CustomerDAO customerDAO;
     private final InvoiceDetailDAO invoiceDetailDAO;
@@ -34,7 +35,7 @@ public class InvoiceDAO {
 
     public InvoiceDAO(Context context) {
         appContext = context.getApplicationContext();
-        dbHelper = new InvoiceDbHelper(appContext);
+        dbHelper = new AppDbHelper(appContext);
         sqLiteDatabase = dbHelper.getWritableDatabase();
         customerDAO = new CustomerDAO(appContext);
         invoiceDetailDAO = new InvoiceDetailDAO(appContext);

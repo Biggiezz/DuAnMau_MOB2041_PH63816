@@ -58,42 +58,42 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- BOTTOM MENU (Reused from HomePage) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@color/white"
-        android:elevation="8dp"
-        android:orientation="horizontal"
-        android:weightSum="4">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="64dp"-->
+<!--        android:background="@color/white"-->
+<!--        android:elevation="8dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:weightSum="4">-->
 
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_home" />
+<!--        <com.example.DuAnMau_PH63816.custom.CustomBottomButton-->
+<!--            android:id="@+id/btnHome"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            app:btnIcon="@drawable/ic_home" />-->
 
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnCart"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_product" />
+<!--        <com.example.DuAnMau_PH63816.custom.CustomBottomButton-->
+<!--            android:id="@+id/btnCart"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            app:btnIcon="@drawable/ic_product" />-->
 
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnNotification"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_notification" />
+<!--        <com.example.DuAnMau_PH63816.custom.CustomBottomButton-->
+<!--            android:id="@+id/btnNotification"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            app:btnIcon="@drawable/ic_notification" />-->
 
-        <com.example.DuAnMau_PH63816.custom.CustomBottomButton
-            android:id="@+id/btnProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:btnIcon="@drawable/ic_setting" />
+<!--        <com.example.DuAnMau_PH63816.custom.CustomBottomButton-->
+<!--            android:id="@+id/btnProfile"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            app:btnIcon="@drawable/ic_setting" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 </LinearLayout>

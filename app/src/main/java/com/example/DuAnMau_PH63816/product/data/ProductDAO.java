@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 import com.example.DuAnMau_PH63816.product.ProductImageResolver;
 import com.example.DuAnMau_PH63816.product.model.Product;
 import com.example.DuAnMau_PH63816.product.model.CartItem;
@@ -14,13 +15,13 @@ import java.util.List;
 
 public class ProductDAO {
 
-    private final ProductDbHelper dbHelper;
+    private final AppDbHelper dbHelper;
     private final SQLiteDatabase sqLiteDatabase;
     private final Context appContext;
 
     public ProductDAO(Context context) {
         appContext = context.getApplicationContext();
-        dbHelper = new ProductDbHelper(appContext);
+        dbHelper = new AppDbHelper(appContext);
         sqLiteDatabase = dbHelper.getWritableDatabase();
         ensureSeedData();
         migrateLegacyImageValues();

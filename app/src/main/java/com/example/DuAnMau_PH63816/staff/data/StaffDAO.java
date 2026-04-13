@@ -6,21 +6,23 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.DuAnMau_PH63816.common.data.AppDbHelper;
 import com.example.DuAnMau_PH63816.staff.model.Staff;
-import com.example.DuAnMau_PH63816.staff.helper.StaffDbHelper;
 
 import java.util.ArrayList;
 
 
 public class StaffDAO {
-    private final StaffDbHelper staffDbHelper;
+    private final AppDbHelper dbHelper;
     private final SharedPreferences sharedPreferences;
     private final SQLiteDatabase sqLiteDatabase;
 
     public StaffDAO(Context context) {
-        staffDbHelper = new StaffDbHelper(context);
-        sharedPreferences = context.getSharedPreferences("StaffData", Context.MODE_PRIVATE);
-        sqLiteDatabase = staffDbHelper.getWritableDatabase();
+        Context appContext = context.getApplicationContext();
+        dbHelper = new AppDbHelper(appContext);
+        sharedPreferences = appContext.getSharedPreferences("StaffData", Context.MODE_PRIVATE);
+        sqLiteDatabase = dbHelper.getWritableDatabase();
+        ensureSeedData();
     }
 
     public ArrayList<Staff> getAllStaff() {
@@ -84,7 +86,7 @@ public class StaffDAO {
     /// nếu có giá trị (nhập user + pass đúng) -> true
     /// ngược lại -> false
     public boolean KiemTraDangNhap(String userName, String passWord) {
-        SQLiteDatabase sqLiteDatabase = staffDbHelper.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = dbHelper.getReadableDatabase();
 
         try (Cursor sql = sqLiteDatabase.rawQuery(
                 "SELECT staffCode, nameStaff, nameLogin, role FROM Staff WHERE nameLogin = ? AND password = ? LIMIT 1",
@@ -104,7 +106,7 @@ public class StaffDAO {
             return false;
         }
 
-        SQLiteDatabase sqLiteDatabase = staffDbHelper.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("nameStaff", staff.getNameStaff());
         contentValues.put("nameLogin", staff.getNameLogin());
@@ -209,7 +211,7 @@ public class StaffDAO {
     }
 
     public boolean isUsernameExists(String userName) {
-        SQLiteDatabase sqLiteDatabase = staffDbHelper.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = dbHelper.getReadableDatabase();
 
         try (Cursor sql = sqLiteDatabase.rawQuery(
                 "SELECT 1 FROM Staff WHERE nameLogin = ? LIMIT 1",
@@ -237,7 +239,89 @@ public class StaffDAO {
         editor.apply();
     }
 
+    private void ensureSeedData() {
+        if (isStaffTableEmpty()) {
+            insertSeedStaff(
+                    "Nguyen Manh Phuc",
+                    "manhphuc",
+                    "123456",
+                    "0123456789",
+                    "461 Dang Chau Tue, Quang Hanh, Cam Pha, Quang Ninh",
+                    1
+            );
+            insertSeedStaff(
+                    "Admin",
+                    "admin",
+                    "123456a",
+                    "0977555777",
+                    "16 Pham Hung, Nam Tu Liem, TP.Ha Noi",
+                    0
+            );
+        }
+
+        seedMissingInvoiceStaff();
+    }
+
+    private boolean isStaffTableEmpty() {
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT 1 FROM Staff LIMIT 1", null)) {
+            return !cursor.moveToFirst();
+        }
+    }
+
+    private void seedMissingInvoiceStaff() {
+        insertStaffIfNameMissing(
+                "Nguyen Manh Phúc",
+                "phuc",
+                "123456",
+                "0123456789",
+                "Đơn nguyên 5, Nguyễn Cơ Thạch, Nam Từ Liêm, Hà Nội",
+                1
+        );
+        insertStaffIfNameMissing(
+                "Bùi Thị Linh",
+                "linh",
+                "123456",
+                "0987654321",
+                "Trịnh Văn Bô, Phương Canh, Hà Nội",
+                1
+        );
+        insertStaffIfNameMissing(
+                "Trần Thu Hà",
+                "ha",
+                "123456",
+                "01122334455",
+                "Thanh Xuân, Hà Nội",
+                1
+        );
+    }
+
+    private void insertSeedStaff(String nameStaff,
+                                 String nameLogin,
+                                 String password,
+                                 String phone,
+                                 String address,
+                                 int role) {
+        sqLiteDatabase.execSQL(
+                "INSERT INTO Staff (nameStaff, nameLogin, password, phone, address, role) VALUES (?, ?, ?, ?, ?, ?)",
+                new Object[]{nameStaff, nameLogin, password, phone, address, role}
+        );
+    }
+
+    private void insertStaffIfNameMissing(String nameStaff,
+                                          String nameLogin,
+                                          String password,
+                                          String phone,
+                                          String address,
+                                          int role) {
+        sqLiteDatabase.execSQL(
+                "INSERT INTO Staff (nameStaff, nameLogin, password, phone, address, role) " +
+                        "SELECT ?, ?, ?, ?, ?, ? " +
+                        "WHERE NOT EXISTS (SELECT 1 FROM Staff WHERE nameStaff = ?)",
+                new Object[]{nameStaff, nameLogin, password, phone, address, role, nameStaff}
+        );
+    }
+
     public void close() {
-        if (staffDbHelper != null) staffDbHelper.close();
+        if (dbHelper != null) dbHelper.close();
     }
 }
