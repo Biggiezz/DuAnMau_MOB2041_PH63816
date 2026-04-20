@@ -11,8 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.DuAnMau_PH63816.R;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 public class CategoryManagementScreen extends AppCompatActivity {
 
@@ -34,7 +32,7 @@ public class CategoryManagementScreen extends AppCompatActivity {
 
     private void initUi() {
         toolbarCategoryManagementScreen = findViewById(R.id.toolbarCategoryManagementScreen);
-        TabLayout tabLayoutBottom = findViewById(R.id.tabLayoutBottom);
+//        TabLayout tabLayoutBottom = findViewById(R.id.tabLayoutBottom);
         ViewPager2 viewPagerCategory = findViewById(R.id.viewPagerCategory);
 
         setSupportActionBar(toolbarCategoryManagementScreen);
@@ -44,21 +42,6 @@ public class CategoryManagementScreen extends AppCompatActivity {
         viewPagerCategory.setCurrentItem(0, false);
         toolbarCategoryManagementScreen.setTitle(getToolbarTitleRes(0));
 
-        new TabLayoutMediator(tabLayoutBottom, viewPagerCategory, (tab, position) -> {
-            if (position == 0) {
-                tab.setText(R.string.home_label_category);
-                tab.setIcon(R.drawable.btn_category);
-            } else if (position == 1) {
-                tab.setText(R.string.tab_cart);
-                tab.setIcon(R.drawable.ic_product);
-            } else if (position == 2) {
-                tab.setText(R.string.tab_notification);
-                tab.setIcon(R.drawable.ic_notification);
-            } else {
-                tab.setText(R.string.tab_profile);
-                tab.setIcon(R.drawable.ic_setting);
-            }
-        }).attach();
 
         viewPagerCategory.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

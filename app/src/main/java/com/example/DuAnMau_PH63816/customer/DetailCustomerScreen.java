@@ -1,5 +1,6 @@
 package com.example.DuAnMau_PH63816.customer;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -145,12 +146,19 @@ public class DetailCustomerScreen extends AppCompatActivity {
         String customerId = tvCustomerCode.getText().toString().trim();
         Customer customer = customerDAO.getCustomerById(customerId);
 
-        if (customer != null && customerDAO.deleteCustomer(customer)) {
-            Toast.makeText(this, "Đã xóa khách hàng", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, "Không thể xóa khách hàng", Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Xác nhận xóa khách hàng " + customer.getName());
+        builder.setMessage("Bạn có chắc chắn muốn xóa khách hàng này?");
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            if (customer != null && customerDAO.deleteCustomer(customer)) {
+                Toast.makeText(this, "Đã xóa khách hàng", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Không thể xóa khách hàng", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     @Override

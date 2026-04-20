@@ -1,5 +1,6 @@
 package com.example.DuAnMau_PH63816.category.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -79,15 +80,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
         Category category = categoryList.get(position);
-        if (categoryDAO.deleteCategory(category)) {
-            categoryList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, categoryList.size() - position);
-            updateCategoryCount();
-            Toast.makeText(context, "Đã xóa danh mục", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Xóa danh mục thất bại", Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Xóa danh mục " + category.getName());
+        builder.setMessage("Bạn có chắc chắn muốn xóa danh mục này?");
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            if (categoryDAO.deleteCategory(category)) {
+                categoryList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, categoryList.size() - position);
+                updateCategoryCount();
+                Toast.makeText(context, "Đã xóa danh mục", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Xóa danh mục thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
+        builder.show();
+
     }
 
     private void updateCategoryCount() {

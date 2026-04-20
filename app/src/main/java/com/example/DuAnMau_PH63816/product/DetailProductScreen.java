@@ -2,6 +2,7 @@ package com.example.DuAnMau_PH63816.product;
 
 import static com.example.DuAnMau_PH63816.common.OpenDatePicker.openDatePicker;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
@@ -142,13 +143,21 @@ public class DetailProductScreen extends AppCompatActivity {
 
             Product product = new Product();
             product.setId(productId);
+            String productName = edtProductName.getText().toString().trim();
 
-            if (productDAO.deleteProduct(product)) {
-                Toast.makeText(this, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Xóa sản phẩm " + productName);
+            builder.setMessage("Bạn có chắc chắn muốn xóa sản phẩm này?");
+            builder.setPositiveButton("Có", (dialog, which) -> {
+                if (productDAO.deleteProduct(product)) {
+                    Toast.makeText(this, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
+            builder.show();
         });
     }
 

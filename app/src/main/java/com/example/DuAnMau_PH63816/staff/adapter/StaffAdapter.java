@@ -97,7 +97,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
         Staff staff = staffList.get(position);
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setCancelable(false);
-        dialog.setTitle("Bạn có muốn xóa không?");
+        dialog.setTitle("Bạn có muốn xóa " + staff.getNameStaff() + " không?");
         dialog.setMessage("Bạn có chắc chắn muốn xóa chứ");
         dialog.setPositiveButton("Đồng ý", (dialog1, which) -> {
             StaffDAO staffDAO = new StaffDAO(context);

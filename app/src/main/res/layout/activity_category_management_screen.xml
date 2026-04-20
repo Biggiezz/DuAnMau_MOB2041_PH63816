@@ -30,19 +30,4 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         tools:ignore="SpeakableTextPresentCheck" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutBottom"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@android:color/white"
-        app:tabGravity="fill"
-        app:tabIconTint="@color/color_subtitle"
-        app:tabIndicatorHeight="0dp"
-        app:tabInlineLabel="false"
-        app:tabMode="fixed"
-        app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextColor="@color/color_default"
-        app:tabTextColor="@color/color_subtitle" />
-
 </LinearLayout>
