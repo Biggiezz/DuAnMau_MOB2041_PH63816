@@ -77,6 +77,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="title_cart">Shopping cart</string>
+    <string name="product_search_empty">"No products matching the keyword %1$s were found. "</string>
     <string name="cart_item_count_format">Bạn đang có %1$d sản phẩm</string>
     <string name="cart_subtotal_label">Temporarily calculated</string>
     <string name="cart_total_label">Total payment</string>
@@ -90,4 +91,8 @@
     <string name="payment_successful">Successful payment</string>
     <string name="your_order_has_been_confirmed">Your order has been confirmed.</string>
     <string name="grant_notification_permission">Please grant notification permission so the system can send payment confirmations.</string>
+    <string name="action_search">Search</string>
+    <string name="product_search_hint">Search by name, category, or unit</string>
+    <string name="product_list_empty">There are no products on the list yet.</string>
+    <string name="txt_remember">Remember account</string>
 </resources>

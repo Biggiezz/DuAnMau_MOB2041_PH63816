@@ -1,8 +1,11 @@
 package com.example.DuAnMau_PH63816.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +26,7 @@ import com.example.DuAnMau_PH63816.staff.data.StaffDAO;
 public class LoginScreen extends AppCompatActivity {
 
     private EditText edtEmail, edtPassword;
-    private TextView tvSignUp;
-    private Button btnLogin;
+    private CheckBox chkRemember;
     private StaffDAO staffDAO;
 
     @Override
@@ -40,19 +42,49 @@ public class LoginScreen extends AppCompatActivity {
 
         staffDAO = new StaffDAO(this);
         initUi();
+        loadDataLogin();
+    }
+
+    public void loadDataLogin() {
+        SharedPreferences sharedPreferences = getSharedPreferences("saveUserPassWord", Context.MODE_PRIVATE);
+
+        String user = sharedPreferences.getString("user", "");
+        String password = sharedPreferences.getString("password", "");
+        String lastUserName = sharedPreferences.getString("lastUserName", "");
+        boolean checkRemember = sharedPreferences.getBoolean("checkRemember", false);
+
+        if (checkRemember) {
+            edtEmail.setText(user);
+            edtPassword.setText(password);
+            chkRemember.setChecked(true);
+        } else {
+            edtEmail.setText(lastUserName);
+            edtPassword.setText("");
+            chkRemember.setChecked(false);
+        }
     }
 
     private void initUi() {
         Toolbar toolbarLoginScreen = findViewById(R.id.toolbarLoginScreen);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
-        tvSignUp = findViewById(R.id.tvSignUp);
-        btnLogin = findViewById(R.id.btnLogin);
+        TextView tvSignUp = findViewById(R.id.tvSignUp);
+        chkRemember = findViewById(R.id.chkRemember);
+        Button btnLogin = findViewById(R.id.btnLogin);
 
         setSupportActionBar(toolbarLoginScreen);
         toolbarLoginScreen.setNavigationOnClickListener(v -> finish());
         btnLogin.setOnClickListener(v -> login());
+        chkRemember.setOnClickListener(v -> action_remember());
         tvSignUp.setOnClickListener(v -> openSignUp());
+    }
+
+    public void action_remember() {
+        if (chkRemember.isChecked()) {
+            Toast.makeText(this, "Bạn đã lưu đăng nhập", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Bạn đã hủy lưu đăng nhập", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void login() {
@@ -81,10 +113,43 @@ public class LoginScreen extends AppCompatActivity {
             return;
         }
 
+        if (chkRemember.isChecked()) {
+            remember(userName, password, true);
+        } else {
+            saveLastUserName(userName);
+            clearRemember();
+        }
         Common.maNhanVien = staffDAO.getCurrentStaffCode();
         Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, HomePageScreen.class));
         finish();
+    }
+
+    public void saveLastUserName(String userName) {
+        SharedPreferences sharedPreferences = getSharedPreferences("saveUserPassWord", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("lastUserName", userName);
+        editor.apply();
+    }
+
+    public void clearRemember() {
+        SharedPreferences sharedPreferences = getSharedPreferences("saveUserPassWord", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("user", "");
+        editor.putString("password", "");
+        editor.putBoolean("checkRemember", false);
+        editor.apply();
+    }
+
+    public void remember(String user, String password, boolean checkRemember) {
+        SharedPreferences sharedPreferences = getSharedPreferences("saveUserPassWord", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("user", user);
+        editor.putString("password", password);
+        editor.putBoolean("checkRemember", checkRemember);
+        editor.putString("lastUserName", user);
+        editor.apply();
     }
 
     private void openSignUp() {

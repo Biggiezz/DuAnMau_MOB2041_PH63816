@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.DuAnMau_PH63816.R;
+import com.example.DuAnMau_PH63816.login.LoginScreen;
 
 public class ProfileContentFragment extends Fragment {
 
@@ -39,7 +40,28 @@ public class ProfileContentFragment extends Fragment {
             builder.setTitle("Đăng xuất");
             builder.setMessage("Bạn có chắc muốn đăng xuất không?");
 
-            builder.setPositiveButton("Đồng ý", (dialog, which) -> System.exit(0));
+            builder.setPositiveButton("Đồng ý", (dialog, which) -> {
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("saveUserPassWord", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                String lastUserName = sharedPreferences.getString("lastUserName", "");
+                String currentUser = sharedPreferences.getString("user", "");
+
+                if (!currentUser.isEmpty()) {
+                    editor.putString("lastUserName", currentUser);
+                } else {
+                    editor.putString("lastUserName", lastUserName);
+                }
+
+                editor.putString("user", "");
+                editor.putString("password", "");
+                editor.putBoolean("checkRemember", false);
+                editor.apply();
+
+                Intent intent = new Intent(requireContext(), LoginScreen.class);
+                startActivity(intent);
+                requireActivity().finish();
+            });
 
             builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
             builder.show();
